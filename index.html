@@ -35,10 +35,76 @@ limitations under the License.
                 </style>
         </template>
 	<body>
+  <button onclick="playPause()">Play/Pause</button>
+  <button onclick="rewind()">Rewind</button>
+                <video-view>
+<video id="video1" width="800" height="600" autoplay>
+  <source src="video.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+</video-view>
+
 		<script>
-			
+var myVideo = document.getElementById("video1"); 
+var rewinding = false;
+var rw;
+var fps = 30;
+var accel;
+
+                        class Pedometer {
+                                constructor() {
+                                const sensor = new Accelerometer({ frequency: 30 });
+                                sensor.onchange = () => {
+					//accel = {x:accelerometer.x, y:accelerometer.y, z:accelerometer.z};
+                                        if (this.onchange) this.onchange();
+                                };
+                                sensor.onactivate = () => {
+                                        if (this.onactivate) this.onactivate();
+                                }
+                                const start = () => sensor.start();
+                                Object.assign(this, { start });
+                                }
+                        }
+
+                        customElements.define('video-view', class extends HTMLElement {
+                        constructor() {
+                        super();
+			}
+
+                       connectedCallback() {
+                        const sensor = new Pedometer();
+                        sensor.onchange = () => {
+                        console.log("Change");
+                        }
+                        //sensor.onactivate = () => this.render();
+                        sensor.start();
+                        }
+                        render() {
+                                console.log("Render");
+			}
+});
+
+function playPause() { 
+    if (myVideo.paused) 
+        myVideo.play(); 
+    else 
+        myVideo.pause(); 
+} 	
+
+function rewind() {
+	if (rewinding)
+	{
+		rewinding = false;
+		clearInterval(rw);
+	}
+	else
+	{
+		rewinding = true;
+		rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
+		//setting a negative video.playbackRate does not work
+	}
+} 			
 		</script>
-                <video-view></video-view>
 	</body>
 </html>
 
