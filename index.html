@@ -130,6 +130,13 @@ limitations under the License.
                                 super();
 			        }
 
+                                render() {
+                                        console.log("Render");
+                                        if(stepvar == 1)
+                                        {
+                                                console.log("Playing");
+                                        }
+
                                 connectedCallback() {
                                         const sensor = new Pedometer();
                                         sensor.onchange = () => {
@@ -152,12 +159,6 @@ limitations under the License.
                                         sensor.start();
                                         render = setInterval(render, 1000/fps);
                                 }
-                                render() {
-                                        console.log("Render");
-                                        if(stepvar == 1)
-                                        {
-                                                console.log("Playing");
-                                        }
 			        }
                         });
                         function saveSensorReading()
