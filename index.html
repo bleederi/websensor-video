@@ -44,13 +44,14 @@ limitations under the License.
                         Your browser does not support the video tag.
                         </video>
                 </video-view>
-
+                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
                 <script>
 		//TODO: fix rewind by using two video streams, one forward and one backward
                 var myVideo = document.getElementById("video1"); 
                 var rewinding = false;
                 var rw;
                 var fps = 30;
+                accelerationData = [];        //sequence to store accelerometer readings
                 var accel = {x:null, y:null, z:null};
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
@@ -134,8 +135,11 @@ limitations under the License.
                                 connectedCallback() {
                                         const sensor = new Pedometer();
                                         sensor.onchange = () => {
+                                                accelerationData.push(accel);
+                                                console.log(accelerationData);
                                                 //console.log("Change", accel.x, accel.y, accel.z);
-                                                console.log(stepvar);
+                                                //console.log(stepvar);
+                                                console.log(toCoordSeq(accelerationData, 'acceleration'));
                                                 if(magnitude(diff) > (60/sensorfreq))  //with lower sensor frequencies the diff will be bigger
                                                 {
                                                         stepvar = stepvar + 1;
