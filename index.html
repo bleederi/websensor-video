@@ -150,7 +150,7 @@ limitations under the License.
 
                                 connectedCallback() {
                                         const sensor = new Pedometer();
-                                        gravity =  new LowPassFilterData(accelerometer, 0.8);
+                                        gravity =  new LowPassFilterData(sensor, 0.8);
                                         sensor.onchange = () => {                                       
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
