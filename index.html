@@ -160,20 +160,20 @@ limitations under the License.
                         }
                         function render()
                         {
-                                if(stepvar == 1)
+                                if(prevstepvar == 1)
                                 {
                                         console.log("Playing");
-                                        if(prevstepvar == 0)
+                                        if(stepvar == 0)
                                         {
-                                                myVideo.play(); 
+                                                myVideo.pause(); 
                                         }
                                 }
                                 else
                                 {
                                         console.log("Not playing");
-                                        if(prevstepvar == 1)
+                                        if(stepvar == 1)
                                         {
-                                                myVideo.pause(); 
+                                                myVideo.play(); 
                                         }
                                 }
 		        }
