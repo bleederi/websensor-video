@@ -55,6 +55,7 @@ limitations under the License.
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
                 var accel = {x:null, y:null, z:null};
                 var gravity;
+                var accelNoG;
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
                 var stepvar = 0;
@@ -149,6 +150,7 @@ limitations under the License.
 
                                 connectedCallback() {
                                         const sensor = new Pedometer();
+                                        gravity =  new LowPassFilterData(accelerometer, 0.8);
                                         sensor.onchange = () => {                                       
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
@@ -158,7 +160,8 @@ limitations under the License.
                         });
                         function saveSensorReading()
                         {
-                                accelerationData.push(accel);
+                                accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
+                                accelerationData.push(accelNoG);
                                 accelSeq = toCoordSeq(accelerationData);
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                 {
