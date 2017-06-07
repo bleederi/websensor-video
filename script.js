@@ -69,7 +69,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         {
                                 derseq[k][i] = null;
                         }
-                        else if(i >= 1)
+                        else
                         {
                                 derseq[k][i] = seq[k][i] - seq[k][i-1];
                         }
