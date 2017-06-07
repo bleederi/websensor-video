@@ -148,8 +148,8 @@ limitations under the License.
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                 {
                                         let length = accelSeq['x'].length;
-                                        stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                         var derseq_old = derseq;
+                                        stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                         console.log(pcorr(derseq['x'], derseq_old['x']));
                                         if (stepvar == 1)
                                         {
