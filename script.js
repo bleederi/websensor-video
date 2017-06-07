@@ -55,6 +55,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(seq);
         let maxval = {'x':Math.max(seq['x']), 'y':Math.max(seq['y']), 'z':Math.max(seq['z'])};
         let minval = {'x':Math.min(seq['x']), 'y':Math.min(seq['y']), 'z':Math.min(seq['z'])};
+        console.log(maxval);
         console.log(maxval['x'] - minval['x'], maxval['y'] - minval['y'], maxval['z'] - minval['z']);
         return 0;
 }
