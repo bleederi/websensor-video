@@ -145,6 +145,11 @@ limitations under the License.
                                                 {
                                                         let length = accelSeq['x'].length;
                                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
+                                                        if (stepvar)
+                                                        {
+                                                                accelSeq = {x:null, y:null, z:null};
+                                                                stepvar = 0;
+                                                        }
                                                 }                                        
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
