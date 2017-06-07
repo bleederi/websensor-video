@@ -50,11 +50,22 @@ function slice(obj, start, end) {
     return sliced;
 }
 
+function magnitude(vector)      //Calculate the magnitude of a vector
+{
+return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+}
+
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         console.log(seq);
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
-        console.log(maxval['x'] - minval['x'], maxval['y'] - minval['y'], maxval['z'] - minval['z']);
+        diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
+        console.log(diff);
+        if(diff['y'] > 3)
+        {
+                console.log("STEP");
+                return 1;
+        }
         return 0;
 }
