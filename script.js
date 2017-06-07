@@ -90,7 +90,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         else
                         {
                                 derseq[k][i] = maseq[k][i] - maseq[k][i-1];
-                                console.log(k, derseq[k][i]);
+                                //console.log(k, derseq[k][i]);
                         }
                 }
         }
@@ -103,9 +103,9 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         if(i >= 1)
                         {
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
-                                if(derseq[k][i] < 0 && derseq[k][i-1] >= 0 && derseq[k][i-1] > 3)
+                                if(derseq[k][i-1] < 0 && derseq[k][i] >= 0 && derseq[k][i] > 1)
                                 {
-                                        //console.log("Max", k, "peak at", i);                                
+                                        console.log("Max", k, "peak at", i);                                
                                 }
                         }
                 }
