@@ -53,25 +53,53 @@ function magnitude(vector)      //Calculate the magnitude of a vector
 {
 return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 }
-//Calculate correlation
-const pcorr = (x, y) => {
-  let sumX = 0,
-    sumY = 0,
-    sumXY = 0,
-    sumX2 = 0,
-    sumY2 = 0;
-  const minLength = x.length = y.length = Math.min(x.length, y.length),
-    reduce = (xi, idx) => {
-      const yi = y[idx];
-      sumX += xi;
-      sumY += yi;
-      sumXY += xi * yi;
-      sumX2 += xi * xi;
-      sumY2 += yi * yi;
+/*
+ *  Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
+ */
+function pcorr(x, y) {
+    var shortestArrayLength = 0;
+     
+    if(x.length == y.length) {
+        shortestArrayLength = x.length;
+    } else if(x.length > y.length) {
+        shortestArrayLength = y.length;
+        console.error('x has more items in it, the last ' + (x.length - shortestArrayLength) + ' item(s) will be ignored');
+    } else {
+        shortestArrayLength = x.length;
+        console.error('y has more items in it, the last ' + (y.length - shortestArrayLength) + ' item(s) will be ignored');
     }
-  x.forEach(reduce);
-  return (minLength * sumXY - sumX * sumY) / Math.sqrt((minLength * sumX2 - sumX * sumX) * (minLength * sumY2 - sumY * sumY));
-};
+  
+    var xy = [];
+    var x2 = [];
+    var y2 = [];
+  
+    for(var i=0; i<shortestArrayLength; i++) {
+        xy.push(x[i] * y[i]);
+        x2.push(x[i] * x[i]);
+        y2.push(y[i] * y[i]);
+    }
+  
+    var sum_x = 0;
+    var sum_y = 0;
+    var sum_xy = 0;
+    var sum_x2 = 0;
+    var sum_y2 = 0;
+  
+    for(var i=0; i< shortestArrayLength; i++) {
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += xy[i];
+        sum_x2 += x2[i];
+        sum_y2 += y2[i];
+    }
+  
+    var step1 = (shortestArrayLength * sum_xy) - (sum_x * sum_y);
+    var step2 = (shortestArrayLength * sum_x2) - (sum_x * sum_x);
+    var step3 = (shortestArrayLength * sum_y2) - (sum_y * sum_y);
+    var step4 = Math.sqrt(step2 * step3);
+    var answer = step1 / step4;
+  
+    return answer;
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
