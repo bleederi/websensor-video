@@ -70,6 +70,7 @@ limitations under the License.
                         class Pedometer {
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
+                                gravity =  new LowPassFilterData(sensor, 0.8);
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                                         gravity.update(accel);
@@ -150,7 +151,6 @@ limitations under the License.
 
                                 connectedCallback() {
                                         const sensor = new Pedometer();
-                                        gravity =  new LowPassFilterData(sensor, 0.8);
                                         sensor.onchange = () => {                                       
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
