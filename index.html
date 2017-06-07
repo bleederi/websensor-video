@@ -56,7 +56,6 @@ limitations under the License.
                 var accel = {x:null, y:null, z:null};
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
-                var prevstepvar = 0;
                 var stepvar = 0;
                 var sensorfreq = 60;
                 var amtStepValues = 1*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long a step will take (here 1 second)
@@ -144,7 +143,6 @@ limitations under the License.
                         {
                                 accelerationData.push(accel);
                                 accelSeq = toCoordSeq(accelerationData);
-                                prevstepvar = stepvar;
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                 {
                                         let length = accelSeq['x'].length;
@@ -163,12 +161,12 @@ limitations under the License.
                                 if(stepvar == 1)
                                 {
                                         console.log("Playing");
-                                                myVideo.play(); 
+                                        myVideo.play(); 
                                 }
                                 else
                                 {
                                         console.log("Not playing");
-                                                myVideo.pause(); 
+                                        myVideo.pause(); 
                                 }
 		        }
 
