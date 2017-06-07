@@ -62,12 +62,7 @@ limitations under the License.
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
                                 sensor.onchange = () => {
-                                        prevaccel = accel;
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
-                                        for (var key in accel)
-                                                {
-                                                        diff[key] = accel[key] - prevaccel[key];
-                                                }
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -135,29 +130,18 @@ limitations under the License.
                                 connectedCallback() {
                                         const sensor = new Pedometer();
                                         sensor.onchange = () => {
-                                                accelerationData.push(accel);
+                                                prevaccel = accel;
+                                                //accelerationData.push(accel);
                                                 console.log(accelerationData);
+                                                for (var key in accel)
+                                                        {
+                                                                diff[key] = accel[key] - prevaccel[key];
+                                                        }
                                                 //console.log("Change", accel.x, accel.y, accel.z);
                                                 //console.log(stepvar);
                                                 console.log(toCoordSeq(accelerationData, 'acceleration'));
-                                                if(magnitude(diff) > (60/sensorfreq))  //with lower sensor frequencies the diff will be bigger
-                                                {
-                                                        stepvar = stepvar + 1;
-                                                }
-                                                else
-                                                {
-                                                        if(stepvar > 0)
-                                                        {
-                                                        stepvar = stepvar - 1;
-                                                        }
-                                                }
-                                                if(stepvar >= 100)    //step event
-                                                {
-                                                        console.log("STEP");
-                                                        stepvar = 0;
-                                                }
                                         }
-                                        //sensor.onactivate = () => this.render();
+                                        sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         sensor.start();
                                 }
                                 render() {
@@ -168,6 +152,10 @@ limitations under the License.
                         function magnitude(vector)      //Calculate the magnitude of a vector
                         {
                         return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+                        }
+                        function saveSensorReading()
+                        {
+                                accelerationData.push(accel);
                         }
 
                         function playPause() {
