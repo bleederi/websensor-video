@@ -136,7 +136,7 @@ limitations under the License.
                                         {
                                                 console.log("Playing");
                                         }
-
+			        }
                                 connectedCallback() {
                                         const sensor = new Pedometer();
                                         sensor.onchange = () => {
@@ -159,7 +159,6 @@ limitations under the License.
                                         sensor.start();
                                         render = setInterval(render, 1000/fps);
                                 }
-			        }
                         });
                         function saveSensorReading()
                         {
