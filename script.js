@@ -57,14 +57,32 @@ return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
-        //first find peaks using derivative sequence
+        //first filter the sequence using a MA-3 filter
+        let maseq = {'x':null, 'y':null, 'z':null};
+        for (var k in seq)
+        {
+                maseq[k] = [];
+                for (var i in seq[k])
+                {
+                        if(i == 1 || i == seq[k].length)
+                        {
+                                maseq[k][i] = null;
+                        }
+                        else
+                        {
+                                maseq[k][i] = (seq[k][i] + seq[k][i] + seq[k][i-1])/3.0;
+                        }
+                }
+        }
+        console.log(maseq);
+        //now find peaks using derivative sequence
         //create derivative sequence
         let derseq = {'x':null, 'y':null, 'z':null};
-        for (var k in seq)
+        for (var k in maseq)
         {
                 derseq[k] = [];
                 //console.log(seq[k]);
-                for (var i in seq[k])
+                for (var i in maseq[k])
                 {
                         if(i == 0)
                         {
@@ -72,7 +90,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                         else
                         {
-                                derseq[k][i] = seq[k][i] - seq[k][i-1];
+                                derseq[k][i] = maseq[k][i] - maseq[k][i-1];
                         }
                 }
         }
