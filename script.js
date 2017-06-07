@@ -56,6 +56,20 @@ return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
+        //first find peaks using derivative sequence
+        let derseq = {};
+        for i in value
+        {
+                console.log(i);
+        }
+        /*
+                if(value.index(i) == 0): #First value special case: always 0
+                        der = {key: 0 for key in i.keys()}
+                else:
+                        der = {key: i[key] - previous.get(key, 0) for key in i.keys()}
+                previous = der
+                derivativedict[key + '_d'].append(der)
+        */
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
         let diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
