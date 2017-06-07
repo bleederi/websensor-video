@@ -83,7 +83,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                 derseq[k] = [];
                 for (var i in maseq[k])
                 {
-                        if(i == 0)
+                        if(i <= 1)
                         {
                                 derseq[k][i] = null;
                         }
