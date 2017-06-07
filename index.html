@@ -62,6 +62,8 @@ limitations under the License.
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
                 var derseq_old;
+                var maseq;
+                var maseq_old;
                 myVideo.pause();
                         class Pedometer {
                                 constructor() {
@@ -148,9 +150,9 @@ limitations under the License.
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                 {
                                         let length = accelSeq['x'].length;
-                                        var derseq_old = derseq;
+                                        var maseq_old = maseq;
                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
-                                        console.log(pcorr(derseq['y'], derseq_old['y']));
+                                        console.log(pcorr(maseq['y'], maseq_old['y']));
                                         if (stepvar == 1)
                                         {
                                                 //clear buffer

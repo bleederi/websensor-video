@@ -106,7 +106,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
 {
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        let maseq = {'x':null, 'y':null, 'z':null};
+        maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
                 maseq[k] = [];
