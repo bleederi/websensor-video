@@ -147,7 +147,7 @@ limitations under the License.
                                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                                         if (stepvar == 1)
                                                         {
-                                                                accelSeq = {x:null, y:null, z:null};
+                                                                for (var k in accelSeq) delete accelSeq[k];
                                                                 stepvar = 0;
                                                         }
                                                 }                                        
