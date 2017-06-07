@@ -60,6 +60,8 @@ limitations under the License.
                 var sensorfreq = 30;
                 var amtStepValues = 2*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here 1 second * 2 = 2 seconds)
                 var reading;    //variable for controlling the data reading loop
+                var derseq;
+                var derseq_old;
                 myVideo.pause();
                         class Pedometer {
                                 constructor() {

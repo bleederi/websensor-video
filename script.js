@@ -96,7 +96,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
-        var derseq = {'x':null, 'y':null, 'z':null};
+        derseq = {'x':null, 'y':null, 'z':null};
         for (var k in maseq)
         {
                 derseq[k] = [];
