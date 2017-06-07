@@ -58,6 +58,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
 {
         console.log(seq);
         //first find peaks using derivative sequence
+        //create derivative sequence
         let derseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
@@ -75,7 +76,20 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
-        console.log(derseq);
+        //now find the peaks using it
+        for (var k in derseq)
+        {
+                for (var i in derseq[k])
+                {
+                        if(i >= 1)
+                        {
+                                if(derseq[k][i] < 0 && derseq[k][i-1] > 0)
+                                {
+                                        console.log("Max peak");                                
+                                }
+                        }
+                }
+        } 
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
         let diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
