@@ -51,10 +51,12 @@ limitations under the License.
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
                 var fps = 30;
-                accelerationData = [];        //sequence to store accelerometer readings
+                var accelerationData = [];        //sequence to store xyz accelerometer readings
+                var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
                 var accel = {x:null, y:null, z:null};
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
+                var amtStepValues = 10; //setting buffer size for step analysis (how many values will be inspected)
                 var stepvar = 0;
                 var sensorfreq = 30;
                 var reading;    //variable for controlling the data reading loop
@@ -138,7 +140,12 @@ limitations under the License.
                                                         }
                                                 //console.log("Change", accel.x, accel.y, accel.z);
                                                 //console.log(stepvar);
-                                                console.log(toCoordSeq(accelerationData, 'acceleration'));
+                                                accelSeq = toCoordSeq(accelerationData, 'acceleration'));
+                                                if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
+                                                {
+                                                        let length = accelSeq['x'].length;
+                                                        stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
+                                                }                                        
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         sensor.start();
