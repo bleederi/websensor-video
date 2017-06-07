@@ -53,6 +53,25 @@ function magnitude(vector)      //Calculate the magnitude of a vector
 {
 return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 }
+//Calculate correlation
+const pcorr = (x, y) => {
+  let sumX = 0,
+    sumY = 0,
+    sumXY = 0,
+    sumX2 = 0,
+    sumY2 = 0;
+  const minLength = x.length = y.length = Math.min(x.length, y.length),
+    reduce = (xi, idx) => {
+      const yi = y[idx];
+      sumX += xi;
+      sumY += yi;
+      sumXY += xi * yi;
+      sumX2 += xi * xi;
+      sumY2 += yi * yi;
+    }
+  x.forEach(reduce);
+  return (minLength * sumXY - sumX * sumY) / Math.sqrt((minLength * sumX2 - sumX * sumX) * (minLength * sumY2 - sumY * sumY));
+};
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
@@ -77,7 +96,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
-        let derseq = {'x':null, 'y':null, 'z':null};
+        var derseq = {'x':null, 'y':null, 'z':null};
         for (var k in maseq)
         {
                 derseq[k] = [];
