@@ -143,6 +143,7 @@ limitations under the License.
                                                 accelSeq = toCoordSeq(accelerationData);
                                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                                 {
+                                                        stepvar = 0;
                                                         let length = accelSeq['x'].length;
                                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                                         if (stepvar == 1)
