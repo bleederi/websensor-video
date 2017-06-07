@@ -96,15 +96,15 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }
         //console.log(derseq);
         //now find the peaks using it
-        for (var k in derseq)
+        for (var k in seq)
         {
-                for (var i in derseq[k])
+                for (var i in seq[k])
                 {
-                        if(i >= 1 && i != derseq[k].length)
+                        if(i >= 1 && i != seq[k].length)
                         {
-                                console.log(i);
+                                //console.log(i);
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
-                                if((derseq[k][i] > derseq[k][i-1]) && (derseq[k][i] > derseq[k][i+1]))
+                                if((seq[k][i] > seq[k][i-1]) && (seq[k][i] > seq[k][i+1]))
                                 {
                                         console.log("Max", k, "peak at", i);                                
                                 }
