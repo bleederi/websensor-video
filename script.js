@@ -59,7 +59,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
         let diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
-        if(diff['y'] > 3)
+        if(diff['y'] > 3 && diff['x'] > 0.4)
         {
                 return 1;
         }
