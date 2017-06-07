@@ -45,10 +45,11 @@ function slice(obj, start, end) {
     var sliced = {};
     var i = 0;
     for (var k in obj) {
-        if (i >= start && i < end)
-            sliced[k] = obj[k];
+        console.log(sliced[k]);
+        //if (i >= start && i < end)
+        //    sliced[k] = obj[k];
 
-        i++;
+        //i++;
     }
 
     return sliced;
