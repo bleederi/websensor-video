@@ -59,7 +59,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //first find peaks using derivative sequence
         let derseq = {};
         let keys = ['x'];
-        for (var k in seq.keys())
+        for (var k in Object.keys(seq))
         {
                 console.log(seq[k]);
         }
