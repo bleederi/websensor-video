@@ -52,9 +52,9 @@ function slice(obj, start, end) {
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        //console.log(seq);
+        console.log(seq);
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z'])),};
-        let maxval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z'])),};
-        console.log(maxval['x']);
+        let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z'])),};
+        console.log(maxval);
         return 0;
 }
