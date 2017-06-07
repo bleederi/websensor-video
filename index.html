@@ -133,22 +133,7 @@ limitations under the License.
 
                                 connectedCallback() {
                                         const sensor = new Pedometer();
-                                        sensor.onchange = () => {
-                                                accelSeq = toCoordSeq(accelerationData);
-                                                if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
-                                                {
-                                                        let length = accelSeq['x'].length;
-                                                        prevstepvar = stepvar;
-                                                        stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
-                                                        if (stepvar == 1)
-                                                        {
-                                                                console.log("STEP");
-                                                                //clear buffer
-                                                                for (var k in accelSeq) delete accelSeq[k];
-                                                                accelerationData = [];
-                                                                //stepvar = 0;
-                                                        }
-                                                }                                        
+                                        sensor.onchange = () => {                                       
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         sensor.start();
@@ -158,6 +143,21 @@ limitations under the License.
                         function saveSensorReading()
                         {
                                 accelerationData.push(accel);
+                                accelSeq = toCoordSeq(accelerationData);
+                                if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
+                                {
+                                        let length = accelSeq['x'].length;
+                                        prevstepvar = stepvar;
+                                        stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
+                                        if (stepvar == 1)
+                                        {
+                                                console.log("STEP");
+                                                //clear buffer
+                                                for (var k in accelSeq) delete accelSeq[k];
+                                                accelerationData = [];
+                                                //stepvar = 0;
+                                        }
+                                }
                         }
                         function render()
                         {
