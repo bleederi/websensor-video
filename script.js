@@ -142,10 +142,6 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
-                                        if(pcorr(maseq['y'], maseq_old['y']) <= 0.99 && pcorr(maseq['y'], maseq_old['y']) >= 0.3)
-                                        {
-                                                return 1;
-                                        }
         //console.log(derseq);
         //now find the peaks using it
         for (var k in seq)
