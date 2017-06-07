@@ -150,7 +150,7 @@ limitations under the License.
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                 {
                                         let length = accelSeq['x'].length;
-                                        var maseq_old = maseq;
+                                        maseq_old = maseq;
                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                         if(pcorr(maseq['y'], maseq_old['y']) <= 0.99 && pcorr(maseq['y'], maseq_old['y']) >= 0.3)
                                         {
