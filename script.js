@@ -42,7 +42,6 @@ function toCoordSeq(buffer)
  */
 function slice(obj, start, end) {
     var sliced = {};
-    var i = 0;
     for (var k in obj) {
         sliced[k] = obj[k].slice(start, end);
     }

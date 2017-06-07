@@ -133,13 +133,6 @@ limitations under the License.
                                 connectedCallback() {
                                         const sensor = new Pedometer();
                                         sensor.onchange = () => {
-                                                prevaccel = accel;
-                                                for (var key in accel)
-                                                        {
-                                                                diff[key] = accel[key] - prevaccel[key];
-                                                        }
-                                                //console.log("Change", accel.x, accel.y, accel.z);
-                                                //console.log(stepvar);
                                                 accelSeq = toCoordSeq(accelerationData);
                                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                                 {
@@ -149,6 +142,7 @@ limitations under the License.
                                                         {
                                                                 console.log("STEP");
                                                                 for (var k in accelSeq) delete accelSeq[k];
+                                                                accelerationData = [];
                                                                 stepvar = 0;
                                                         }
                                                 }                                        
