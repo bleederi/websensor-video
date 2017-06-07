@@ -61,20 +61,20 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let derseq = {};
         for (var k in seq)
         {
-                console.log(seq[k]);
+                //console.log(seq[k]);
                 for (var i in seq[k])
                 {
-                        //console.log(seq[k][i]);
+                        if(i == 0)
+                        {
+                                derseq[k][i] = null;
+                        }
+                        else if(i >= 1)
+                        {
+                                derseq[k][i] = seq[k][i] - seq[k][i-1];
+                        }
                 }
         }
-        /*
-                if(value.index(i) == 0): #First value special case: always 0
-                        der = {key: 0 for key in i.keys()}
-                else:
-                        der = {key: i[key] - previous.get(key, 0) for key in i.keys()}
-                previous = der
-                derivativedict[key + '_d'].append(der)
-        */
+        console.log(derseq);
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
         let diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
