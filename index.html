@@ -154,26 +154,26 @@ limitations under the License.
                                                 //clear buffer
                                                 for (var k in accelSeq) delete accelSeq[k];
                                                 accelerationData = [];
-                                                stepvar = 0;
+                                                //stepvar = 0;
                                         }
                                 }
                         }
                         function render()
                         {
-                                if(prevstepvar == 1)
+                                if(stepvar == 1)
                                 {
                                         console.log("Playing");
-                                        if(stepvar == 0)
+                                        if(prevstepvar == 0)
                                         {
-                                                myVideo.pause(); 
+                                                myVideo.play(); 
                                         }
                                 }
                                 else
                                 {
                                         console.log("Not playing");
-                                        if(stepvar == 1)
+                                        if(prevstepvar == 1)
                                         {
-                                                myVideo.play(); 
+                                                myVideo.pause(); 
                                         }
                                 }
 		        }
