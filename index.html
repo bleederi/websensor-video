@@ -130,13 +130,6 @@ limitations under the License.
                                 super();
 			        }
 
-                                render() {
-                                        console.log("Render");
-                                        if(stepvar == 1)
-                                        {
-                                                console.log("Playing");
-                                        }
-			        }
                                 connectedCallback() {
                                         const sensor = new Pedometer();
                                         sensor.onchange = () => {
@@ -158,13 +151,24 @@ limitations under the License.
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         sensor.start();
-                                        render = setInterval(this.render, 1000/fps);
+                                        render = setInterval(render, 1000/fps);
                                 }
                         });
                         function saveSensorReading()
                         {
                                 accelerationData.push(accel);
                         }
+                        function render()
+                        {
+                                if(stepvar == 1)
+                                {
+                                        console.log("Playing");
+                                }
+                                else
+                                {
+                                        console.log("Not playing");
+                                }
+		        }
 
                         function playPause() {
                         if (myVideo.paused)
