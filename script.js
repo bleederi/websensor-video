@@ -90,10 +90,11 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         else
                         {
                                 derseq[k][i] = maseq[k][i] - maseq[k][i-1];
+                                console.log(k, derseq[k][i]);
                         }
                 }
         }
-        console.log(derseq);
+        //console.log(derseq);
         //now find the peaks using it
         for (var k in derseq)
         {
