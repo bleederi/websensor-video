@@ -64,7 +64,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                 maseq[k] = [];
                 for (var i in seq[k])
                 {
-                        if(i == 1 || i == seq[k].length)
+                        if(i == 0 || i == seq[k].length)
                         {
                                 maseq[k][i] = null;
                         }
