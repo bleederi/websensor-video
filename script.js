@@ -61,8 +61,11 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let derseq = {};
         for (var k in seq)
         {
-                console.log("Key:", k);
-                //console.log(seq[k]);
+                console.log(seq[k]);
+                for (var i in seq[k])
+                {
+                        //console.log(seq[k][i]);
+                }
         }
         /*
                 if(value.index(i) == 0): #First value special case: always 0
