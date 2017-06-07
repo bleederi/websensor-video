@@ -104,7 +104,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         {
                                 //console.log(i);
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
-                                if((seq[k][i] < seq[k][i-1]) && (seq[k][i] < seq[k][i+1]) && Math.abs(seq[k][i] > 10))
+                                if((seq[k][i] < seq[k][i-1]) && (seq[k][i] < seq[k][i+1]) && (Math.abs(seq[k][i]) > 10))
                                 {
                                         console.log("Min", k, "at", i);                                
                                 }
