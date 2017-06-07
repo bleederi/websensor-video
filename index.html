@@ -150,9 +150,13 @@ limitations under the License.
                                         }
                                         sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         sensor.start();
+                                        render = setInterval(render, 1000/fps);
                                 }
                                 render() {
-                                        console.log("Render");
+                                        if(stepvar == 1)
+                                        {
+                                                console.log("Playing");
+                                        }
 			        }
                         });
                         function saveSensorReading()
