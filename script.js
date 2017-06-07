@@ -94,7 +94,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
-        //console.log(derseq);
+        console.log(derseq);
         //now find the peaks using it
         for (var k in derseq)
         {
@@ -105,7 +105,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
                                 if(derseq[k][i] < 0 && derseq[k][i-1] >= 0 && derseq[k][i-1] > 3)
                                 {
-                                        console.log("Max", k, "peak at", i);                                
+                                        //console.log("Max", k, "peak at", i);                                
                                 }
                         }
                 }
