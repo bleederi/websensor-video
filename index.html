@@ -178,13 +178,9 @@ limitations under the License.
                                         {
                                                 stepvar = 0;
                                         }
-                                        if (stepvar == 1)
-                                        {
-                                                //clear buffer
-                                                for (var k in accelSeq) delete accelSeq[k];
-                                                accelerationData = [];
-                                                //stepvar = 0;
-                                        }
+                                        //clear buffer
+                                        for (var k in accelSeq) delete accelSeq[k];
+                                        accelerationData = [];
                                 }
                         }
                         function render()
