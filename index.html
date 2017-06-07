@@ -152,7 +152,8 @@ limitations under the License.
                                         let length = accelSeq['x'].length;
                                         maseq_old = maseq;
                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
-                                        console.log(pcorr(maseq['y'], maseq_old['y']));
+                                        corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
+                                        console.log(corr);
                                         if(pcorr(maseq['y'], maseq_old['y']) <= 0.99 && pcorr(maseq['y'], maseq_old['y']) >= 0.3)
                                         {
                                                 stepvar = 1;
