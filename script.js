@@ -41,15 +41,10 @@ function toCoordSeq(buffer)
  * Credit to https://stackoverflow.com/a/20682709
  */
 function slice(obj, start, end) {
-    console.log(start, end);
     var sliced = {};
     var i = 0;
     for (var k in obj) {
-        console.log(obj[k].slice(start, end));
-        //if (i >= start && i < end)
-        //    sliced[k] = obj[k];
-
-        //i++;
+        sliced[k] = obj[k].slice(start, end);
     }
 
     return sliced;
