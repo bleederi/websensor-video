@@ -154,7 +154,7 @@ limitations under the License.
                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                         corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
                                         console.log(magnitude(corr));
-                                        if(pcorr(maseq['y'], maseq_old['y']) <= 0.99 && pcorr(maseq['y'], maseq_old['y']) >= 0.3)
+                                        if(magnitude(corr) <= 1.7 && magnitude(corr) >= 0.9)
                                         {
                                                 stepvar = 1;
                                         }
