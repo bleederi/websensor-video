@@ -100,6 +100,7 @@ function pcorr(x, y) {
     var answer = step1 / step4;
   
     return answer;
+}
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
