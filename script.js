@@ -103,7 +103,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         if(i >= 1 && i != derseq[k].length)
                         {
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
-                                if(derseq[k][i] > derseq[k][i-i]) && (derseq[k][i] > derseq[k][i+1])
+                                if((derseq[k][i] > derseq[k][i-1]) && (derseq[k][i] > derseq[k][i+1]))
                                 {
                                         console.log("Max", k, "peak at", i);                                
                                 }
