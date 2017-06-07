@@ -56,7 +56,7 @@ return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        console.log(seq);
+        //console.log(seq);
         //first find peaks using derivative sequence
         //create derivative sequence
         let derseq = {'x':null, 'y':null, 'z':null};
