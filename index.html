@@ -54,6 +54,7 @@ limitations under the License.
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
                 var accel = {x:null, y:null, z:null};
+                var gravity;
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
                 var stepvar = 0;
@@ -70,6 +71,7 @@ limitations under the License.
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
+                                        gravity.update(accel);
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -79,6 +81,17 @@ limitations under the License.
                                 Object.assign(this, { start });
                                 }
                         }
+                        class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
+                          constructor(reading, bias) {
+                            Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
+                            this.bias = bias;
+                          }
+                                update(reading) {
+                                        this.x = this.x * this.bias + reading.x * (1 - this.bias);
+                                        this.y = this.y * this.bias + reading.y * (1 - this.bias);
+                                        this.z = this.z * this.bias + reading.z * (1 - this.bias);
+                                }
+                        };
                         class KalmanFilter {    //Kalman filter implementation from websensor-compass
                           constructor() {
                             this.Q_angle = 0.01;
