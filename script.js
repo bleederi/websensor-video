@@ -74,14 +74,13 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
-        console.log(maseq);
+        //console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         let derseq = {'x':null, 'y':null, 'z':null};
         for (var k in maseq)
         {
                 derseq[k] = [];
-                //console.log(seq[k]);
                 for (var i in maseq[k])
                 {
                         if(i == 0)
@@ -94,6 +93,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
+        console.log(derseq);
         //now find the peaks using it
         for (var k in derseq)
         {
