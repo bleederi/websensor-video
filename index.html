@@ -56,9 +56,9 @@ limitations under the License.
                 var accel = {x:null, y:null, z:null};
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
-                var amtStepValues = 10; //setting buffer size for step analysis (how many values will be inspected)
                 var stepvar = 0;
                 var sensorfreq = 30;
+                var amtStepValues = 10*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long a step will take
                 var reading;    //variable for controlling the data reading loop
 
                         class Pedometer {
