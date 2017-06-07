@@ -154,7 +154,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
                                 if((seq[k][i] > seq[k][i-1]) && (seq[k][i] > seq[k][i+1]) && (Math.abs(seq[k][i]) > 9))
                                 {
-                                        console.log("Max", k, "at", i, seq[k][i]);                                
+                                        //console.log("Max", k, "at", i, seq[k][i]);                                
                                 }
                         }
                 }

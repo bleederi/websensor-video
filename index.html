@@ -150,7 +150,7 @@ limitations under the License.
                                         let length = accelSeq['x'].length;
                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                         var derseq_old = derseq;
-                                        console.log(pcorr(derseq, derseq_old));
+                                        console.log(pcorr(derseq['x'], derseq_old['x']));
                                         if (stepvar == 1)
                                         {
                                                 //clear buffer
