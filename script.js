@@ -104,11 +104,11 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                                 //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
                                 if(derseq[k][i] < 0 && derseq[k][i-1] >= 0 && seq[k][i] > 3)
                                 {
-                                        console.log("Max", k, "peak at", i);                                
+                                        //console.log("Max", k, "peak at", i);                                
                                 }
                         }
                 }
-        } 
+        }
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
         let diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
