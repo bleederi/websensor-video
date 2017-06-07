@@ -147,6 +147,7 @@ limitations under the License.
                                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                                         if (stepvar == 1)
                                                         {
+                                                                console.log("STEP");
                                                                 for (var k in accelSeq) delete accelSeq[k];
                                                                 stepvar = 0;
                                                         }

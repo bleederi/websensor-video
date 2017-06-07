@@ -63,7 +63,6 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         console.log(diff);
         if(diff['y'] > 3)
         {
-                console.log("STEP");
                 return 1;
         }
         return 0;
