@@ -145,7 +145,7 @@ limitations under the License.
                                                 {
                                                         let length = accelSeq['x'].length;
                                                         stepvar = stepDetection(slice(accelSeq, length-amtStepValues, length));
-                                                        if (stepvar)
+                                                        if (stepvar == 1)
                                                         {
                                                                 accelSeq = {x:null, y:null, z:null};
                                                                 stepvar = 0;
