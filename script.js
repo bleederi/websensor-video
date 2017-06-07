@@ -80,7 +80,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         for (var k in derseq)
         {
                 for (var i in derseq[k])
-                {
+                {/*
                         if(i >= 1)
                         {
                                 if( (derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] =< 0 && derseq[k][i-1] == 0) )
@@ -88,7 +88,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                                         console.log("Max peak at", i);                                
                                 }
                         }
-                }
+                */}
         } 
         let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
         let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
