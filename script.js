@@ -57,10 +57,13 @@ return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
 function magnitude2(seq)      //Calculate the magnitude sequence for 3 acceleration sequences
 {
         magseq = [];
-        for (var i in seq)
+        for (var k in seq)
         {
-                magseq[i] = Math.sqrt(seq['x'][i] * seq['x'][i] + seq['y'][i] * seq['y'][i] + seq['z'][i] * seq['z'][i]);
-                console.log(magseq[i]);
+                for (var i in seq[k])
+                {
+                        magseq[i] = Math.sqrt(seq['x'][i] * seq['x'][i] + seq['y'][i] * seq['y'][i] + seq['z'][i] * seq['z'][i]);
+                        console.log(magseq[i]);
+                }
         }
         return magseq;
 }
