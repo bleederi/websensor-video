@@ -117,10 +117,10 @@ return this.map(
       }); 
 };
 
-g=[0,1,2,3,4,5,6,7,8,9,10];
-console.log(g.simpleSMA(3));
-console.log(g.simpleSMA(5));
-console.log(g.simpleSMA(g.length));
+//g=[0,1,2,3,4,5,6,7,8,9,10];
+//console.log(g.simpleSMA(3));
+//console.log(g.simpleSMA(5));
+//console.log(g.simpleSMA(g.length));
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
@@ -129,7 +129,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         { 
-              maseq[k] = simple_moving_averager(seq[k],3);
+              maseq[k] = simple_moving_averager(seq[k].simpleSMA(3));
         }
         console.log(maseq);
         //now find peaks using derivative sequence
