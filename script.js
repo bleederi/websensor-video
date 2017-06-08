@@ -125,11 +125,23 @@ function ma3filter(seq)
         return ma3seq;
 }
 
+function doWMA( array, weightedPeriod ) {
+    var weightedArray = [];
+    for( var i = 0; i <= array.length - weightedPeriod; i++ ) {
+        var sum = 0;
+        for( var j = 0; j < weightedPeriod; j++ ) {
+            sum += array[ i + j ] * ( weightedPeriod - j );
+        }
+        weightedArray[i] = sum / (( weightedPeriod * ( weightedPeriod + 1 )) / 2 );
+    }
+    return weightedArray;
+}
+
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        maseq = ma3filter(seq);
+        maseq = doWMA(seq, 3);
         //console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
