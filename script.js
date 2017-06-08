@@ -49,6 +49,12 @@ function slice(obj, start, end) {
     return sliced;
 }
 
+function removeDuplicates(arr) {
+    let s = new Set(arr);
+    let v = s.values();
+    return Array.from(v);
+}
+
 function magnitude(vector)      //Calculate the magnitude of a vector
 {
 return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
@@ -65,6 +71,31 @@ function magnitude2(seq)      //Calculate the magnitude sequence for 3 accelerat
                 }
         }
         return magseq;
+}
+
+/* Source: https://derickbailey.com/2014/09/21/calculating-standard-deviation-with-array-map-and-array-reduce-in-javascript/ */
+function standardDeviation(values){
+  var avg = average(values);
+  
+  var squareDiffs = values.map(function(value){
+    var diff = value - avg;
+    var sqrDiff = diff * diff;
+    return sqrDiff;
+  });
+  
+  var avgSquareDiff = average(squareDiffs);
+
+  var stdDev = Math.sqrt(avgSquareDiff);
+  return stdDev;
+}
+
+function average(data){
+  var sum = data.reduce(function(sum, value){
+    return sum + value;
+  }, 0);
+
+  var avg = sum / data.length;
+  return avg;
 }
 /*
  *  Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
@@ -115,10 +146,12 @@ function pcorr(x, y) {
     return answer;
 }
 
-function detectPeaks(seq, mode = 'magnitude')
+function detectPeaksValleys(seq, mode = 'magnitude')
 {
+        result = {'peaks':null, 'valleys':null}; 
         //console.log(seq);
         let peakdiff = [];
+        var valleydiff = [];
         if(mode != 'magnitude')
         {
                 peaks = {'x':null, 'y':null, 'z':null};
@@ -146,6 +179,7 @@ function detectPeaks(seq, mode = 'magnitude')
         else
         {
                 peaks = [];
+                valleys = [];
                 for (var i in seq)
                 {
                         index = parseInt(i);
@@ -174,69 +208,11 @@ function detectPeaks(seq, mode = 'magnitude')
                                 }                                   
                                 peaks.push(index);
                                 lastpeakmag = curr;
-                                lastpeaktime = index;
-                                //update step average
-                                if(lastpeakmag && lastvalleymag)
-                                {
-                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                        //console.log(lastpeakmag, lastvalleymag, stepaverage); 
-                                }                               
+                                lastpeaktime = index;                              
                         }
-                }
-        } 
-
-        //remove peaks that don't meet condition
-        for (var i in peakdiff)
-        {
-                if(peakdiff[i] < peaktimethreshold)
-                {
-                        peaks[i] = null;
-                }
-        }
-        peaks = peaks.filter(function(n){ return n != undefined });  
-        return peaks;
-}
-
-function detectValleys(seq, mode = 'magnitude')
-{
-        var valleydiff = [];
-        if(mode != 'magnitude')
-        {
-                valleys = {'x':null, 'y':null, 'z':null};
-                for (var k in seq)
-                { 
-                        valleys[k] = [];
-                        for (var i in seq)
-                        {
-                                let index = parseInt(i);
-                                let prev = seq[k][index-1];
-                                let curr = seq[k][index];
-                                let next = seq[k][index+1];
-                                if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))
-                                        {
-                                                valleys[k].push(index);
-                                                lastvalleymag = curr;
-                                                lastvalleytime = index;
-                                                //update step average
-                                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                //console.log(lastpeakmag, lastvalleymag, stepaverage); 
-                                        }
-                        }
-                      
-                }
-        }
-        else
-        {
-                valleys = [];
-                for (var i in seq)
-                {
-                        index = parseInt(i);
-                        let prev = seq[index-1];
-                        let curr = seq[index];
-                        let next = seq[index+1];
-                        if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))
+                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))
                                 {
-                                //update time average regardless of peak accepted or not
+                                //update time average regardless of valley accepted or not
                                 if(valleys.length >= 2)
                                 {
                                         valleydiff.push(index - lastvalleytime);
@@ -257,25 +233,18 @@ function detectValleys(seq, mode = 'magnitude')
                                 valleys.push(index);
                                 lastvalleymag = curr;
                                 lastvalleytime = index;
-                                //update step average
-                                if(lastpeakmag && lastvalleymag)
-                                {
-                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                        //console.log(lastpeakmag, lastvalleymag, stepaverage);  
-                                } 
                         }
+                        //update step average
+                        if(lastpeakmag && lastvalleymag)
+                        {
+                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                //console.log(lastpeakmag, lastvalleymag, stepaverage);  
+                        } 
                 }
         } 
-        //remove valleys that don't meet condition
-        for (var i in valleydiff)
-        {
-                if(valleydiff[i] < valleytimethreshold)
-                {
-                        valleys[i] = null;
-                }  
-        } 
-        valleys = valleys.filter(function(n){ return n != undefined });  
-        return valleys;
+        result['peaks'] = peaks;
+        result['valleys'] = valleys;
+        return result;
 }
 
 /*
@@ -297,8 +266,11 @@ return this.map(
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        console.log(seq);
+        //console.log("Sequence:");
+        //console.log(seq);
         magseq = magnitude2(seq);
+        console.log("Magnitude of acceleration:");
+        console.log(magseq);
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
@@ -308,11 +280,33 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         console.log(maseq);*/
         for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
         {
-                peaks = detectPeaks(magseq.slice(0, i));
-                valleys = detectValleys(magseq.slice(0, i));  
+                peaksvalleys = detectPeaksValleys(magseq.slice(0, i)); 
         }  
-        //console.log(peaks);
-        //console.log(valleys);
+        peaks = peaksvalleys['peaks'];
+        valleys = peaksvalleys['valleys'];
+        console.log("Peaks and valleys:");
+        console.log(peaks);
+        console.log(valleys);
+        //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
+
+        //remove peaks that don't meet condition
+        for (var i in peakdiff)
+        {
+                if(peakdiff[i] < peaktimethreshold)
+                {
+                        peaks[i] = null;
+                }
+        }
+        //remove valleys that don't meet condition
+        for (var i in valleydiff)
+        {
+                if(valleydiff[i] < valleytimethreshold)
+                {
+                        valleys[i] = null;
+                }
+        }
+        peaks = peaks.filter(function(n){ return n != undefined });  
+        valleys = valleys.filter(function(n){ return n != undefined });  
         let stepdiff = [];
         for (ipeak in peaks)
         {
@@ -320,19 +314,31 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                 {
                         if(ipeak == ivalley)
                         {
-                                stepdiff.push(peaks[ipeak] - valleys[ivalley]); 
+                                stepdiff.push(Math.abs(peaks[ipeak] - valleys[ivalley])); 
                         }                
                 }
         }
+        console.log("Step diff:");
         console.log(stepdiff);
-        if(stepdiff.length > 3)
+        let max = Math.max( ...stepdiff );
+        let min = Math.min( ...stepdiff );
+        let stddev = standardDeviation(stepdiff);
+        let stddevpct = stddev / min;
+        console.log("Std dev pct", stddevpct);
+        if(stepdiff.length >= stepamt-1)
         {
-                let max = math.max(stepdiff);    
-                if(((max-min)/max) < 0.5)
+                //console.log(max, min);  
+                //if(((max-min)/max) < 0.5)
+                if(stddevpct < 0.5 && Math.abs(peaks.length - valleys.length) <= 2)     //What characterises a step...?
                 {
-                        console.log("Walking");
-                }        
+                        return true;
+                }   
         }
+        else
+        {
+                return false;
+        } 
+/* 
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
@@ -377,4 +383,5 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                 //return 1;
         }
         return 0;
+        */
 }

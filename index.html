@@ -58,9 +58,10 @@ limitations under the License.
                 var accelNoG;
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
-                var stepvar = 0;
-                var sensorfreq = 60;
-                var amtStepValues = 2*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here 1 second * 2 = 2 seconds)
+                var sensorfreq = 30;
+                var stepvar = null;
+                var stepamt = 4;
+                var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
                 var derseq_old;
@@ -73,6 +74,8 @@ limitations under the License.
                 var stepaverage = null;
                 var peaktimethreshold = null;
                 var valleytimethreshold = null;
+                var sensori = null;
+                var discardedsamples = 0;
                 myVideo.pause();
                         class Pedometer {
                                 constructor() {
@@ -157,21 +160,34 @@ limitations under the License.
 			        }
 
                                 connectedCallback() {
-                                        const sensor = new Pedometer();
-                                        sensor.onchange = () => { saveSensorReading();                                      
+                                        sensori = new Pedometer();
+                                        sensori.onchange = () => { saveSensorReading(); 
+                                        //sensor.onchange = () => {                                                                
                                         }
                                         //sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-                                        sensor.onactivate = () => {}
-                                        sensor.start();
+                                        sensori.onactivate = () => {}
+                                        sensori.start();
+                                        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
                         });
                         function saveSensorReading()
                         {
-                                accel = {x:accel.x, y:accel.y, z:accel.z}
+                                accel = {x:accel.x, y:accel.y, z:accel.z};
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
-                                accelerationData.push(accel);
+                                //console.log("Mags:", magnitude(prevaccel), magnitude(accel))
+                                if(magnitude(prevaccel) != magnitude(accel))                               
+                                {
+                                        accelerationData.push(accel);
+                                        prevaccel = accel;
+                                }
+                                else
+                                {
+                                        discardedsamples = discardedsamples + 1;
+                                }
                                 //console.log(accelerationData);
+                                accData2 = [];
+                                accel2 = {x:null, y:null, z:null}
                                 if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
@@ -182,8 +198,16 @@ limitations under the License.
                                         //let length = accelSeq['x'].length;
                                         //maseq_old = maseq;
                                         //let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length));
-                                        let stepvar2 = stepDetection(as);
-                                        //console.log(maseq);
+                                        stepvar = stepDetection(as);
+                                        //console.log(maseq);                                     
+                                        if(stepvar == true)
+                                        {
+                                                console.log("Walking");                                        
+                                        }
+                                        else
+                                        {
+                                                console.log("Not walking");
+                                        }
 /*
                                         corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
                                         //console.log(corr);
@@ -208,7 +232,14 @@ limitations under the License.
                                         stepaverage = null;
                                         peaktimethreshold = null;
                                         valleytimethreshold = null;
+                                        discardedsamples = 0;
                                         //console.log(accelerationData);
+                                }
+                                if(discardedsamples >= 300)     //device most likely stationary
+                                {
+                                        stepvar = 0;
+                                        console.log("Stationary, not walking");
+                                        discardedsamples = 0;
                                 }
                         }
                         function render()
