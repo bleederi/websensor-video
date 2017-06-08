@@ -152,7 +152,7 @@ function detectPeaks(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr > prev && curr > next && (curr > stepaverage || lastpeakmag == 'null'))
+                        if(curr > prev && curr > next && curr > stepaverage)
                                 {
                                         peaks.push(index);
                                         lastpeakmag = curr;
