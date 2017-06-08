@@ -118,7 +118,7 @@ function ma3filter(seq)
                         else
                         {
                                 ma3seq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
-                                console.log(maseq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
+                                console.log(ma3seq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
                         }
                 }
         }
