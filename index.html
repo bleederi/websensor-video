@@ -195,6 +195,9 @@ limitations under the License.
                                         for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
                                         accelerationData.splice(0);
+                                        lastpeakmag = null;
+                                        lastvalleymag = null;
+                                        stepaverage = null;
                                         //console.log(accelerationData);
                                 }
                         }
