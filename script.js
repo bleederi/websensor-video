@@ -117,7 +117,6 @@ function detectPeaks(seq)
                 }
               
         }
-        console.log(peaks);
         return peaks;
 }
 
@@ -136,21 +135,18 @@ return this.map(
       }); 
 };
 
-//g=[0,1,2,3,4,5,6,7,8,9,10];
-//console.log(g.simpleSMA(3));
-//console.log(g.simpleSMA(5));
-//console.log(g.simpleSMA(g.length));
-
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        maseq = {'x':null, 'y':null, 'z':null};
+        /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         { 
               maseq[k] = seq[k].simpleSMA(3);
         }
-        console.log(maseq);
+        console.log(maseq);*/
+        peaks = detectPeaks(seq);
+        console.log(peaks);        
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
