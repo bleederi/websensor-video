@@ -60,7 +60,7 @@ limitations under the License.
                 var diff = {x:null, y:null, z:null};
                 var stepvar = 0;
                 var sensorfreq = 60;
-                var amtStepValues = 5*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here 1 second * 2 = 2 seconds)
+                var amtStepValues = 2*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here 1 second * 2 = 2 seconds)
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
                 var derseq_old;
@@ -165,7 +165,7 @@ limitations under the License.
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 accelerationData.push(accel);
                                 //console.log(accelerationData);
-                                if(accelerationData.length >= amtStepValues)
+                                if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
                                         var as = Object.assign({}, accelSeq);
