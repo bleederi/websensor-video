@@ -21,9 +21,9 @@
 //Javascript function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
 function toCoordSeq(buffer)
 {
-        seq_x = [];
-        seq_y = [];
-        seq_z = [];
+        let seq_x = [];
+        let seq_y = [];
+        let seq_z = [];
         for (var i in buffer)
         {
                 seq_x.push(buffer[i]['x']);
