@@ -102,28 +102,34 @@ function pcorr(x, y) {
     return answer;
 }
 
-function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
+function ma3filter(seq)
 {
-        //console.log(seq);
-        //first filter the sequence using a MA-3 filter
-        var maseq = {'x':null, 'y':null, 'z':null};
+        var ma3seq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
-                maseq[k] = [];
+                ma3seq[k] = [];
                 for (var i in seq[k])
                 {
                         if((i <= 0) || (i == seq[k].length))
                         {
-                                maseq[k][i] = null;
+                                ma3seq[k][i] = null;
                         }
                         else
                         {
-                                maseq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
+                                ma3seq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
                                 //console.log(maseq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
                         }
                 }
         }
-        //console.log(maseq);
+        return ma3seq;
+}
+
+function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
+{
+        //console.log(seq);
+        //first filter the sequence using a MA-3 filter
+        maseq = ma3filter(seq);
+        console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
