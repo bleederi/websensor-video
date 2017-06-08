@@ -104,6 +104,7 @@ function pcorr(x, y) {
 
 function ma3filter(seq)
 {
+        console.log(seq);
         var ma3seq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
@@ -129,7 +130,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
         maseq = ma3filter(seq);
-        console.log(maseq);
+        //console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
