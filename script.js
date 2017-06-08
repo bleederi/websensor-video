@@ -180,7 +180,7 @@ function detectValleys(seq, mode = 'magnitude')
                                 let prev = seq[k][index-1];
                                 let curr = seq[k][index];
                                 let next = seq[k][index+1];
-                                if(curr < prev && curr < next)  //TODO: lower than stepaverage
+                                if(curr < prev && curr < next && curr < stepaverage)  //TODO: lower than stepaverage
                                         {
                                                 valleys[k].push(index);
                                                 lastvalleymag = curr;
@@ -201,7 +201,7 @@ function detectValleys(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr < prev && curr < next)
+                        if(curr < prev && curr < next && curr < stepaverage)
                                 {
                                         valleys.push(index);
                                         lastvalleymag = curr;
