@@ -64,8 +64,8 @@ limitations under the License.
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
                 var derseq_old;
-                var maseq;
-                var maseq_old;
+                var maseq = null;
+                var maseq_old = null;
                 myVideo.pause();
                         class Pedometer {
                                 constructor() {
@@ -168,8 +168,8 @@ limitations under the License.
                                         accelSeq = toCoordSeq(accelerationData);
                                         let length = accelSeq['x'].length;
                                         maseq_old = maseq;
-                                        let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length));
-                                        console.log(maseq);
+                                        let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length), maseq_old);
+                                        //console.log(maseq);
                                         corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
                                         console.log(corr);
                                         console.log(magnitude(corr));

@@ -122,7 +122,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
-        //console.log(maseq);
+        console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
