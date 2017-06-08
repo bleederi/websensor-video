@@ -113,6 +113,7 @@ function detectPeaks(seq)
                 {
                         if(seq[k][i] > seq[k][i-1] && seq[k][i] > seq[k][i+1])
                                 {
+                                        console.log("PEAK:", seq[k][i-1], seq[k][i], seq[k][i+1])
                                         peaks[k].push(i);
                                 }
                 }
