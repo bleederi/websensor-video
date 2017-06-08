@@ -120,6 +120,24 @@ function detectPeaks(seq)
         return peaks;
 }
 
+function detectValleys(seq)
+{
+        valleys = {'x':null, 'y':null, 'z':null};
+        for (var k in seq)
+        { 
+                valleys[k] = [];
+                for (var i in seq[k])
+                {
+                        if(seq[k][i] < seq[k][i-1] && seq[k][i] < seq[k][i+1])
+                                {
+                                        valleys[k].push(i);
+                                }
+                }
+              
+        }
+        return valleys;
+}
+
 //https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
 Array.prototype.simpleSMA=function(N) {
 return this.map(
@@ -146,7 +164,9 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }
         console.log(maseq);*/
         peaks = detectPeaks(seq);
-        console.log(peaks);        
+        valleys = detectValleys(seq);
+        console.log(peaks);
+        console.log(valleys);        
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
