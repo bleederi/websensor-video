@@ -186,7 +186,7 @@ limitations under the License.
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
-                                        accelerationData.length = 0;
+                                        accelerationData.splice(0);
                                 }
                         }
                         function render()
