@@ -169,8 +169,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         console.log(maseq);*/
         peaks = detectPeaks(seq);
         valleys = detectValleys(seq);
-        //console.log(peaks);
-        //console.log(valleys);        
+        console.log(peaks);
+        console.log(valleys);        
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
