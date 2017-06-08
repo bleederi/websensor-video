@@ -102,46 +102,26 @@ function pcorr(x, y) {
     return answer;
 }
 
-function ma3filter(seq)
-{
-        //console.log(seq);
-        var ma3seq = {'x':null, 'y':null, 'z':null};
-        for (var k in seq)
-        {
-                ma3seq[k] = [];
-                for (var i in seq[k])
-                {
-                        if((i <= 0) || (i == seq[k].length))
-                        {
-                                ma3seq[k][i] = null;
-                        }
-                        else
-                        {
-                                ma3seq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
-                                //console.log(ma3seq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
-                        }
-                }
-        }
-        return ma3seq;
-}
-
-function doWMA( array, weightedPeriod ) {
-    var weightedArray = [];
-    for( var i = 0; i <= array.length - weightedPeriod; i++ ) {
-        var sum = 0;
-        for( var j = 0; j < weightedPeriod; j++ ) {
-            sum += array[ i + j ] * ( weightedPeriod - j );
-        }
-        weightedArray[i] = sum / (( weightedPeriod * ( weightedPeriod + 1 )) / 2 );
-    }
-    return weightedArray;
-}
+//https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
+Array.prototype.simpleSMA=function(N) {
+return this.map(
+  function(el,index, _arr) { 
+      return _arr.filter(
+      function(x2,i2) { 
+        return i2 <= index && i2 > index - N;
+        })
+      .reduce(
+      function(current, last, index, arr){ 
+        return (current + last); 
+        })/index || 1;
+      }); 
+};
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        maseq = doWMA(seq, 3);
+        maseq = seq.simpleSMA(3);
         console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
