@@ -102,32 +102,27 @@ function pcorr(x, y) {
     return answer;
 }
 
-//https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
-Array.prototype.simpleSMA=function(N) {
-return this.map(
-  function(el,index, _arr) { 
-      return _arr.filter(
-      function(x2,i2) { 
-        return i2 <= index && i2 > index - N;
-        })
-      .reduce(
-      function(current, last, index, arr){ 
-        return (current + last); 
-        })/index || 1;
-      }); 
-};
+//https://stackoverflow.com/q/32788836
+function smooth(values, alpha) {
+    var weighted = average(values) * alpha;
+    var smoothed = [];
+    for (var i in values) {
+        var curr = values[i];
+        var prev = smoothed[i - 1] || values[values.length - 1];
+        var next = curr || values[0];
+        var improved = Number(this.average([weighted, prev, curr, next]).toFixed(2));
+        smoothed.push(improved);
+    }
+    return smoothed;
+}
 
-g=[0,1,2,3,4,5,6,7,8,9,10];
-console.log(g.simpleSMA(3));
-console.log(g.simpleSMA(5));
-console.log(g.simpleSMA(g.length));
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        //maseq = simple_moving_averager(seq,3);
-        //console.log(maseq);
+        maseq = smooth(seq, 0.85);
+        console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
