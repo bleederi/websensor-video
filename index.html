@@ -180,7 +180,9 @@ limitations under the License.
                                         }
                                         //clear buffer
                                         //for (var k in accelSeq) delete accelSeq[k];
-                                        //accelerationData = [];
+                                        for (var k in accelSeq) accelSeq[k] = slice(accelSeq[k], Math.floor(length/2), length);
+                                        //maybe try slicing?
+                                        accelerationData = [];
                                 }
                         }
                         function render()
