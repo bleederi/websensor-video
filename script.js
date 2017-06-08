@@ -104,6 +104,7 @@ function pcorr(x, y) {
 
 function detectPeaks(seq, mode = 'magnitude')
 {
+        console.log(seq);
         var threshhold = 0;     //TODO: implement adaptive threshhold
         if(mode != 'magnitude')
         {
@@ -169,7 +170,7 @@ function detectValleys(seq, mode = 'magnitude')
         else
         {
                 valleys = [];
-                for (var i in seq[k])
+                for (var i in seq)
                 {
                         index = parseInt(i);
                         let prev = seq[index-1];
