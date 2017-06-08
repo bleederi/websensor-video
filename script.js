@@ -111,9 +111,12 @@ function detectPeaks(seq)
                 peaks[k] = [];
                 for (var i in seq[k])
                 {
-                        if(seq[k][i] > seq[k][i-1] && seq[k][i] > seq[k][i+1])
+                        let prev = seq[k][i-1];
+                        let curr = seq[k][i];
+                        let next = seq[k][i+1];
+                        if(curr > prev && curr > next)
                                 {
-                                        console.log("PEAK:", seq[k][i-1], seq[k][i], seq[k][i+1])
+                                        console.log("PEAK:", prev, curr, next)
                                         peaks[k].push(i);
                                 }
                 }
