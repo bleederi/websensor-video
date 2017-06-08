@@ -243,10 +243,10 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
               maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);*/
-        for (i in magseq)       //analyze sequence sample by sample
+        for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
         {
-                peaks = detectPeaks(magseq[i]);
-                valleys = detectValleys(magseq[i]);  
+                peaks = detectPeaks(magseq.slice(0, i));
+                valleys = detectValleys(magseq.slice(0, i));  
         }  
         console.log(peaks);
         console.log(valleys);    
