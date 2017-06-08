@@ -160,8 +160,9 @@ limitations under the License.
                         });
                         function saveSensorReading()
                         {
+                                accele = {x:accel.x, y:accel.y, z:accel.z}
                                 accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
-                                accelerationData.push(accel);
+                                accelerationData.push(accele);
                                 accelSeq = toCoordSeq(accelerationData);
                                 console.log(accelSeq);
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
