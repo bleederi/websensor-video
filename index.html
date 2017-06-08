@@ -68,7 +68,13 @@ limitations under the License.
                 var maseq_old = null;
                 var lastpeakmag = null;
                 var lastvalleymag = null;
+                var lastpeaktime = null;
+                var lastvalleytime = null;
                 var stepaverage = null;
+                var peaktimethreshhold = null;
+                var valleytimethreshhold = null;
+                var peakdiff = null;    //Array of peak distances
+                var valleydiff = null;
                 myVideo.pause();
                         class Pedometer {
                                 constructor() {
@@ -172,6 +178,8 @@ limitations under the License.
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
                                         var as = Object.assign({}, accelSeq);
+                                        peakdiff = [];
+                                        valleydiff = [];
                                         //console.log(accelSeq);
                                         //let length = accelSeq['x'].length;
                                         //maseq_old = maseq;
@@ -197,7 +205,13 @@ limitations under the License.
                                         accelerationData.splice(0);
                                         lastpeakmag = null;
                                         lastvalleymag = null;
+                                        lastpeaktime = null;
+                                        lastvalleytime = null;
                                         stepaverage = null;
+                                        peaktimethreshhold = null;
+                                        valleytimethreshhold = null;
+                                        peakdiff = null;
+                                        valleydiff = null;
                                         //console.log(accelerationData);
                                 }
                         }

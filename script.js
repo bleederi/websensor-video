@@ -118,7 +118,6 @@ function pcorr(x, y) {
 function detectPeaks(seq, mode = 'magnitude')
 {
         //console.log(seq);
-        var threshhold = 0;     //TODO: implement adaptive threshhold
         if(mode != 'magnitude')
         {
                 peaks = {'x':null, 'y':null, 'z':null};
@@ -154,13 +153,38 @@ function detectPeaks(seq, mode = 'magnitude')
                         let next = seq[index+1];
                         if(curr > prev && curr > next && (curr > stepaverage || !stepaverage))
                                 {
-                                        peaks.push(index);
-                                        lastpeakmag = curr;
-                                        //update step average
-                                        if(lastpeakmag && lastvalleymag)
+                                        //update time average regardless of peak accepted or not
+                                        if(peaks.length >= 2)
                                         {
-                                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                //console.log(lastpeakmag, lastvalleymag, stepaverage); 
+                                                peakdiff.push(index - lastpeaktime);
+                                                //console.log(index, lastpeaktime);
+                                                lastpeaktime = index;
+                                        }
+                                        else //if not enough peaks
+                                        {
+                                                if(index - lastpeaktime > 0)
+                                                {
+                                                        peakdiff.push(index);
+                                                        console.log(index, lastpeaktime);
+                                                        lastpeaktime = index;
+                                                }
+                                        }                                        
+                                        console.log(peakdiff);
+                                        //console.log(index, lastpeaktime);
+                                        let sum = peakdiff.reduce((previous, current) => current += previous); //sum over the array
+                                        peaktimethreshhold = sum/peakdiff.length;      //average of peak diffs
+                                        //console.log(peaktimethreshhold);
+                                        if((index - lastpeaktime > peaktimethreshhold) || 1 == 1)   //TODO:implement peak time threshhold 
+                                        {
+                                                peaks.push(index);
+                                                lastpeakmag = curr;
+                                                lastpeaktime = index;
+                                                //update step average
+                                                if(lastpeakmag && lastvalleymag)
+                                                {
+                                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                                        //console.log(lastpeakmag, lastvalleymag, stepaverage); 
+                                                }
                                         }                                
                                 }
                 }
@@ -179,14 +203,15 @@ function detectValleys(seq, mode = 'magnitude')
                         valleys[k] = [];
                         for (var i in seq)
                         {
-                                index = parseInt(i);
+                                let index = parseInt(i);
                                 let prev = seq[k][index-1];
                                 let curr = seq[k][index];
                                 let next = seq[k][index+1];
-                                if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))  //TODO: lower than stepaverage
+                                if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))
                                         {
                                                 valleys[k].push(index);
                                                 lastvalleymag = curr;
+                                                lastvalleytime = index;
                                                 //update step average
                                                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                                                 //console.log(lastpeakmag, lastvalleymag, stepaverage); 
@@ -204,8 +229,7 @@ function detectValleys(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        console.log(curr, stepaverage);
-                        if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))  //TODO: lower than stepaverage
+                        if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))  //TODO: implement valley time threshhold
                                 {
                                         valleys.push(index);
                                         lastvalleymag = curr;
