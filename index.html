@@ -60,7 +60,7 @@ limitations under the License.
                 var diff = {x:null, y:null, z:null};
                 var stepvar = 0;
                 var sensorfreq = 60;
-                var amtStepValues = 3*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here 1 second * 2 = 2 seconds)
+                var amtStepValues = 5*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here 1 second * 2 = 2 seconds)
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
                 var derseq_old;
@@ -179,8 +179,7 @@ limitations under the License.
                                                 stepvar = 0;
                                         }
                                         //clear buffer
-                                        //for (var k in accelSeq) delete accelSeq[k];
-                                        for (var k in accelSeq) accelSeq[k] = slice(accelSeq[k], Math.floor(length/2), length);
+                                        for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
                                         accelerationData = [];
                                 }
