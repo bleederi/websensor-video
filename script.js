@@ -129,7 +129,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         { 
-              maseq[k] = simple_moving_averager(seq[k].simpleSMA(3));
+              maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);
         //now find peaks using derivative sequence
