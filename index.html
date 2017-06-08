@@ -74,6 +74,7 @@ limitations under the License.
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                                         gravity.update(accel);
+                                        console.log(accel);
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
