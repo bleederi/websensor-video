@@ -60,6 +60,7 @@ function magnitude2(seq)      //Calculate the magnitude sequence for 3 accelerat
         for (var i in seq)
         {
                 magseq[i] = Math.sqrt(seq['x'][i] * seq['x'][i] + seq['y'][i] * seq['y'][i] + seq['z'][i] * seq['z'][i]);
+                console.log(magseq[i]);
         }
         return magseq;
 }
