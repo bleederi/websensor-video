@@ -205,6 +205,7 @@ return this.map(
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         console.log(seq);
+        console.log(magnitude(seq));
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
