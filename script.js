@@ -235,7 +235,7 @@ return this.map(
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         console.log(seq);
-        console.log(magnitude2(seq));
+        magseq = magnitude2(seq);
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
@@ -243,10 +243,13 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
               maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);*/
-        peaks = detectPeaks(magnitude2(seq));
-        valleys = detectValleys(magnitude2(seq));
+        for (i in magseq)       //analyze sequence sample by sample
+        {
+                peaks = detectPeaks(magseq[i]);
+                valleys = detectValleys(magseq[i]);  
+        }  
         console.log(peaks);
-        console.log(valleys);        
+        console.log(valleys);    
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
