@@ -27,7 +27,7 @@ function toCoordSeq(buffer)
         for (var i in buffer)
         {
                 seq_x.push(buffer[i]['x']);
-                console.log(buffer[i]);        
+                console.log(seq_x);        
                 seq_y.push(buffer[i]['y']);
                 seq_z.push(buffer[i]['z']);
         }
