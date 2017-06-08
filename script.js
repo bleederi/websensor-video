@@ -102,49 +102,85 @@ function pcorr(x, y) {
     return answer;
 }
 
-function detectPeaks(seq)
+function detectPeaks(seq, mode = 'magnitude')
 {
         var threshhold = 0;     //TODO: implement adaptive threshhold
-        peaks = {'x':null, 'y':null, 'z':null};
-        for (var k in seq)
-        { 
-                peaks[k] = [];
-                for (var i in seq[k])
+        if(mode != 'magnitude')
+        {
+                peaks = {'x':null, 'y':null, 'z':null};
+                for (var k in seq)
+                { 
+                        peaks[k] = [];
+                        for (var i in seq[k])
+                        {
+                                index = parseInt(i);
+                                let prev = seq[k][index-1];
+                                let curr = seq[k][index];
+                                let next = seq[k][index+1];
+                                if(curr > prev && curr > next)
+                                        {
+                                                peaks[k].push(index);
+                                        }
+                        }
+                      
+                }
+        }
+        else
+        {
+                valleys = [];
+                for (var i in seq)
                 {
                         index = parseInt(i);
-                        let prev = seq[k][index-1];
-                        let curr = seq[k][index];
-                        let next = seq[k][index+1];
+                        let prev = seq[index-1];
+                        let curr = seq[index];
+                        let next = seq[index+1];
                         if(curr > prev && curr > next)
                                 {
-                                        peaks[k].push(index);
+                                        valleys.push(index);
                                 }
                 }
-              
-        }
+        } 
         return peaks;
 }
 
-function detectValleys(seq)
+function detectValleys(seq, mode = 'magnitude')
 {
         var threshhold = 0;     //TODO: implement adaptive threshhold
-        valleys = {'x':null, 'y':null, 'z':null};
-        for (var k in seq)
-        { 
-                valleys[k] = [];
+        if(mode != 'magnitude')
+        {
+                valleys = {'x':null, 'y':null, 'z':null};
+                for (var k in seq)
+                { 
+                        valleys[k] = [];
+                        for (var i in seq)
+                        {
+                                index = parseInt(i);
+                                let prev = seq[k][index-1];
+                                let curr = seq[k][index];
+                                let next = seq[k][index+1];
+                                if(curr < prev && curr < next)
+                                        {
+                                                valleys[k].push(index);
+                                        }
+                        }
+                      
+                }
+        }
+        else
+        {
+                valleys = [];
                 for (var i in seq[k])
                 {
                         index = parseInt(i);
-                        let prev = seq[k][index-1];
-                        let curr = seq[k][index];
-                        let next = seq[k][index+1];
+                        let prev = seq[index-1];
+                        let curr = seq[index];
+                        let next = seq[index+1];
                         if(curr < prev && curr < next)
                                 {
-                                        valleys[k].push(index);
+                                        valleys.push(index);
                                 }
                 }
-              
-        }
+        }        
         return valleys;
 }
 
@@ -175,8 +211,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
               maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);*/
-        peaks = detectPeaks(seq);
-        valleys = detectValleys(seq);
+        peaks = detectPeaks(magnitude(seq));
+        valleys = detectValleys(magnitude(seq));
         console.log(peaks);
         console.log(valleys);        
         //now find peaks using derivative sequence
