@@ -151,7 +151,7 @@ limitations under the License.
 
                                 connectedCallback() {
                                         const sensor = new Pedometer();
-                                        sensor.onchange = () => saveSensorReading();                                      
+                                        sensor.onchange = () => { saveSensorReading();                                      
                                         }
                                         //sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         sensor.onactivate = () => {}
