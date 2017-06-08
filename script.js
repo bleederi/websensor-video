@@ -134,6 +134,9 @@ function detectPeaks(seq, mode = 'magnitude')
                                 if(curr > prev && curr > next)
                                         {
                                                 peaks[k].push(index);
+                                                lastpeakmag = curr;
+                                                //update step average
+                                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                                         }
                         }
                       
@@ -151,6 +154,9 @@ function detectPeaks(seq, mode = 'magnitude')
                         if(curr > prev && curr > next)
                                 {
                                         peaks.push(index);
+                                        lastpeakmag = curr;
+                                        //update step average
+                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                                 }
                 }
         } 
@@ -175,6 +181,9 @@ function detectValleys(seq, mode = 'magnitude')
                                 if(curr < prev && curr < next)
                                         {
                                                 valleys[k].push(index);
+                                                lastvalleymag = curr;
+                                                //update step average
+                                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                                         }
                         }
                       
@@ -192,6 +201,9 @@ function detectValleys(seq, mode = 'magnitude')
                         if(curr < prev && curr < next)
                                 {
                                         valleys.push(index);
+                                        lastvalleymag = curr;
+                                        //update step average
+                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                                 }
                 }
         }        
