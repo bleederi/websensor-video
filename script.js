@@ -30,7 +30,7 @@ function toCoordSeq(buffer)
                 seq_y.push(buffer[i]['y']);
                 seq_z.push(buffer[i]['z']);
         }
-        let seq = {'x':seq_x, 'y':seq_y, 'z':seq_z};
+        var seq = {'x':seq_x, 'y':seq_y, 'z':seq_z};
         return seq;
 }
 
