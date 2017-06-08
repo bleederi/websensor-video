@@ -26,11 +26,11 @@ function toCoordSeq(buffer)
         var seq_z = [];
         for (var i in buffer)
         {
-                seq_x.push(buffer[i]['x']);
-                console.log(buffer[i]['x']);        
+                seq_x.push(buffer[i]['x']);        
                 seq_y.push(buffer[i]['y']);
                 seq_z.push(buffer[i]['z']);
         }
+        console.log(seq_x);
         seq = {'x':seq_x, 'y':seq_y, 'z':seq_z};
         return seq;
 }
