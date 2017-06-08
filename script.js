@@ -62,7 +62,6 @@ function magnitude2(seq)      //Calculate the magnitude sequence for 3 accelerat
                 for (var i in seq[k])
                 {
                         magseq[i] = Math.sqrt(seq['x'][i] * seq['x'][i] + seq['y'][i] * seq['y'][i] + seq['z'][i] * seq['z'][i]);
-                        console.log(magseq[i]);
                 }
         }
         return magseq;
@@ -227,8 +226,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
               maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);*/
-        peaks = detectPeaks(magnitude(seq));
-        valleys = detectValleys(magnitude(seq));
+        peaks = detectPeaks(magnitude2(seq));
+        valleys = detectValleys(magnitude2(seq));
         console.log(peaks);
         console.log(valleys);        
         //now find peaks using derivative sequence
