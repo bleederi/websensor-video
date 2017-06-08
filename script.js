@@ -104,15 +104,15 @@ function pcorr(x, y) {
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        console.log(seq);
+        //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        maseq = {'x':null, 'y':null, 'z':null};
+        var maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
                 maseq[k] = [];
                 for (var i in seq[k])
                 {
-                        if((i <= 0) || (i >= (seq[k].length-0)))
+                        if((i <= 0) || (i == seq[k].length))
                         {
                                 maseq[k][i] = null;
                         }
