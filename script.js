@@ -152,7 +152,7 @@ function detectPeaks(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr > prev && curr > next && curr > stepaverage)
+                        if(curr > prev && curr > next && (curr > stepaverage || lastpeakmag == 'null'))
                                 {
                                         peaks.push(index);
                                         lastpeakmag = curr;
@@ -202,7 +202,7 @@ function detectValleys(seq, mode = 'magnitude')
                         let curr = seq[index];
                         let next = seq[index+1];
                         console.log(curr, stepaverage);
-                        if(curr < prev && curr < next && curr < stepaverage)
+                        if(curr < prev && curr < next && (curr < stepaverage || lastvalleymag == 'null'))
                                 {
                                         valleys.push(index);
                                         lastvalleymag = curr;
