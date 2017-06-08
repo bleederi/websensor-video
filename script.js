@@ -137,6 +137,7 @@ function detectPeaks(seq, mode = 'magnitude')
                                                 lastpeakmag = curr;
                                                 //update step average
                                                 stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                                console.log(stepaverage); 
                                         }
                         }
                       
@@ -157,6 +158,7 @@ function detectPeaks(seq, mode = 'magnitude')
                                         lastpeakmag = curr;
                                         //update step average
                                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                        console.log(stepaverage); 
                                 }
                 }
         } 
@@ -185,6 +187,7 @@ function detectValleys(seq, mode = 'magnitude')
                                                 lastvalleymag = curr;
                                                 //update step average
                                                 stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                                console.log(stepaverage); 
                                         }
                         }
                       
@@ -205,10 +208,10 @@ function detectValleys(seq, mode = 'magnitude')
                                         lastvalleymag = curr;
                                         //update step average
                                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                        console.log(stepaverage);   
                                 }
                 }
         }     
-        console.log(stepaverage);   
         return valleys;
 }
 
