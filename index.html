@@ -74,7 +74,6 @@ limitations under the License.
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                                         gravity.update(accel);
-                                        console.log(accel);
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -164,6 +163,7 @@ limitations under the License.
                                 accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 accelerationData.push(accel);
                                 accelSeq = toCoordSeq(accelerationData);
+                                console.log(accelSeq);
                                 if(accelSeq['x'].length > amtStepValues && accelSeq['y'].length > amtStepValues && accelSeq['z'].length > amtStepValues)
                                 {
                                         let length = accelSeq['x'].length;
