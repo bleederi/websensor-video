@@ -127,7 +127,7 @@ function detectPeaks(seq, mode = 'magnitude')
         }
         else
         {
-                valleys = [];
+                peaks = [];
                 for (var i in seq)
                 {
                         index = parseInt(i);
@@ -136,7 +136,7 @@ function detectPeaks(seq, mode = 'magnitude')
                         let next = seq[index+1];
                         if(curr > prev && curr > next)
                                 {
-                                        valleys.push(index);
+                                        peaks.push(index);
                                 }
                 }
         } 
