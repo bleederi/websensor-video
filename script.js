@@ -134,9 +134,13 @@ function detectValleys(seq)
                 valleys[k] = [];
                 for (var i in seq[k])
                 {
-                        if(seq[k][i] < seq[k][i-1] && seq[k][i] < seq[k][i+1])
+                        index = parseInt(i);
+                        let prev = seq[k][index-1];
+                        let curr = seq[k][index];
+                        let next = seq[k][index+1];
+                        if(curr < prev && curr < next)
                                 {
-                                        valleys[k].push(i);
+                                        valleys[k].push(index);
                                 }
                 }
               
