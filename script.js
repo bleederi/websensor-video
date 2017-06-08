@@ -102,6 +102,25 @@ function pcorr(x, y) {
     return answer;
 }
 
+function detectPeaks(seq)
+{
+        peaks = {'x':null, 'y':null, 'z':null};
+        for (var k in seq)
+        { 
+                peaks[k] = [];
+                for (var i in seq[k])
+                {
+                        if(seq[k][i] > seq[k][i-1] && seq[k][i] > seq[k][i+1])
+                                {
+                                        peaks[k].push(i);
+                                }
+                }
+              
+        }
+        console.log(peaks);
+        return peaks;
+}
+
 //https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
 Array.prototype.simpleSMA=function(N) {
 return this.map(
