@@ -131,13 +131,13 @@ function detectPeaks(seq, mode = 'magnitude')
                                 let prev = seq[k][index-1];
                                 let curr = seq[k][index];
                                 let next = seq[k][index+1];
-                                if(curr > prev && curr > next)
+                                if(curr > prev && curr > next && curr > stepaverage)
                                         {
                                                 peaks[k].push(index);
                                                 lastpeakmag = curr;
                                                 //update step average
                                                 stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                console.log(lastpeakmag, lastvalleymag, stepaverage); 
+                                                //console.log(lastpeakmag, lastvalleymag, stepaverage); 
                                         }
                         }
                       
@@ -152,13 +152,13 @@ function detectPeaks(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr > prev && curr > next)
+                        if(curr > prev && curr > next && curr > stepaverage)
                                 {
                                         peaks.push(index);
                                         lastpeakmag = curr;
                                         //update step average
                                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                        console.log(lastpeakmag, lastvalleymag, stepaverage); 
+                                        //console.log(lastpeakmag, lastvalleymag, stepaverage); 
                                 }
                 }
         } 
@@ -181,13 +181,13 @@ function detectValleys(seq, mode = 'magnitude')
                                 let prev = seq[k][index-1];
                                 let curr = seq[k][index];
                                 let next = seq[k][index+1];
-                                if(curr < prev && curr < next)
+                                if(curr < prev && curr < next && curr < stepaverage)
                                         {
                                                 valleys[k].push(index);
                                                 lastvalleymag = curr;
                                                 //update step average
                                                 stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                console.log(lastpeakmag, lastvalleymag, stepaverage); 
+                                                //console.log(lastpeakmag, lastvalleymag, stepaverage); 
                                         }
                         }
                       
@@ -202,13 +202,13 @@ function detectValleys(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr < prev && curr < next)
+                        if(curr < prev && curr < next && curr < stepaverage)
                                 {
                                         valleys.push(index);
                                         lastvalleymag = curr;
                                         //update step average
                                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                        console.log(lastpeakmag, lastvalleymag, stepaverage);   
+                                        //console.log(lastpeakmag, lastvalleymag, stepaverage);   
                                 }
                 }
         }     
