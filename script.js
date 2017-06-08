@@ -117,12 +117,17 @@ return this.map(
       }); 
 };
 
+g=[0,1,2,3,4,5,6,7,8,9,10];
+console.log(g.simpleSMA(3));
+console.log(g.simpleSMA(5));
+console.log(g.simpleSMA(g.length));
+
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
-        maseq = seq.simpleSMA(3);
-        console.log(maseq);
+        //maseq = simple_moving_averager(seq,3);
+        //console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
