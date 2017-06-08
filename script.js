@@ -53,6 +53,16 @@ function magnitude(vector)      //Calculate the magnitude of a vector
 {
 return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 }
+
+function magnitude2(seq)      //Calculate the magnitude sequence for 3 acceleration sequences
+{
+        for (var i in seq)
+        {
+                magseq[i] = Math.sqrt(seq['x'][i] * seq['x'][i] + seq['y'][i] * seq['y'][i] + seq['z'][i] * seq['z'][i]);
+        }
+        magseq = [];
+        return magseq;
+}
 /*
  *  Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
  */
@@ -104,7 +114,7 @@ function pcorr(x, y) {
 
 function detectPeaks(seq, mode = 'magnitude')
 {
-        console.log(seq);
+        //console.log(seq);
         var threshhold = 0;     //TODO: implement adaptive threshhold
         if(mode != 'magnitude')
         {
@@ -205,7 +215,7 @@ return this.map(
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         console.log(seq);
-        console.log(magnitude(seq));
+        console.log(magnitude2(seq));
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
