@@ -114,6 +114,7 @@ function detectPeaks(seq)
                         var prev = seq[k][i-1];
                         var curr = seq[k][i];
                         var next = seq[k][i+1];
+                        console.log(i-1, i, i+1);
                         if(curr > prev && curr > next)
                                 {
                                         console.log("PEAK:", prev, curr, next)
