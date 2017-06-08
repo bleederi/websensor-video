@@ -160,6 +160,7 @@ function detectPeaks(seq, mode = 'magnitude')
                                 }
                 }
         } 
+        console.log(stepaverage);
         return peaks;
 }
 
@@ -206,7 +207,8 @@ function detectValleys(seq, mode = 'magnitude')
                                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                                 }
                 }
-        }        
+        }     
+        console.log(stepaverage);   
         return valleys;
 }
 
