@@ -118,7 +118,7 @@ function ma3filter(seq)
                         else
                         {
                                 ma3seq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
-                                console.log(ma3seq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
+                                //console.log(ma3seq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
                         }
                 }
         }
@@ -142,7 +142,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(seq);
         //first filter the sequence using a MA-3 filter
         maseq = doWMA(seq, 3);
-        //console.log(maseq);
+        console.log(maseq);
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
