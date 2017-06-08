@@ -105,20 +105,20 @@ function pcorr(x, y) {
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
         //console.log(seq);
-        //first filter the sequence using a MA-3 filter
+        //first filter the sequence using a MA-5 filter
         maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
                 maseq[k] = [];
                 for (var i in seq[k])
                 {
-                        if(i == 0 || i == seq[k].length)
+                        if(i <= 1 || i >= (seq[k].length-1))
                         {
                                 maseq[k][i] = null;
                         }
                         else
                         {
-                                maseq[k][i] = (seq[k][i] + seq[k][i] + seq[k][i-1])/3.0;
+                                maseq[k][i] = (seq[k][i-2] + seq[k][i-1] + seq[k][i] + seq[k][i+1] + seq[k][i+2])/5.0;
                         }
                 }
         }
