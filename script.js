@@ -104,7 +104,7 @@ function pcorr(x, y) {
 
 function ma3filter(seq)
 {
-        console.log(seq);
+        //console.log(seq);
         var ma3seq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         {
@@ -118,7 +118,7 @@ function ma3filter(seq)
                         else
                         {
                                 ma3seq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
-                                //console.log(maseq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
+                                console.log(maseq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
                         }
                 }
         }
