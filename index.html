@@ -168,7 +168,8 @@ limitations under the License.
                                         accelSeq = toCoordSeq(accelerationData);
                                         let length = accelSeq['x'].length;
                                         maseq_old = maseq;
-                                        let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length), maseq_old);
+                                        //let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length));
+                                        let stepvar2 = stepDetection(accelSeq);
                                         //console.log(maseq);
                                         corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
                                         console.log(corr);
@@ -182,7 +183,7 @@ limitations under the License.
                                                 stepvar = 0;
                                         }
                                         //clear buffer
-                                        //for (var k in accelSeq) delete accelSeq[k];
+                                        for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
                                         accelerationData = [];
                                 }
