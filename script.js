@@ -111,6 +111,7 @@ function detectPeaks(seq)
                 peaks[k] = [];
                 for (var i in seq[k])
                 {
+                        index = parseInt(i);
                         var prev = seq[k][i-1];
                         var curr = seq[k][i];
                         var next = seq[k][i+1];
