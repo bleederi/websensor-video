@@ -118,6 +118,7 @@ function pcorr(x, y) {
 function detectPeaks(seq, mode = 'magnitude')
 {
         //console.log(seq);
+        let peakdiff = [];
         if(mode != 'magnitude')
         {
                 peaks = {'x':null, 'y':null, 'z':null};
@@ -152,48 +153,53 @@ function detectPeaks(seq, mode = 'magnitude')
                         let curr = seq[index];
                         let next = seq[index+1];
                         if(curr > prev && curr > next && (curr > stepaverage || !stepaverage))
+                        {
+                                //update time average regardless of peak accepted or not
+                                if(peaks.length >= 2)
                                 {
-                                        //update time average regardless of peak accepted or not
-                                        if(peaks.length >= 2)
+                                        peakdiff.push(index - lastpeaktime);
+                                        let sum = peakdiff.reduce((previous, current) => current += previous); //sum over the array
+                                        peaktimethreshold = sum/peakdiff.length;      //average of peak diffs
+                                }  
+                                else
+                                {
+                                        if(lastpeaktime > 0 && index > lastpeaktime)
                                         {
                                                 peakdiff.push(index - lastpeaktime);
-                                                //console.log(index, lastpeaktime);
-                                                lastpeaktime = index;
                                         }
-                                        else //if not enough peaks
+                                        else
                                         {
-                                                if(index - lastpeaktime > 0)
-                                                {
-                                                        peakdiff.push(index - lastpeaktime);
-                                                        console.log(index, lastpeaktime);
-                                                        lastpeaktime = index;   //update last found peak
-                                                }
-                                        }                                        
-                                        console.log(peakdiff);
-                                        let sum = peakdiff.reduce((previous, current) => current += previous); //sum over the array
-                                        peaktimethreshhold = sum/peakdiff.length;      //average of peak diffs
-                                        //console.log(peaktimethreshhold);
-                                        if((index - lastpeaktime > peaktimethreshhold) || 1 == 1)   //TODO:implement peak time threshhold 
-                                        {
-                                                peaks.push(index);
-                                                lastpeakmag = curr;
-                                                lastpeaktime = index;
-                                                //update step average
-                                                if(lastpeakmag && lastvalleymag)
-                                                {
-                                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                        //console.log(lastpeakmag, lastvalleymag, stepaverage); 
-                                                }
-                                        }                                
-                                }
+                                                peakdiff.push(index);
+                                        }
+                                }                                   
+                                peaks.push(index);
+                                lastpeakmag = curr;
+                                lastpeaktime = index;
+                                //update step average
+                                if(lastpeakmag && lastvalleymag)
+                                {
+                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                        //console.log(lastpeakmag, lastvalleymag, stepaverage); 
+                                }                               
+                        }
                 }
         } 
+
+        //remove peaks that don't meet condition
+        for (var i in peakdiff)
+        {
+                if(peakdiff[i] < peaktimethreshold)
+                {
+                        peaks[i] = null;
+                }
+        }
+        peaks = peaks.filter(function(n){ return n != undefined });  
         return peaks;
 }
 
 function detectValleys(seq, mode = 'magnitude')
 {
-        var threshhold = 0;     //TODO: implement adaptive threshhold
+        var valleydiff = [];
         if(mode != 'magnitude')
         {
                 valleys = {'x':null, 'y':null, 'z':null};
@@ -228,19 +234,47 @@ function detectValleys(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))  //TODO: implement valley time threshhold
+                        if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))
                                 {
-                                        valleys.push(index);
-                                        lastvalleymag = curr;
-                                        //update step average
-                                        if(lastpeakmag && lastvalleymag)
+                                //update time average regardless of peak accepted or not
+                                if(valleys.length >= 2)
+                                {
+                                        valleydiff.push(index - lastvalleytime);
+                                        let sum = valleydiff.reduce((previous, current) => current += previous); //sum over the array
+                                        valleytimethreshold = sum/valleydiff.length;      //average of valley diffs
+                                }  
+                                else
+                                {
+                                        if(lastvalleytime > 0 && index > lastvalleytime)
                                         {
-                                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                //console.log(lastpeakmag, lastvalleymag, stepaverage);  
-                                        } 
-                                }
+                                                valleydiff.push(index - lastvalleytime);
+                                        }
+                                        else
+                                        {
+                                                valleydiff.push(index);
+                                        }
+                                }  
+                                valleys.push(index);
+                                lastvalleymag = curr;
+                                lastvalleytime = index;
+                                //update step average
+                                if(lastpeakmag && lastvalleymag)
+                                {
+                                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+                                        //console.log(lastpeakmag, lastvalleymag, stepaverage);  
+                                } 
+                        }
                 }
-        }     
+        } 
+        //remove valleys that don't meet condition
+        for (var i in valleydiff)
+        {
+                if(valleydiff[i] < valleytimethreshold)
+                {
+                        valleys[i] = null;
+                }  
+        } 
+        valleys = valleys.filter(function(n){ return n != undefined });  
         return valleys;
 }
 
@@ -277,8 +311,28 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                 peaks = detectPeaks(magseq.slice(0, i));
                 valleys = detectValleys(magseq.slice(0, i));  
         }  
-        console.log(peaks);
-        console.log(valleys);    
+        //console.log(peaks);
+        //console.log(valleys);
+        let stepdiff = [];
+        for (ipeak in peaks)
+        {
+                for (ivalley in valleys)
+                {
+                        if(ipeak == ivalley)
+                        {
+                                stepdiff.push(peaks[ipeak] - valleys[ivalley]); 
+                        }                
+                }
+        }
+        console.log(stepdiff);
+        if(stepdiff.length > 3)
+        {
+                let max = math.max(stepdiff);    
+                if(((max-min)/max) < 0.5)
+                {
+                        console.log("Walking");
+                }        
+        }
         //now find peaks using derivative sequence
         //create derivative sequence
         derseq = {'x':null, 'y':null, 'z':null};
