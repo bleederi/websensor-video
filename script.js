@@ -164,13 +164,12 @@ function detectPeaks(seq, mode = 'magnitude')
                                         {
                                                 if(index - lastpeaktime > 0)
                                                 {
-                                                        peakdiff.push(index);
+                                                        peakdiff.push(index - lastpeaktime);
                                                         console.log(index, lastpeaktime);
-                                                        lastpeaktime = index;
+                                                        lastpeaktime = index;   //update last found peak
                                                 }
                                         }                                        
                                         console.log(peakdiff);
-                                        //console.log(index, lastpeaktime);
                                         let sum = peakdiff.reduce((previous, current) => current += previous); //sum over the array
                                         peaktimethreshhold = sum/peakdiff.length;      //average of peak diffs
                                         //console.log(peaktimethreshhold);
