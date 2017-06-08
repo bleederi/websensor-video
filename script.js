@@ -104,13 +104,13 @@ function pcorr(x, y) {
 
 function detectPeaks(seq)
 {
+        var threshhold = 0;     //TODO: implement adaptive threshhold
         peaks = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         { 
                 peaks[k] = [];
                 for (var i in seq[k])
                 {
-                        console.log(i);
                         if(seq[k][i] > seq[k][i-1] && seq[k][i] > seq[k][i+1])
                                 {
                                         peaks[k].push(i);
@@ -123,6 +123,7 @@ function detectPeaks(seq)
 
 function detectValleys(seq)
 {
+        var threshhold = 0;     //TODO: implement adaptive threshhold
         valleys = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
         { 
@@ -139,6 +140,7 @@ function detectValleys(seq)
         return valleys;
 }
 
+/*
 //https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
 Array.prototype.simpleSMA=function(N) {
 return this.map(
@@ -153,10 +155,11 @@ return this.map(
         })/index || 1;
       }); 
 };
+*/
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        //console.log(seq);
+        console.log(seq);
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
