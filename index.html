@@ -163,10 +163,10 @@ limitations under the License.
                                 accel = {x:accel.x, y:accel.y, z:accel.z}
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 accelerationData.push(accel);
-                                //console.log(accelSeq);
-                                if(accelerationData.length > amtStepValues)
+                                if(accelerationData.length >= amtStepValues)
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
+                                        //console.log(accelSeq);
                                         let length = accelSeq['x'].length;
                                         maseq_old = maseq;
                                         let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length));
