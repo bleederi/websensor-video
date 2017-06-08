@@ -166,7 +166,7 @@ limitations under the License.
                                 if(accelerationData.length >= amtStepValues)
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
-                                        console.log(accelSeq);
+                                        //console.log(accelSeq);
                                         let length = accelSeq['x'].length;
                                         maseq_old = maseq;
                                         let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length));
@@ -182,9 +182,9 @@ limitations under the License.
                                                 stepvar = 0;
                                         }
                                         //clear buffer
-                                        for (var k in accelSeq) delete accelSeq[k];
+                                        //for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
-                                        accelerationData = [];
+                                        //accelerationData = [];
                                 }
                         }
                         function render()
