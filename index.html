@@ -163,6 +163,7 @@ limitations under the License.
                                 accel = {x:accel.x, y:accel.y, z:accel.z}
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 accelerationData.push(accel);
+                                console.log(accelerationData);
                                 if(accelerationData.length >= amtStepValues)
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
@@ -172,8 +173,8 @@ limitations under the License.
                                         let stepvar2 = stepDetection(accelSeq);
                                         //console.log(maseq);
                                         corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
-                                        console.log(corr);
-                                        console.log(magnitude(corr));
+                                        //console.log(corr);
+                                        //console.log(magnitude(corr));
                                         if(magnitude(corr) <= 1.7 && magnitude(corr) >= 0.5 && corr['y'] >= 0)
                                         {
                                                 stepvar = 1;
