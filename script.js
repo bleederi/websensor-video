@@ -119,6 +119,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         else
                         {
                                 maseq[k][i] = (seq[k][i-1] + seq[k][i] + seq[k][i+1])/3.0;
+                                console.log(maseq[k][i], seq[k][i-1], seq[k][i], seq[k][i+1]);
                         }
                 }
         }
