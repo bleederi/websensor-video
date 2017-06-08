@@ -201,6 +201,7 @@ function detectValleys(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
+                        console.log(curr, stepaverage);
                         if(curr < prev && curr < next && curr < stepaverage)
                                 {
                                         valleys.push(index);
