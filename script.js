@@ -119,6 +119,9 @@ function detectPeaks(seq)
                                         console.log("PEAK:", prev, curr, next)
                                         peaks[k].push(i);
                                 }
+                        prev=0;
+                        curr=0;
+                        next=0;
                 }
               
         }
