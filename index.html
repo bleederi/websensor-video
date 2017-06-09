@@ -215,10 +215,11 @@ limitations under the License.
                                         orientation_sensor.onchange = () => { 
                                         console.log(orientationMat);                     
                                         }
-                                        orientation_sensor.onactivate = () => {}
-                                        orientation_sensor.start();
+                                        orientation_sensor.onactivate = () => {
                                         orientationMatInitial = new Object;     //need to push orientation matrix by value
                                         Object.assign(orientationMatInitial, orientationMat);
+                                        }
+                                        orientation_sensor.start();
                                         console.log("Initial orientation:");
                                         console.log(orientationMatInitial);
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
