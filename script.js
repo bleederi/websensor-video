@@ -329,7 +329,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 //console.log(max, min);  
                 //if(((max-min)/max) < 0.5)
-                if(stddevpct < 0.5 && Math.abs(peaks.length - valleys.length) <= 2)     //What characterises a step...?
+                if(stddevpct < stddevthreshold && Math.abs(peaks.length - valleys.length) <= 2)     //What characterises a step...?
                 {
                         return true;
                 }   
@@ -384,4 +384,11 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }
         return 0;
         */
+}
+
+function updateSlider(slideAmount)
+{
+alert("error");
+var sliderDiv = document.getElementById("sliderAmount");
+sliderDiv.innerHTML = slideAmount;
 }

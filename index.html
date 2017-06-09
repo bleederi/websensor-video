@@ -45,6 +45,10 @@ limitations under the License.
                         </video>
                 </video-view>
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
+
+                <input id="slider" type="range" min="0.1" max="2" step="0.1" value="1">
+
+                <div id="sliderAmount"></div>
                 <script>
 		//TODO: fix rewind by using two video streams, one forward and one backward
                 var myVideo = document.getElementById("video1"); 
@@ -76,6 +80,13 @@ limitations under the License.
                 var valleytimethreshold = null;
                 var sensori = null;
                 var discardedsamples = 0;
+                var stddevthreshhold = 1;
+                var slide = document.getElementById('slider'),
+                sliderDiv = document.getElementById("sliderAmount");
+                slide.onchange = function() {
+                        sliderDiv.innerHTML = this.value;       //show the threshhold
+                        stddevthreshhold = this.value;
+                }​
                 myVideo.pause();
                         class Pedometer {
                                 constructor() {
