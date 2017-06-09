@@ -84,10 +84,9 @@ limitations under the License.
                 var slider = document.getElementById('slider'),
                 sliderDiv = document.getElementById("sliderAmount");
                 slider.onchange = () => {
-                        console.log(slider.value);
                         stddevthreshold = slider.value;
                         sliderDiv.innerHTML = stddevthreshold;       //show the threshold
-                        console.log(stddevthreshold);
+                        console.log("Std dev threshold:", stddevthreshold);
                 }
                 myVideo.pause();
                         class Pedometer {
