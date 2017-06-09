@@ -226,7 +226,7 @@ limitations under the License.
                         function saveSensorReading()
                         {
                                 //get initial orientation
-                                if(!orientationMatInitial)
+                                if(orientationMatInitial == null)
                                 {
                                         Object.assign(orientationMatInitial, orientationMat);
                                         console.log("Initial orientation:");
