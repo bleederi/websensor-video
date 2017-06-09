@@ -80,12 +80,12 @@ limitations under the License.
                 var valleytimethreshold = null;
                 var sensori = null;
                 var discardedsamples = 0;
-                var stddevthreshhold = 1;
+                var stddevthreshold = 1;
                 var slide = document.getElementById('slider'),
                 sliderDiv = document.getElementById("sliderAmount");
                 slide.onchange = function() {
-                        sliderDiv.innerHTML = this.value;       //show the threshhold
-                        stddevthreshhold = this.value;
+                        sliderDiv.innerHTML = this.value;       //show the threshold
+                        stddevthreshold = this.value;
                 }​
                 myVideo.pause();
                         class Pedometer {
