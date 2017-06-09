@@ -65,8 +65,8 @@ limitations under the License.
                 var accel = {x:null, y:null, z:null};
                 var gravity;
                 var accelNoG;
-                var orientationMat = mat4.create();     //device orientation
-                var orientationMatTemp = null;          //temp variable for storing orientation matrix
+                var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
+                var orientationMatInitial = null;          //variable for storing initial orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 30;
@@ -218,6 +218,10 @@ limitations under the License.
                                         }
                                         orientation_sensor.onactivate = () => {}
                                         orientation_sensor.start();
+                                        orientationMatTemp = new Object;     //need to push orientation matrix by value
+                                        Object.assign(orientationMatTemp, orientationMat);
+                                        console.log("Initial orientation:");
+                                        console.log(orientationMatTemp);
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
