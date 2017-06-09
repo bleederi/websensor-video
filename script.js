@@ -269,8 +269,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log("Sequence:");
         //console.log(seq);
         magseq = magnitude2(seq);
-        console.log("Magnitude of acceleration:");
-        console.log(magseq);
+        //console.log("Magnitude of acceleration:");
+        //console.log(magseq);
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
@@ -284,9 +284,9 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }  
         peaks = peaksvalleys['peaks'];
         valleys = peaksvalleys['valleys'];
-        console.log("Peaks and valleys:");
-        console.log(peaks);
-        console.log(valleys);
+        //console.log("Peaks and valleys:");
+        //console.log(peaks);
+        //console.log(valleys);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
 
         //remove peaks that don't meet condition
@@ -318,8 +318,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }                
                 }
         }
-        console.log("Step diff:");
-        console.log(stepdiff);
+        //console.log("Step diff:");
+        //console.log(stepdiff);
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
