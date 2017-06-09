@@ -216,10 +216,10 @@ limitations under the License.
                                         }
                                         orientation_sensor.onactivate = () => {}
                                         orientation_sensor.start();
-                                        //orientationMatTemp = new Object;     //need to push orientation matrix by value
-                                        //Object.assign(orientationMatTemp, orientationMat);
-                                        //console.log("Initial orientation:");
-                                        //console.log(orientationMatTemp);
+                                        orientationMatTemp = new Object;     //need to push orientation matrix by value
+                                        Object.assign(orientationMatInitial, orientationMat);
+                                        console.log("Initial orientation:");
+                                        console.log(orientationMatInitial);
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
