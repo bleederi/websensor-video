@@ -218,7 +218,6 @@ limitations under the License.
                                 accel2 = {x:null, y:null, z:null}
                                 if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
-                                        console.log(amtStepValues,  accelerationData.length);
                                         accelSeq = toCoordSeq(accelerationData);
                                         var as = Object.assign({}, accelSeq);
                                         peakdiff = [];
