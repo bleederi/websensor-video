@@ -65,6 +65,8 @@ limitations under the License.
                 var accel = {x:null, y:null, z:null};
                 var gravity;
                 var accelNoG;
+                var orientationMat = mat4.create();     //device orientation
+                var orientationMatTemp = null;          //temp variable for storing orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 30;
@@ -83,7 +85,8 @@ limitations under the License.
                 var stepaverage = null;
                 var peaktimethreshold = null;
                 var valleytimethreshold = null;
-                var sensori = null;
+                var accel_sensor = null;
+                var orientation_sensor = null;
                 var discardedsamples = 0;
                 var stddevthreshold = 0.4;      //0.4 good for walking in place
                 
@@ -110,7 +113,21 @@ limitations under the License.
                                 gravity =  new LowPassFilterData(sensor, 0.8);
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
-                                        //gravity.update(accel);
+                                        if (this.onchange) this.onchange();
+                                };
+                                sensor.onactivate = () => {
+                                        if (this.onactivate) this.onactivate();
+                                }
+                                const start = () => sensor.start();
+                                Object.assign(this, { start });
+                                }
+                        }
+                        class AbsoluteOrientationSensor {
+                                constructor() {
+                                const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+                                sensor.onchange = () => {
+                                        sensor.populateMatrix(orientationMat);
+
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -187,13 +204,20 @@ limitations under the License.
 			        }
 
                                 connectedCallback() {
-                                        sensori = new Pedometer();
-                                        sensori.onchange = () => { saveSensorReading(); 
+                                        //Acceleration sensor
+                                        accel_sensor = new Pedometer();
+                                        accel_sensor.onchange = () => { saveSensorReading(); 
                                         //sensor.onchange = () => {                                                                
                                         }
                                         //sensor.onactivate = () => reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-                                        sensori.onactivate = () => {}
-                                        sensori.start();
+                                        accel_sensor.onactivate = () => {}
+                                        accel_sensor.start();
+                                        orientation_sensor = new AbsoluteOrientationSensor();
+                                        orientation_sensor.onchange = () => { 
+                                        console.log(orientationMat);                     
+                                        }
+                                        orientation_sensor.onactivate = () => {}
+                                        orientation_sensor.start();
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
