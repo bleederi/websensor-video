@@ -84,8 +84,8 @@ limitations under the License.
                 var slider = document.getElementById('slider'),
                 sliderDiv = document.getElementById("sliderAmount");
                 slider.onchange = () => {
-                        console.log(this.value);
-                        stddevthreshold = this.value;
+                        console.log(slider.value);
+                        stddevthreshold = slider.value;
                         sliderDiv.innerHTML = stddevthreshold;       //show the threshold
                         console.log(stddevthreshold);
                 }
