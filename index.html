@@ -229,8 +229,8 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                                this.roll = sensor.roll;
-                                                this.yaw = sensor.yaw;                      
+                                                this.roll = orientation_sensor.roll;
+                                                this.yaw = orientation_sensor.yaw;                      
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
