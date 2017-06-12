@@ -92,7 +92,11 @@ limitations under the License.
                 var initialoriobtained = false;
                 var alpha = 0;   
                 var beta = 0;
-                var gamma = 0;             
+                var gamma = 0;     
+                var alphaInitial = 0;   
+                var betaInitial = 0;
+                var gammaInitial = 0;             
+        
 
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
@@ -137,12 +141,16 @@ limitations under the License.
                                         {
                                                 Object.assign(orientationMatInitial, orientationMat);
                                                 initialoriobtained = true;
+                                                let anglesInitial = toEulerianAngle(orientationMatInitial, oriCurrent);
+                                                alphaInitial = anglesInitial[0];
+                                                betaInitial = anglesInitial[1];
+                                                gammaInitial = anglesInitial[2];
                                                 console.log("Initial orientation obtained");
                                         } 
                                         let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
-                                        alpha = anglesCurrent[0];
-                                        beta = anglesCurrent[1];
-                                        gamma = anglesCurrent[2];
+                                        alpha = anglesCurrent[0]-alphaInitial;
+                                        beta = anglesCurrent[1]-betaInitial;
+                                        gamma = anglesCurrent[2]-gammaInitial;
                                         console.log(alpha, beta, gamma);
                                         if (this.onchange) this.onchange();
                                 };
