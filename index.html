@@ -314,10 +314,10 @@ limitations under the License.
                         }
                         function render()
                         {
-                                longitude = yaw * 180 / Math.PI;
-                                let longitudeInitial = -yawInitial * 180 / Math.PI;
-                                latitude = roll * 180 / Math.PI - 90;
-                                console.log(longitude, latitude);
+                                longitude = -this.yaw * 180 / Math.PI;
+                                let longitudeInitial = -this.yawInitial * 180 / Math.PI;
+                                latitude = this.roll * 180 / Math.PI - 90;
+                                console.log(longitude, latitude, longitudeInitial);
                                 if(stepvar == 1)
                                 {
                                         //console.log("Playing");
