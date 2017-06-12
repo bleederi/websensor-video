@@ -134,9 +134,14 @@ limitations under the License.
                         class AbsOriSensor {
                                 constructor() {
                                 const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
-                                const oriCurrent = new Float32Array(3);
+                                const mat4 = new Float32Array(16);
+                                const euler = new Float32Array(3);
                                 sensor.onchange = () => {
-                                        sensor.populateMatrix(orientationMat);
+                                        sensor.populateMatrix(mat4);
+                                        let angles = toEulerianAngle(sensor.quaternion, euler);
+                                        console.log("ANGLES:", angles);
+                                        this.roll = euler[0];
+                                        this.yaw = euler[2];
                                         //get initial orientation if not already obtained
 /*                                        if(initialoriobtained == false)
                                         {
