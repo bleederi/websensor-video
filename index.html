@@ -137,7 +137,7 @@ limitations under the License.
                                                 initialoriobtained = true;
                                                 console.log("Initial orientation obtained");
                                         } 
-                                        anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
+                                        let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
                                         alpha = anglesCurrent[0];
                                         console.log(alpha);
                                         if (this.onchange) this.onchange();
