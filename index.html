@@ -321,9 +321,10 @@ limitations under the License.
                                 let anglesInitial = toEulerianAngle(orientationMatInitial, oriInitial);
                                 for (var i in anglesCurrent)
                                 {
+                                        console.log(i, anglesCurrent[i] - anglesInitial[i]);
                                         anglesDifference[i] = anglesCurrent[i] - anglesInitial[i];
                                 }
-                                console.log(anglesDifference);
+                                //console.log();
 		        }
 
                         function playPause() {
