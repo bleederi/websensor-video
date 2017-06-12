@@ -137,7 +137,7 @@ limitations under the License.
                                 sensor.onchange = () => {
                                         sensor.populateMatrix(orientationMat);
                                         //get initial orientation if not already obtained
-                                        if(initialoriobtained == false)
+/*                                        if(initialoriobtained == false)
                                         {
                                                 Object.assign(orientationMatInitial, orientationMat);
                                                 initialoriobtained = true;
@@ -147,10 +147,11 @@ limitations under the License.
                                                 gammaInitial = anglesInitial[2];
                                                 console.log("Initial orientation obtained");
                                         } 
+*/
                                         let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
-                                        alpha = anglesCurrent[0]-alphaInitial;
-                                        beta = anglesCurrent[1]-betaInitial;
-                                        gamma = anglesCurrent[2]-gammaInitial;
+                                        alpha = anglesCurrent[0];
+                                        beta = anglesCurrent[1];
+                                        gamma = anglesCurrent[2];
                                         console.log(alpha, beta, gamma);
                                         if (this.onchange) this.onchange();
                                 };
