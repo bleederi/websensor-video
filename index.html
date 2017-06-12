@@ -319,15 +319,11 @@ limitations under the License.
                                         myVideo.pause(); 
                                 }
                                 //check if need to rewind
-                                const oriInitial = new Float32Array(3);
-                                let anglesDifference = 0;
-                                const anglesInitial = toEulerianAngle(orientationMatInitial, oriInitial);
-                                //console.log(anglesInitial);
-                                //console.log(anglesCurrent);
-                                if(anglesCurrent[0] < 0)
+/*                                if(alpha < 0)
                                 {
                                         console.log(anglesCurrent[0]);
                                 }
+*/
 		        }
 
                         function playPause() {
