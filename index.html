@@ -92,6 +92,7 @@ limitations under the License.
                 var initialoriobtained = false;
                 var roll = 0;
                 var yaw = 0;
+                var yawInitial = 0;
                 var anglesCurrent = [];            
                 var latitude;
                 var longitude;
@@ -225,7 +226,12 @@ limitations under the License.
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
                                                 roll = orientation_sensor.roll;
-                                                yaw = orientation_sensor.yaw;                      
+                                                yaw = orientation_sensor.yaw; 
+                                                if(initialoriobtained == false)
+                                                {
+                                                        yawInitial = orientation_sensor.yaw;
+                                                        initialoriobtained = true;
+                                                }                     
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
@@ -308,8 +314,9 @@ limitations under the License.
                         }
                         function render()
                         {
-                                longitude = -this.yaw * 180 / Math.PI;
-                                latitude = this.roll * 180 / Math.PI - 90;
+                                longitude = yaw * 180 / Math.PI;
+                                let longitudeInitial = -yawInitial * 180 / Math.PI;
+                                latitude = roll * 180 / Math.PI - 90;
                                 console.log(longitude, latitude);
                                 if(stepvar == 1)
                                 {
@@ -322,7 +329,7 @@ limitations under the License.
                                         myVideo.pause(); 
                                 }
                                 //check if need to rewind                               
-                                if(Math.abs(longitude) > 90)
+                                if(Math.abs(longitude - longitudeInitial) > 180)
                                 {
                                         console.log("Rewind");
                                 }
