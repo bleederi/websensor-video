@@ -227,6 +227,7 @@ limitations under the License.
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
                                                 roll = orientation_sensor.roll;
+                                                pitch = orientation_sensor.pitch;
                                                 yaw = orientation_sensor.yaw; 
                                                 if(initialoriobtained == false)
                                                 {
