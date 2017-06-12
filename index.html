@@ -95,7 +95,8 @@ limitations under the License.
                 var gamma = 0;     
                 var alphaInitial = 0;   
                 var betaInitial = 0;
-                var gammaInitial = 0;             
+                var gammaInitial = 0; 
+                var anglesCurrent = [];            
         
 
                 //Sliders
@@ -148,7 +149,7 @@ limitations under the License.
                                                 console.log("Initial orientation obtained");
                                         } 
 */
-                                        let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
+                                        anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
                                         alpha = anglesCurrent[0];
                                         beta = anglesCurrent[1];
                                         gamma = anglesCurrent[2];
