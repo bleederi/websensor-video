@@ -90,7 +90,8 @@ limitations under the License.
                 var discardedsamples = 0;
                 var stddevthreshold = 0.4;      //0.4 good for walking in place
                 var initialoriobtained = false;
-                
+                var alpha = 0;                
+
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
                 slider_stddev_div = document.getElementById("slider_stddev_amount");
@@ -126,6 +127,7 @@ limitations under the License.
                         class AbsOriSensor {
                                 constructor() {
                                 const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+                                const oriCurrent = new Float32Array(3);
                                 sensor.onchange = () => {
                                         sensor.populateMatrix(orientationMat);
                                         //get initial orientation if not already obtained
@@ -135,6 +137,9 @@ limitations under the License.
                                                 initialoriobtained = true;
                                                 console.log("Initial orientation obtained");
                                         } 
+                                        anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
+                                        alpha = anglesCurrent[0];
+                                        console.log(alpha);
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -314,10 +319,8 @@ limitations under the License.
                                         myVideo.pause(); 
                                 }
                                 //check if need to rewind
-                                let oriCurrent = new Float32Array(3);
                                 const oriInitial = new Float32Array(3);
                                 let anglesDifference = 0;
-                                let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
                                 const anglesInitial = toEulerianAngle(orientationMatInitial, oriInitial);
                                 //console.log(anglesInitial);
                                 //console.log(anglesCurrent);
