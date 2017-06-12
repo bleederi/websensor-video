@@ -138,7 +138,7 @@ limitations under the License.
                                 sensor.onchange = () => {
                                         sensor.populateMatrix(mat4);
                                         let angles = toEulerianAngle(sensor.quaternion, euler);
-                                        console.log("ANGLES:", angles);
+                                        //console.log("ANGLES:", angles);
                                         this.roll = euler[0];
                                         this.pitch = euler[1];
                                         this.yaw = euler[2];
@@ -320,7 +320,7 @@ limitations under the License.
                                 longitude = -this.yaw * 180 / Math.PI;
                                 let longitudeInitial = -this.yawInitial * 180 / Math.PI;
                                 latitude = this.pitch * 180 / Math.PI - 90;
-                                console.log(longitude, latitude, longitudeInitial);
+                                //console.log(longitude, latitude, longitudeInitial);
                                 if(stepvar == 1)
                                 {
                                         //console.log("Playing");
