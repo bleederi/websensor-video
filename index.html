@@ -218,12 +218,14 @@ limitations under the License.
                                         }
                                         orientation_sensor.start();
                                         //TODO: get initial orientation
+/*
                                         if(orientationMatInitial == null && orientationMat != null)
                                         {
                                                 Object.assign(orientationMatInitial, orientationMat);
                                                 console.log("Initial orientation:");
                                                 console.log(orientationMatInitial);
                                         } 
+*/
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
