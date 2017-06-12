@@ -18,6 +18,25 @@
  *
 */
 
+function toEulerianAngle(quat, out)
+{
+        const ysqr = quat[1] ** 2;
+
+        // Roll (x-axis rotation).
+        const t0 = 2 * (quat[3] * quat[0] + quat[1] * quat[2]);
+        const t1 = 1 - 2 * (ysqr + quat[0] ** 2);
+        out[0] = Math.atan2(t0, t1);
+        // Pitch (y-axis rotation).
+        let t2 = 2 * (quat[3] * quat[1] - quat[2] * quat[0]);
+        t2 = t2 > 1 ? 1 : t2;
+        t2 = t2 < -1 ? -1 : t2;
+        out[1] = Math.asin(t2);
+        // Yaw (z-axis rotation).
+        const t3 = 2 * (quat[3] * quat[2] + quat[0] * quat[1]);
+        const t4 = 1 - 2 * (ysqr + quat[2] ** 2);
+        out[2] = Math.atan2(t3, t4);
+        return out;
+
 //Javascript function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
 function toCoordSeq(buffer)
 {

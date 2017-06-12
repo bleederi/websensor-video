@@ -225,15 +225,6 @@ limitations under the License.
                                         orientation_sensor.onactivate = () => {
                                         }
                                         orientation_sensor.start();
-                                        //TODO: get initial orientation
-/*
-                                        if(orientationMatInitial == null && orientationMat != null)
-                                        {
-                                                Object.assign(orientationMatInitial, orientationMat);
-                                                console.log("Initial orientation:");
-                                                console.log(orientationMatInitial);
-                                        } 
-*/
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
@@ -322,6 +313,10 @@ limitations under the License.
                                         //console.log("Not playing");
                                         myVideo.pause(); 
                                 }
+                                //check if need to rewind
+                                let oriCurrent = toEulerianAngle(orientationMat);
+                                let oriInitial = toEulerianAngle(orientationMatInitial);
+                                console.log(oriCurrent);
 		        }
 
                         function playPause() {
