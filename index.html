@@ -316,16 +316,13 @@ limitations under the License.
                                 //check if need to rewind
                                 let oriCurrent = new Float32Array(3);
                                 let oriInitial = new Float32Array(3);
-                                let anglesDifference = [];
+                                let anglesDifference = 0;
                                 let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
                                 let anglesInitial = toEulerianAngle(orientationMatInitial, oriInitial);
                                 console.log(anglesInitial);
                                 console.log(anglesCurrent);
-                                for (var i in anglesCurrent)
-                                {
-                                        //console.log(i, anglesCurrent[i] - anglesInitial[i]);
-                                        anglesDifference[i] = anglesCurrent[i] - anglesInitial[i];
-                                }
+                                anglesDifference = anglesCurrent[0] - anglesInitial[0];
+                                console.log(anglesDifference);
                                 //console.log();
 		        }
 
