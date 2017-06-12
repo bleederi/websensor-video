@@ -36,7 +36,7 @@ function toEulerianAngle(quat, out)
         const t4 = 1 - 2 * (ysqr + quat[2] ** 2);
         out[2] = Math.atan2(t3, t4);
         return out;
-
+}
 //Javascript function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
 function toCoordSeq(buffer)
 {
