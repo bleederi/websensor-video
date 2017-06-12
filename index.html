@@ -213,7 +213,14 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                        //console.log(orientationMat);                     
+                                        //console.log(orientationMat); 
+                                        //get initial orientation if not already obtained
+                                        if(initialoriobtained == false)
+                                        {
+                                                Object.assign(orientationMatInitial, orientationMat);
+                                                initialoriobtained = true;
+                                                console.log("Initial orientation obtained");
+                                        }                       
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
@@ -232,14 +239,7 @@ limitations under the License.
                                 }
                         });
                         function saveSensorReading()
-                        {      
-                                //get initial orientation if not already obtained
-                                if(initialoriobtained == false)
-                                {
-                                        Object.assign(orientationMatInitial, orientationMat);
-                                        initialoriobtained = true;
-                                        console.log("Initial orientation obtained");
-                                }                    
+                        {                       
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 //console.log("Mags:", magnitude(prevaccel), magnitude(accel))
