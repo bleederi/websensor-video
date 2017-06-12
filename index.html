@@ -314,8 +314,9 @@ limitations under the License.
                                         myVideo.pause(); 
                                 }
                                 //check if need to rewind
-                                let oriCurrent = toEulerianAngle(orientationMat);
-                                let oriInitial = toEulerianAngle(orientationMatInitial);
+                                let oriCurrent = null;
+                                toEulerianAngle(orientationMat, oriCurrent);
+                                //let oriInitial = toEulerianAngle(orientationMatInitial);
                                 console.log(oriCurrent);
 		        }
 
