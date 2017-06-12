@@ -90,7 +90,9 @@ limitations under the License.
                 var discardedsamples = 0;
                 var stddevthreshold = 0.4;      //0.4 good for walking in place
                 var initialoriobtained = false;
-                var alpha = 0;                
+                var alpha = 0;   
+                var beta = 0;
+                var gamma = 0;             
 
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
@@ -139,7 +141,9 @@ limitations under the License.
                                         } 
                                         let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
                                         alpha = anglesCurrent[0];
-                                        console.log(alpha);
+                                        beta = anglesCurrent[1];
+                                        gamma = anglesCurrent[2];
+                                        console.log(alpha, beta, gamma);
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
