@@ -236,8 +236,8 @@ limitations under the License.
                                 //get initial orientation if not already obtained
                                 if(initialoriobtained == false)
                                 {
-                                        orientation_sensor.populateMatrix(orientationMatInitial);
-                                        initialoriobtained == true;
+                                        Object.assign(orientationMatInitial, orientationMat);
+                                        initialoriobtained = true;
                                         console.log("Initial orientation obtained");
                                 }                    
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
