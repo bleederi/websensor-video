@@ -315,15 +315,16 @@ limitations under the License.
                                 }
                                 //check if need to rewind
                                 let oriCurrent = new Float32Array(3);
-                                let oriInitial = new Float32Array(3);
+                                const oriInitial = new Float32Array(3);
                                 let anglesDifference = 0;
                                 let anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
-                                let anglesInitial = toEulerianAngle(orientationMatInitial, oriInitial);
-                                console.log(anglesInitial);
-                                console.log(anglesCurrent);
-                                anglesDifference = anglesCurrent[0] - anglesInitial[0];
-                                console.log(anglesDifference);
-                                //console.log();
+                                const anglesInitial = toEulerianAngle(orientationMatInitial, oriInitial);
+                                //console.log(anglesInitial);
+                                //console.log(anglesCurrent);
+                                if(anglesCurrent[0] < 0)
+                                {
+                                        console.log(anglesCurrent[0]);
+                                }
 		        }
 
                         function playPause() {
