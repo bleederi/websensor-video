@@ -321,12 +321,11 @@ limitations under the License.
                                         //console.log("Not playing");
                                         myVideo.pause(); 
                                 }
-                                //check if need to rewind
-/*                                if(alpha < 0)
+                                //check if need to rewind                               
+                                if(Math.abs(longitude) > 90)
                                 {
-                                        console.log(anglesCurrent[0]);
+                                        console.log("Rewind");
                                 }
-*/
 		        }
 
                         function playPause() {
