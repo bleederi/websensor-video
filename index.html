@@ -128,6 +128,13 @@ limitations under the License.
                                 const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
                                 sensor.onchange = () => {
                                         sensor.populateMatrix(orientationMat);
+                                        //get initial orientation if not already obtained
+                                        if(initialoriobtained == false)
+                                        {
+                                                Object.assign(orientationMatInitial, orientationMat);
+                                                initialoriobtained = true;
+                                                console.log("Initial orientation obtained");
+                                        } 
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -213,14 +220,7 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                        //console.log(orientationMat); 
-                                        //get initial orientation if not already obtained
-                                        if(initialoriobtained == false)
-                                        {
-                                                Object.assign(orientationMatInitial, orientationMat);
-                                                initialoriobtained = true;
-                                                console.log("Initial orientation obtained");
-                                        }                       
+                                        //console.log(orientationMat);                       
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
