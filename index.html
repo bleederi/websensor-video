@@ -97,7 +97,8 @@ limitations under the License.
                 var betaInitial = 0;
                 var gammaInitial = 0; 
                 var anglesCurrent = [];            
-        
+                var latitude;
+                var longitude;
 
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
@@ -218,8 +219,6 @@ limitations under the License.
 			        }
 
                                 connectedCallback() {
-                                        this.latitude;
-                                        this.longitude;
                                         //Acceleration sensor
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => { saveSensorReading(); 
@@ -313,9 +312,9 @@ limitations under the License.
                         }
                         function render()
                         {
-                                this.longitude = -this.yaw * 180 / Math.PI;
-                                this.latitude = this.roll * 180 / Math.PI - 90;
-                                console.log(this.longitude, this.latitude);
+                                longitude = -this.yaw * 180 / Math.PI;
+                                latitude = this.roll * 180 / Math.PI - 90;
+                                console.log(longitude, latitude);
                                 if(stepvar == 1)
                                 {
                                         //console.log("Playing");
