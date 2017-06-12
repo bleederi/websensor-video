@@ -90,12 +90,8 @@ limitations under the License.
                 var discardedsamples = 0;
                 var stddevthreshold = 0.4;      //0.4 good for walking in place
                 var initialoriobtained = false;
-                var alpha = 0;   
-                var beta = 0;
-                var gamma = 0;     
-                var alphaInitial = 0;   
-                var betaInitial = 0;
-                var gammaInitial = 0; 
+                var roll = 0;
+                var yaw = 0;
                 var anglesCurrent = [];            
                 var latitude;
                 var longitude;
@@ -228,8 +224,8 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                                this.roll = orientation_sensor.roll;
-                                                this.yaw = orientation_sensor.yaw;                      
+                                                roll = orientation_sensor.roll;
+                                                yaw = orientation_sensor.yaw;                      
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
