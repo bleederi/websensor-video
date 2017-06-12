@@ -66,7 +66,7 @@ limitations under the License.
                 var gravity;
                 var accelNoG;
                 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
-                var orientationMatInitial = null;          //variable for storing initial orientation matrix
+                var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 30;
