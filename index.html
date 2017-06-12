@@ -142,23 +142,6 @@ limitations under the License.
                                         console.log("ANGLES:", angles);
                                         this.roll = euler[0];
                                         this.yaw = euler[2];
-                                        //get initial orientation if not already obtained
-/*                                        if(initialoriobtained == false)
-                                        {
-                                                Object.assign(orientationMatInitial, orientationMat);
-                                                initialoriobtained = true;
-                                                let anglesInitial = toEulerianAngle(orientationMatInitial, oriCurrent);
-                                                alphaInitial = anglesInitial[0];
-                                                betaInitial = anglesInitial[1];
-                                                gammaInitial = anglesInitial[2];
-                                                console.log("Initial orientation obtained");
-                                        } 
-*/
-                                        anglesCurrent = toEulerianAngle(orientationMat, oriCurrent);
-                                        alpha = anglesCurrent[0];
-                                        beta = anglesCurrent[1];
-                                        gamma = anglesCurrent[2];
-                                        console.log(alpha, beta, gamma);
                                         if (this.onchange) this.onchange();
                                 };
                                 sensor.onactivate = () => {
@@ -235,6 +218,8 @@ limitations under the License.
 			        }
 
                                 connectedCallback() {
+                                        this.latitude;
+                                        this.longitude;
                                         //Acceleration sensor
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => { saveSensorReading(); 
@@ -244,7 +229,8 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                        //console.log(orientationMat);                       
+                                                this.roll = sensor.roll;
+                                                this.yaw = sensor.yaw;                      
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
@@ -327,6 +313,9 @@ limitations under the License.
                         }
                         function render()
                         {
+                                this.longitude = -this.yaw * 180 / Math.PI;
+                                this.latitude = this.roll * 180 / Math.PI - 90;
+                                console.log(this.longitude, this.latitude);
                                 if(stepvar == 1)
                                 {
                                         //console.log("Playing");
