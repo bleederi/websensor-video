@@ -206,13 +206,14 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage))
+                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage))  //peak
                         {
                                 //update time average regardless of peak accepted or not
                                 if(peaks.length >= 2)
                                 {
                                         peakdiff.push(index - lastpeaktime);
-                                        let sum = peakdiff.reduce((previous, current) => current += previous); //sum over the array
+                                        let peakdiff_selected = peakdiff[0:peakdiff.length-1];  //select recent M peaks
+                                        let sum = peakdiff[0:peakdiff.length-1].reduce((previous, current) => current += previous); //sum over the array
                                         peaktimethreshold = sum/peakdiff.length;      //average of peak diffs
                                 }  
                                 else
@@ -230,13 +231,14 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 lastpeakmag = curr;
                                 lastpeaktime = index;                              
                         }
-                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))
+                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage))     //valley
                                 {
                                 //update time average regardless of valley accepted or not
                                 if(valleys.length >= 2)
                                 {
                                         valleydiff.push(index - lastvalleytime);
-                                        let sum = valleydiff.reduce((previous, current) => current += previous); //sum over the array
+                                        let valleydiff_selected = valleydiff[0:valleydiff.length-1];    //select recent M valleys
+                                        let sum = valleydiff[0:peakdiff.length-1].reduce((previous, current) => current += previous); //sum over the array
                                         valleytimethreshold = sum/valleydiff.length;      //average of valley diffs
                                 }  
                                 else
@@ -336,7 +338,11 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                 {
                         if(ipeak == ivalley)
                         {
-                                stepdiff.push(Math.abs(peaks[ipeak] - valleys[ivalley])); 
+                                let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
+                                if(stepdiffamt >= 10)     //at least 5 samples between peak and valley
+                                {
+                                        stepdiff.push(stepdiffamt);
+                                }
                         }                
                 }
         }
@@ -345,13 +351,13 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
-        let stddevpct = stddev / min;
+        stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
-        if(stepdiff.length >= stepamt-2)        //stepamt-1 for windows tablet
+        if(Math.abs(stepamt-stepdiff.length) <= 4)        //stepamt-1 for windows tablet
         {
                 //console.log(max, min);  
                 //if(((max-min)/max) < 0.5)
-                if(stddevpct < stddevthreshold[0] && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[1])     //What characterises a step...?
+                if(stddevpct < stddevthreshold && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[1])     //What characterises a step...?
                 {
                         return true;
                 }   

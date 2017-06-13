@@ -24,6 +24,15 @@ limitations under the License.
 			body{
 				margin: 0;
 			}
+                   .button {
+                        background-color: red;
+                        color: white;
+                        font-size: 20px;
+                        width:10%;
+                        padding: 10px;
+                        border-radius: 10px;
+                        margin:10px
+                    }
 		</style>
 		
 	</head>
@@ -36,17 +45,19 @@ limitations under the License.
                 </style>
         </template>
 	<body>
-                <button onclick="playPause()">Play/Pause</button>
+                <button id="startbutton" onclick="startDemo()">Start demo</button>
+                </br>
                 <button onclick="rewind()">Rewind</button>
                 <video-view>
-                        <video id="video1" width="800" height="600" autoplay>
-                        <source src="video.mp4" type="video/mp4">
+                        <video id="video1" width="3040" height="1520" crossorigin="anonymous">
+                        <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                         </video>
                 </video-view>
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
+                <script src="three.min.js"></script>
 
-                <input id="slider_stddev" type="range" min="0.1" max="4" step="0.1" value="0.4">
+                <input id="slider_stddev" type="range" min="0.1" max="6" step="0.2" value="2">
 
                 Standard deviation threshold: <div id="slider_stddev_amount"></div>
 
@@ -59,6 +70,8 @@ limitations under the License.
                 Filter bias: <div id="slider_bias_amount"></div>
 
                 Walking status: <div id="walking_status"></div>
+
+                Standard deviation pct: <div id="stddev"></div>
 
                 <script>
 		//TODO: fix rewind by using two video streams, one forward and one backward
@@ -78,7 +91,7 @@ limitations under the License.
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 60;
                 var stepvar = null;
-                var stepamt = 2;      //2.5 seems to work well for walking in place
+                var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet
                 var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
@@ -96,9 +109,9 @@ limitations under the License.
                 var orientation_sensor = null;
                 var discardedsamples = 0;
                 //In below arrays, first values for Windows tablet, second values for Nexus tablet
-                var stddevthreshold = [0.3, 1.4];      //0.4 good for walking in place
-                var peakvalleyamtthreshold = [2, 4];
-                var bias = 0.9; //bias for low-pass filtering the data
+                var stddevthreshold = 2.9;      //0.4 good for walking in place, 2.9 with tablet
+                var peakvalleyamtthreshold = [2, 6];
+                var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
@@ -107,6 +120,7 @@ limitations under the License.
                 var anglesCurrent = [];            
                 var latitude;
                 var longitude;
+                var videocanvasctx = null;
 
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
@@ -179,62 +193,20 @@ limitations under the License.
                                         this.z = this.z * this.bias + reading.z * (1 - this.bias);
                                 }
                         };
-                        class KalmanFilter {    //Kalman filter implementation from websensor-compass
-                          constructor() {
-                            this.Q_angle = 0.01;
-                            this.Q_gyro = 0.0003;
-                            this.R_angle = 0.01;
-
-                            this.reset();
-                          }
-
-                          reset() {
-                            this.angle = 0.0;
-                            this.bias = 0;
-
-                            this.P00 = 0;
-                            this.P01 = 0;
-                            this.P10 = 0;
-                            this.P11 = 0;
-                          }
-
-                          filter(accAngle, gyroRate, dt) {
-                            this.angle += dt * (gyroRate - this.bias);
-
-                            this.P00 += -dt * (this.P10 + this.P01) + this.Q_angle * dt;
-                            this.P01 += -dt * this.P11;
-                            this.P10 += -dt * this.P11;
-                            this.P11 += + this.Q_gyro * dt;
-
-                            let axis = accAngle - this.angle;
-                            let S = this.P00 + this.R_angle;
-                            let K0 = this.P00 / S;
-                            let K1 = this.P10 / S;
-
-                            this.angle += K0 * axis;
-                            this.bias  += K1 * axis;
-
-                            this.P00 -= K0 * this.P00;
-                            this.P01 -= K0 * this.P01;
-                            this.P10 -= K1 * this.P00;
-                            this.P11 -= K1 * this.P01;
-
-                            return this.angle;
-                          }
-                        };
-/*      How to use:  
-      // Kalman filter
-          this.alpha = this.kalmanZ.filter(zAccel, zGyro, dt);
-          this.beta = this.kalmanX.filter(xAccel, xGyro, dt);
-          this.gamma = this.kalmanY.filter(yAccel, yGyro, dt);
-*/
 
                         customElements.define('video-view', class extends HTMLElement {
                                 constructor() {
                                 super();
+                                const template = document.querySelector('#video-view');
+                                const clone = document.importNode(template.content, true);
+                                const shadowRoot = this.attachShadow({ mode: 'open' });
+                                shadowRoot.appendChild(clone);
 			        }
 
                                 connectedCallback() {
+                                        this.latitude;
+                                        this.longitude;
+                                        try {
                                         //Acceleration sensor
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => { saveSensorReading(); 
@@ -244,21 +216,65 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                                roll = orientation_sensor.roll;
-                                                pitch = orientation_sensor.pitch;
-                                                yaw = orientation_sensor.yaw; 
+                                                this.roll = orientation_sensor.roll;
+                                                this.pitch = orientation_sensor.pitch;
+                                                this.yaw = orientation_sensor.yaw; 
                                                 if(initialoriobtained == false)
                                                 {
                                                         yawInitial = orientation_sensor.yaw;
                                                         initialoriobtained = true;
                                                 }                     
                                         }
-                                        orientation_sensor.onactivate = () => {
-                                        }
+                                        orientation_sensor.onactivate = () => this.render();
                                         orientation_sensor.start();
+                                        }
+                                        catch(err) {
+                                                console.log(err.message);
+                                        }
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                                        //ThreeJS scene setup below
+
+			                this.renderer = new THREE.WebGLRenderer();
+			                this.renderer.setSize(window.innerWidth, window.innerHeight);
+			                document.body.appendChild(this.renderer.domElement);
+
+			                this.scene = new THREE.Scene();
+
+			                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+			                this.camera.target = new THREE.Vector3(0, 0, 0);
+
+			                let sphere = new THREE.SphereGeometry(100, 100, 40);
+			                sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+
+                                        let texture = new THREE.VideoTexture(myVideo);
+                                        texture.minFilter = THREE.LinearFilter;
+                                        texture.magFilter = THREE.LinearFilter;
+                                        texture.format = THREE.RGBFormat;
+
+                                        let sphereMaterial = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+			                let sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+			                this.scene.add(sphereMesh);
+
+
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
+                                render() {
+                                        this.longitude = -this.yaw * 180 / Math.PI;
+                                        this.latitude = this.roll * 180 / Math.PI - 90;
+                                        // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
+                                        this.latitude = Math.max(-85, Math.min(85, this.latitude));
+
+                                        // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
+                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.cos(THREE.Math.degToRad(this.longitude));
+                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - this.latitude));
+                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.sin(THREE.Math.degToRad(this.longitude));
+                                        this.camera.lookAt(this.camera.target);
+
+                                        // Render loop
+                                        this.renderer.render(this.scene, this.camera);
+                                        requestAnimationFrame(() => this.render());
+                                }
+
                         });
                         function saveSensorReading()
                         {                       
@@ -268,7 +284,7 @@ limitations under the License.
                                 //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
                                 if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.1)                               
                                 {
-                                        console.log("Accel logged:", magnitude(accelFiltered));
+                                        //console.log("Accel logged:", magnitude(accelFiltered));
                                         accelerationData.push(accelFiltered);
                                         prevaccel = accel;
                                         discardedsamples = discardedsamples - 3;
@@ -286,11 +302,10 @@ limitations under the License.
                                         var as = Object.assign({}, accelSeq);
                                         peakdiff = [];
                                         valleydiff = [];
-                                        //console.log(accelSeq);
-                                        //let length = accelSeq['x'].length;
-                                        //maseq_old = maseq;
-                                        //let stepvar2 = stepDetection(slice(accelSeq, length-amtStepValues, length));
                                         stepvar = stepDetection(as);
+                                        //Show data
+                                        stddev_div = document.getElementById("stddev");
+                                        stddev_div.innerHTML = stddevpct;
                                         //console.log(maseq);                                     
                                         if(stepvar == true)
                                         {
@@ -300,19 +315,6 @@ limitations under the License.
                                         {
                                                 console.log("Not walking");
                                         }
-/*
-                                        corr = {'x': pcorr(maseq['x'], maseq_old['x']), 'y': pcorr(maseq['y'], maseq_old['y']), 'z':pcorr(maseq['z'], maseq_old['z'])};
-                                        //console.log(corr);
-                                        //console.log(magnitude(corr));
-                                        if(magnitude(corr) <= 1.7 && magnitude(corr) >= 0.5 && corr['y'] >= 0)
-                                        {
-                                                stepvar = 1;
-                                        }
-                                        else
-                                        {
-                                                stepvar = 0;
-                                        }
-*/
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
@@ -332,42 +334,48 @@ limitations under the License.
                                         stepvar = 0;
                                         console.log("Stationary, not walking");
                                         discardedsamples = 0;
+                                        //clear buffer
+                                        for (var k in accelSeq) delete accelSeq[k];
+                                        //maybe try slicing?
+                                        accelerationData.splice(0);
+                                        lastpeakmag = null;
+                                        lastvalleymag = null;
+                                        lastpeaktime = null;
+                                        lastvalleytime = null;
+                                        stepaverage = null;
+                                        peaktimethreshold = null;
+                                        valleytimethreshold = null;
+                                        //console.log(accelerationData);
                                 }
                         }
                         function render()
                         {
-                                //console.log(this.roll, this.yaw, this.pitch);
-                                longitude = -this.yaw * 180 / Math.PI;
-                                let longitudeInitial = -this.yawInitial * 180 / Math.PI;
-                                latitude = this.pitch * 180 / Math.PI - 90;
-                                //console.log(longitude, longitudeInitial);
                                 if(stepvar == 1)
                                 {
                                         //console.log("Playing");
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Walking";
-                                        //myVideo.play(); 
+                                        myVideo.play(); 
                                 }
                                 else
                                 {
                                         //console.log("Not playing");
-                                        //myVideo.pause();
+                                        myVideo.pause();
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Not walking";
                                 }
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                  
-                                if(Math.abs(longitude - longitudeInitial) > 90)
-                                {
+                                //if(Math.abs(longitude - longitudeInitial) > 90)
+                                //{
                                         //console.log("Rewind");
-                                }
+                                //}
 		        }
 
-                        function playPause() {
-                        if (myVideo.paused)
-                                myVideo.play(); 
-                        else 
-                                myVideo.pause(); 
-                        } 	
+                        function startDemo() {  //need user input to play video
+                                myVideo.play();
+                                myVideo.pause();
+                                document.getElementById('startbutton').remove();
+                        }	
 
                         function rewind() {
                                 if (rewinding)
