@@ -54,6 +54,10 @@ limitations under the License.
 
                 Seconds to capture(delay): <div id="slider_stepamt_amount"></div>
 
+                <input id="slider_bias" type="range" min="0.1" max="1" step="0.1" value="0.9">
+
+                Filter bias: <div id="slider_bias_amount"></div>
+
                 Walking status: <div id="walking_status"></div>
 
                 <script>
@@ -94,6 +98,7 @@ limitations under the License.
                 //In below arrays, first values for Windows tablet, second values for Nexus tablet
                 var stddevthreshold = [0.3, 1.4];      //0.4 good for walking in place
                 var peakvalleyamtthreshold = [2, 4];
+                var bias = 0.9; //bias for low-pass filtering the data
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
@@ -118,6 +123,13 @@ limitations under the License.
                         amtStepValues = stepamt*sensorfreq;     //recalculate
                         slider_stepamt_div.innerHTML = stepamt;
                         console.log("Step amount:", stepamt);
+                }
+                var slider_bias = document.getElementById('slider_bias'),
+                slider_bias_div = document.getElementById("slider_bias_amount");
+                slider_bias.onchange = () => {
+                        bias = slider_bias.value;
+                        slider_bias_div.innerHTML = bias;
+                        console.log("Filter bias:", bias);
                 }
                 myVideo.pause();
                         class Pedometer {
@@ -251,7 +263,7 @@ limitations under the License.
                         function saveSensorReading()
                         {                       
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
-                                accelFiltered = new LowPassFilterData(accel, 0.8);
+                                accelFiltered = new LowPassFilterData(accel, bias);
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 //console.log("Mags:", magnitude(prevaccel), magnitude(accel))
                                 if(magnitude(prevaccel) != magnitude(accel))                               
