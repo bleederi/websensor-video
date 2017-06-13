@@ -338,8 +338,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }                
                 }
         }
-        //console.log("Step diff:");
-        //console.log(stepdiff);
+        console.log("Step diff:");
+        console.log(stepdiff);
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
