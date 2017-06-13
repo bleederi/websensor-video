@@ -65,6 +65,7 @@ limitations under the License.
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
                 var accel = {x:null, y:null, z:null};
+                var accelFiltered = {x:null, y:null, z:null};
                 var gravity;
                 var accelNoG;
                 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
@@ -250,11 +251,12 @@ limitations under the License.
                         function saveSensorReading()
                         {                       
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
+                                accelFiltered = new LowPassFilterData(accel, 0.8);
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 //console.log("Mags:", magnitude(prevaccel), magnitude(accel))
                                 if(magnitude(prevaccel) != magnitude(accel))                               
                                 {
-                                        accelerationData.push(accel);
+                                        accelerationData.push(accelFiltered);
                                         prevaccel = accel;
                                         discardedsamples = discardedsamples - 3;
                                 }
