@@ -54,6 +54,8 @@ limitations under the License.
 
                 Seconds to capture(delay): <div id="slider_stepamt_amount"></div>
 
+                Walking status: <div id="walking_status"></div>
+
                 <script>
 		//TODO: fix rewind by using two video streams, one forward and one backward
                 var myVideo = document.getElementById("video1"); 
@@ -88,7 +90,7 @@ limitations under the License.
                 var accel_sensor = null;
                 var orientation_sensor = null;
                 var discardedsamples = 0;
-                var stddevthreshold = [0.3, 0.4];      //0.4 good for walking in place
+                var stddevthreshold = [0.3, 1.4];      //0.4 good for walking in place
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
@@ -325,12 +327,16 @@ limitations under the License.
                                 if(stepvar == 1)
                                 {
                                         //console.log("Playing");
+                                        walking_status_div = document.getElementById("walking_status");
+                                        walking_status_div.innerHTML = "Walking";
                                         //myVideo.play(); 
                                 }
                                 else
                                 {
                                         //console.log("Not playing");
-                                        //myVideo.pause(); 
+                                        //myVideo.pause();
+                                        walking_status_div = document.getElementById("walking_status");
+                                        walking_status_div.innerHTML = "Not walking";
                                 }
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                  
                                 if(Math.abs(longitude - longitudeInitial) > 90)
