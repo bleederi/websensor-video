@@ -90,7 +90,9 @@ limitations under the License.
                 var accel_sensor = null;
                 var orientation_sensor = null;
                 var discardedsamples = 0;
+                //In below arrays, first values for Windows tablet, second values for Nexus tablet
                 var stddevthreshold = [0.3, 1.4];      //0.4 good for walking in place
+                var peakvalleyamtthreshold = [2, 4];
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
