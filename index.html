@@ -317,7 +317,7 @@ limitations under the License.
                         }
                         function render()
                         {
-                                console.log(this.roll, this.yaw, this.pitch);
+                                //console.log(this.roll, this.yaw, this.pitch);
                                 longitude = -this.yaw * 180 / Math.PI;
                                 let longitudeInitial = -this.yawInitial * 180 / Math.PI;
                                 latitude = this.pitch * 180 / Math.PI - 90;
@@ -335,7 +335,7 @@ limitations under the License.
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                  
                                 if(Math.abs(longitude - longitudeInitial) > 90)
                                 {
-                                        console.log("Rewind");
+                                        //console.log("Rewind");
                                 }
 		        }
 
