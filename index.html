@@ -266,7 +266,7 @@ limitations under the License.
                                 accelFiltered = new LowPassFilterData(accel, bias);
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
-                                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.08)                               
+                                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.1)                               
                                 {
                                         console.log("Accel logged:", magnitude(accelFiltered));
                                         accelerationData.push(accelFiltered);
