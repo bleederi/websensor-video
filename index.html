@@ -71,7 +71,7 @@ limitations under the License.
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 30;
                 var stepvar = null;
-                var stepamt = 2.5;      //2.5 seems to work well for walking in place
+                var stepamt = 1.5;      //2.5 seems to work well for walking in place
                 var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
@@ -332,7 +332,7 @@ limitations under the License.
                                         //console.log("Not playing");
                                         myVideo.pause(); 
                                 }
-                                //check if need to rewind                               
+                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                  
                                 if(Math.abs(longitude - longitudeInitial) > 90)
                                 {
                                         console.log("Rewind");
