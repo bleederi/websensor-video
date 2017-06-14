@@ -370,7 +370,8 @@ limitations under the License.
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Not walking";
                                 }
-                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly       
+                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
+                                //need the constant checking due to some weird issue with the video not always changing  
                                 //console.log(Math.abs(longitude - longitudeInitial));         
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
