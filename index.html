@@ -376,9 +376,10 @@ limitations under the License.
                                 let video = document.getElementById("video1");             
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
-                                        console.log("Rewind");
+                                        //console.log("Rewind");
                                         if(video.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
+                                                console.log("Loading backward video"):
                                                 video.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
                                                 video.load();
                                                 /*if(myVideo2.canplay)
@@ -390,9 +391,10 @@ limitations under the License.
                                 }
                                 else
                                 {
-                                        console.log("No rewind");
+                                        //console.log("No rewind");
                                         if(video.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
         {
+                                                console.log("Loading forward video"):
                                                 video.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
                                                 video.load();
                                                 /*if(myVideo2.canplay)
