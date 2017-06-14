@@ -220,7 +220,6 @@ limitations under the License.
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
                                                         longitudeInitial = -yawInitial * 180 / Math.PI;
-                                                        console.log("Initial longitude", longitudeInitial);
                                                         initialoriobtained = true;
                                                 }                     
                                         }
@@ -364,12 +363,12 @@ limitations under the License.
                                         walking_status_div.innerHTML = "Not walking";
                                 }
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                
-                                if(Math.abs(longitude - longitudeInitial) > 160 && rewinding == false)
+                                if(Math.abs(longitude - longitudeInitial) > 135 && rewinding == false)
                                 {
                                         console.log("Rewind");
                                         rewinding = true;
                                 }
-                                else if (Math.abs(longitude - longitudeInitial) < 160 && rewinding == true)
+                                else if (Math.abs(longitude - longitudeInitial) < 135 && rewinding == true)
                                 {
                                         console.log("No rewind");
                                         rewinding = false;
