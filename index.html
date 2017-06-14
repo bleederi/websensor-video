@@ -13,13 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=0.6">
                 <link rel="manifest" href="manifest.json" />
+
+                <title>Web sensor 360 video</title>
 		<style>
 			body{
 				margin: 0;
@@ -32,8 +33,6 @@ limitations under the License.
                         margin:10px
                     }
 		</style>
-		
-	</head>
         <template id="video-view">
                 <style>
                 :host {
@@ -42,6 +41,8 @@ limitations under the License.
                 }
                 </style>
         </template>
+		
+	</head>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
                 <button onclick="rewind()">Rewind</button>
@@ -115,8 +116,9 @@ limitations under the License.
                 var latitude;
                 var longitude;
                 var videocanvasctx = null;
-
-                myVideo.pause();
+                myVideo.onload = function() {
+                        myVideo.pause();
+                }
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
                 slider_stddev_div = document.getElementById("slider_stddev_amount");
