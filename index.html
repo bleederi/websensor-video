@@ -353,7 +353,7 @@ limitations under the License.
                                 else
                                 {
                                         //console.log("Not playing");
-                                        //myVideo.pause();
+                                        myVideo.pause();
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Not walking";
                                 }
@@ -372,7 +372,7 @@ limitations under the License.
 
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
-                                //myVideo.pause();
+                                myVideo.pause();
                                 document.getElementById('startbutton').remove();     //hide button
                         }	
 /*
