@@ -72,10 +72,11 @@ limitations under the License.
                 Standard deviation pct: <div id="stddev"></div>
 
                 <script>
-		//TODO: fix rewind by using two video streams, one forward and one backward
+                //TODO: fix rewind by using two video streams, one forward and one backward
                 var myVideo = document.getElementById("video1"); 
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
+                var ppr;
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
@@ -113,30 +114,28 @@ limitations under the License.
                 var latitude = 0;
                 var longitudeInitial = null;
                 var anglesCurrent = [];            
-                var latitude;
-                var longitude;
                 var videocanvasctx = null;
                 myVideo.onload = function() {
                         myVideo.pause();
                 }
                 //Sliders
-                var slider_stddev = document.getElementById('slider_stddev'),
-                slider_stddev_div = document.getElementById("slider_stddev_amount");
+                var slider_stddev = document.getElementById('slider_stddev');
+                var slider_stddev_div = document.getElementById("slider_stddev_amount");
                 slider_stddev.onchange = () => {
                         stddevthreshold = slider_stddev.value;
                         slider_stddev_div.innerHTML = stddevthreshold;
                         console.log("Std dev threshold:", stddevthreshold);
                 }
-                var slider_stepamt = document.getElementById('slider_stepamt'),
-                slider_stepamt_div = document.getElementById("slider_stepamt_amount");
+                var slider_stepamt = document.getElementById('slider_stepamt');
+                var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
                 slider_stepamt.onchange = () => {
                         stepamt = slider_stepamt.value;
                         amtStepValues = stepamt*sensorfreq;     //recalculate
                         slider_stepamt_div.innerHTML = stepamt;
                         console.log("Step amount:", stepamt);
                 }
-                var slider_bias = document.getElementById('slider_bias'),
-                slider_bias_div = document.getElementById("slider_bias_amount");
+                var slider_bias = document.getElementById('slider_bias');
+                var slider_bias_div = document.getElementById("slider_bias_amount");
                 slider_bias.onchange = () => {
                         bias = slider_bias.value;
                         slider_bias_div.innerHTML = bias;
@@ -144,57 +143,63 @@ limitations under the License.
                 }
                         class Pedometer {
                                 constructor() {
-                                const sensor = new Accelerometer({ frequency: sensorfreq });
-                                sensor.onchange = () => {
-                                        accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
-                                        if (this.onchange) this.onchange();
-                                };
-                                sensor.onactivate = () => {
-                                        if (this.onactivate) this.onactivate();
-                                }
-                                const start = () => sensor.start();
-                                Object.assign(this, { start });
+                                        const sensor = new Accelerometer({ frequency: sensorfreq });
+                                        sensor.onchange = () => {
+                                                accel = {"x":sensor.x, "y":sensor.y, "z":sensor.z};
+                                                if (this.onchange) {
+                                                        this.onchange();
+                                                }
+                                        };
+                                        sensor.onactivate = () => {
+                                                if (this.onactivate) this.onactivate();
+                                        }
+                                        const start = () => sensor.start();
+                                        Object.assign(this, { start });
                                 }
                         }
                         class AbsOriSensor {
                                 constructor() {
-                                const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
-                                const mat4 = new Float32Array(16);
-                                const euler = new Float32Array(3);
-                                sensor.onchange = () => {
-                                        sensor.populateMatrix(mat4);
-                                        let angles = toEulerianAngle(sensor.quaternion, euler);
-                                        //console.log("ANGLES:", angles);
-                                        this.roll = euler[0];
-                                        this.pitch = euler[1];
-                                        this.yaw = euler[2];
-                                        if (this.onchange) this.onchange();
-                                };
-                                sensor.onactivate = () => {
-                                        if (this.onactivate) this.onactivate();
-                                }
-                                const start = () => sensor.start();
-                                Object.assign(this, { start });
+                                        const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+                                        const mat4 = new Float32Array(16);
+                                        const euler = new Float32Array(3);
+                                        sensor.onchange = () => {
+                                                sensor.populateMatrix(mat4);
+                                                let angles = toEulerianAngle(sensor.quaternion, euler);
+                                                //console.log("ANGLES:", angles);
+                                                this.roll = euler[0];
+                                                this.pitch = euler[1];
+                                                this.yaw = euler[2];
+                                                if (this.onchange) {
+                                                        this.onchange();
+                                                }
+                                        };
+                                        sensor.onactivate = () => {
+                                                if (this.onactivate) {
+                                                        this.onactivate();
+                                                }
+                                        }
+                                        const start = () => sensor.start();
+                                        Object.assign(this, { start });
                                 }
                         }
                         class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
-                          constructor(reading, bias) {
-                            Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
-                            this.bias = bias;
-                          }
+                                  constructor(reading, bias) {
+                                            Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
+                                            this.bias = bias;
+                                  }
                                 update(reading) {
                                         this.x = this.x * this.bias + reading.x * (1 - this.bias);
                                         this.y = this.y * this.bias + reading.y * (1 - this.bias);
                                         this.z = this.z * this.bias + reading.z * (1 - this.bias);
                                 }
-                        };
+                        }
 
-                        customElements.define('video-view', class extends HTMLElement {
+                        customElements.define("video-view", class extends HTMLElement {
                                 constructor() {
                                 super();
-                                const template = document.querySelector('#video-view');
+                                const template = document.querySelector("#video-view");
                                 const clone = document.importNode(template.content, true);
-                                const shadowRoot = this.attachShadow({ mode: 'open' });
+                                const shadowRoot = this.attachShadow({ mode: "open" });
                                 shadowRoot.appendChild(clone);
                                         this.longitude;
                                         this.latitude;
@@ -375,7 +380,7 @@ limitations under the License.
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
                                 myVideo.pause();
-                                document.getElementById('startbutton').remove();     //hide button
+                                document.getElementById("startbutton").remove();     //hide button
                         }	
                         function rewind() {
 /*                                if (rewinding)
