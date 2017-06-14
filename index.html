@@ -191,14 +191,14 @@ limitations under the License.
                                 super();
                                 const template = document.querySelector('#video-view');
                                 const clone = document.importNode(template.content, true);
-                                //const shadowRoot = this.attachShadow({ mode: 'open' });
-                                //shadowRoot.appendChild(clone);
-                                this.longitude;
-                                this.latitude;
+                                const shadowRoot = this.attachShadow({ mode: 'open' });
+                                shadowRoot.appendChild(clone);
 			        }
 
                                 connectedCallback() {
                                         try {
+                                        this.longitude;
+                                        this.latitude;
                                         //Acceleration sensor
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => { saveSensorReading(); 
