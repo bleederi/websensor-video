@@ -194,12 +194,12 @@ limitations under the License.
                                 const clone = document.importNode(template.content, true);
                                 const shadowRoot = this.attachShadow({ mode: 'open' });
                                 shadowRoot.appendChild(clone);
+                                        this.longitude;
+                                        this.latitude;
 			        }
 
                                 connectedCallback() {
                                         try {
-                                        this.longitude;
-                                        this.latitude;
                                         //Acceleration sensor
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => { saveSensorReading(); 
@@ -375,9 +375,8 @@ limitations under the License.
                                 myVideo.pause();
                                 document.getElementById('startbutton').remove();     //hide button
                         }	
-/*
                         function rewind() {
-                                if (rewinding)
+/*                                if (rewinding)
                                 {
 	                                rewinding = false;
 	                                clearInterval(rw);
@@ -387,8 +386,8 @@ limitations under the License.
 	                                rewinding = true;
 	                                //rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
                                         //myVideo.setAttribute('src', 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
-                                }
-                        }*/			
+                                }*/
+                        }		
 		</script>
 	</body>
 </html>
