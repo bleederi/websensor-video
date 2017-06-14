@@ -376,11 +376,14 @@ limitations under the License.
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
                                         console.log("Rewind");
-                                        if(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
+                                        if(myVideo.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
                                                 myVideo.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
                                                 myVideo.load();
-                                                myVideo.play();
+                                                if(myVideo.canplay)
+                                                {
+                                                        myVideo.play();
+                                                }
                                                 if(!myVideo.paused)
                                                 {
                                                         myVideo.pause();
@@ -391,12 +394,15 @@ limitations under the License.
                                 else if (Math.abs(longitude - longitudeInitial) < 135)
                                 {
                                         console.log("No rewind");
-                                        if(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
+                                        if(myVideo.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
         {
                                                 myVideo.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
                                                 myVideo.load();
-                                                myVideo.play();
-                                                if(!myVideo.paused)
+                                                if(myVideo.canplay)
+                                                {
+                                                        myVideo.play();
+                                                }                                                
+                                        if(!myVideo.paused)
                                                 {
                                                         myVideo.pause();
                                                 }
