@@ -225,7 +225,7 @@ limitations under the License.
                                         catch(err) {
                                                 console.log(err.message);
                                         }
-                                        //reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                                        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         //ThreeJS scene setup below
 
 			                this.renderer = new THREE.WebGLRenderer();
