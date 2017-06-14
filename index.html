@@ -115,7 +115,7 @@ limitations under the License.
                 var latitude;
                 var longitude;
                 var videocanvasctx = null;
-
+                myVideo.pause();
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
                 slider_stddev_div = document.getElementById("slider_stddev_amount");
@@ -371,7 +371,7 @@ limitations under the License.
 
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
-                                myVideo.pause();
+                                //myVideo.pause();
                                 document.getElementById('startbutton').remove();     //hide button
                         }	
 /*
