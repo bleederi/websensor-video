@@ -47,7 +47,7 @@ limitations under the License.
                 <button onclick="rewind()">Rewind</button>
                 <video-view>
                         <video id="video1" width="3040" height="1520" crossorigin="anonymous">
-                        <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/video.mp4" type="video/mp4">
+                        <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                         </video>
                 </video-view>
@@ -78,8 +78,10 @@ limitations under the License.
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
-                var accel = {x:null, y:null, z:null};   //here we store sensor readings
+                var accel = {x:null, y:null, z:null};
                 var accelFiltered = {x:null, y:null, z:null};
+                var gravity;
+                var accelNoG;
                 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
                 var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
@@ -108,6 +110,9 @@ limitations under the License.
                 var peakvalleyamtthreshold = [2, 6];
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var initialoriobtained = false;
+                var roll = 0;
+                var pitch = 0;
+                var yaw = 0;
                 var longitude = 0;
                 var latitude = 0;
                 var longitudeInitial = null;
@@ -116,7 +121,6 @@ limitations under the License.
                 var longitude;
                 var videocanvasctx = null;
 
-                myVideo.pause();
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
                 slider_stddev_div = document.getElementById("slider_stddev_amount");
@@ -143,6 +147,7 @@ limitations under the License.
                         class Pedometer {
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
+                                gravity =  new LowPassFilterData(sensor, 0.8);
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                                         if (this.onchange) this.onchange();
@@ -194,8 +199,6 @@ limitations under the License.
                                 const clone = document.importNode(template.content, true);
                                 const shadowRoot = this.attachShadow({ mode: 'open' });
                                 shadowRoot.appendChild(clone);
-                                        this.longitude;
-                                        this.latitude;
 			        }
 
                                 connectedCallback() {
@@ -253,15 +256,15 @@ limitations under the License.
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
                                 render() {
-                                        this.longitude = -this.yaw * 180 / Math.PI;
-                                        this.latitude = this.roll * 180 / Math.PI - 90;
+                                        longitude = -this.yaw * 180 / Math.PI;
+                                        latitude = this.roll * 180 / Math.PI - 90;
                                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
-                                        this.latitude = Math.max(-85, Math.min(85, this.latitude));
+                                        latitude = Math.max(-85, Math.min(85, latitude));
 
                                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.cos(THREE.Math.degToRad(longitude));
-                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - this.latitude));
-                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.sin(THREE.Math.degToRad(longitude));
+                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
+                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
+                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
                                         this.camera.lookAt(this.camera.target);
 
                                         // Render loop
@@ -272,9 +275,10 @@ limitations under the License.
                         });
                         function saveSensorReading()
                         {                       
-                                //accel = {x:accel.x, y:accel.y, z:accel.z};
+                                accel = {x:accel.x, y:accel.y, z:accel.z};
                                 accelFiltered = new LowPassFilterData(accel, bias);
-                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered));
+                                //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
+                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
                                 if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.1)                               
                                 {
                                         //console.log("Accel logged:", magnitude(accelFiltered));
@@ -375,8 +379,9 @@ limitations under the License.
                                 myVideo.pause();
                                 document.getElementById('startbutton').remove();     //hide button
                         }	
+
                         function rewind() {
-/*                                if (rewinding)
+                                if (rewinding)
                                 {
 	                                rewinding = false;
 	                                clearInterval(rw);
@@ -384,11 +389,12 @@ limitations under the License.
                                 else
                                 {
 	                                rewinding = true;
-	                                //rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
-                                        //myVideo.setAttribute('src', 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
-                                }*/
-                        }		
+	                                rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
+                                        //myVideo.setAttribute('src', 'video_backwards.mp4');
+                                }
+                        }			
 		</script>
 	</body>
 </html>
+
 
