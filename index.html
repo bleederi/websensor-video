@@ -353,7 +353,10 @@ limitations under the License.
                                         //console.log("Playing");
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Walking";
-                                        myVideo.play(); 
+                                        const playPromise = myVideo.play();
+                                        if (playPromise !== null){
+                                            playPromise.catch(() => { myVideo.play(); })
+                                        }
                                 }
                                 else
                                 {
@@ -370,7 +373,11 @@ limitations under the License.
                                 {
                                         console.log("Rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
-                                        myVideo.play();
+                                        const playPromise = myVideo.play();
+                                        if (playPromise !== null){
+                                            playPromise.catch(() => { myVideo.play(); })
+                                        }
+                                }
                                         if(!myVideo.paused)
                                         {
                                                 myVideo.pause();
@@ -381,7 +388,10 @@ limitations under the License.
                                 {
                                         console.log("No rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4");
-                                        myVideo.play();
+                                        const playPromise = myVideo.play();
+                                        if (playPromise !== null){
+                                            playPromise.catch(() => { myVideo.play(); })
+                                        }
                                         if(!myVideo.paused)
                                         {
                                                 myVideo.pause();
@@ -391,7 +401,10 @@ limitations under the License.
 		        }
 
                         function startDemo() {  //need user input to play video
-                                myVideo.play();
+                                const playPromise = myVideo.play();
+                                if (playPromise !== null){
+                                    playPromise.catch(() => { myVideo.play(); })
+                                }
                                 if(!myVideo.paused)
                                 {
                                         myVideo.pause();
