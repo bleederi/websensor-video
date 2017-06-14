@@ -250,7 +250,7 @@ limitations under the License.
 			                this.scene.add(sphereMesh);
 
 
-                                        render = setInterval(render, 1000/(fps+sensorfreq));
+                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                                 }
                                 render() {
                                         this.longitude = -this.yaw * 180 / Math.PI;
@@ -341,7 +341,7 @@ limitations under the License.
                                         //console.log(accelerationData);
                                 }
                         }
-                        function render()
+                        function playPauseRewind()
                         {
                                 if(stepvar == 1)
                                 {
