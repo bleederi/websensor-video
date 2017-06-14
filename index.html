@@ -1,4 +1,4 @@
-<!--
+v<!--
 Copyright 2017 Jesse Nieminen
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,10 +24,10 @@ limitations under the License.
 			body{
 				margin: 0;
 			}
-                   #startbutton {
-                        background-color: red;
+                   .button {
+                        background-color: #000000;
                         color: #FFFFFF;
-                        padding: 15px 32px;
+                        padding: 10px;
                         border-radius: 10px;
                         margin:10px
                     }
@@ -44,6 +44,7 @@ limitations under the License.
         </template>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
+                </br>
                 <button onclick="rewind()">Rewind</button>
                 <video-view>
                         <video id="video1" width="3040" height="1520" crossorigin="anonymous">
@@ -113,9 +114,7 @@ limitations under the License.
                 var roll = 0;
                 var pitch = 0;
                 var yaw = 0;
-                var longitude = 0;
-                var latitude = 0;
-                var longitudeInitial = null;
+                var yawInitial = 0;
                 var anglesCurrent = [];            
                 var latitude;
                 var longitude;
@@ -144,6 +143,7 @@ limitations under the License.
                         slider_bias_div.innerHTML = bias;
                         console.log("Filter bias:", bias);
                 }
+                myVideo.pause();
                         class Pedometer {
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
@@ -202,6 +202,8 @@ limitations under the License.
 			        }
 
                                 connectedCallback() {
+                                        this.latitude;
+                                        this.longitude;
                                         try {
                                         //Acceleration sensor
                                         accel_sensor = new Pedometer();
@@ -215,10 +217,9 @@ limitations under the License.
                                                 this.roll = orientation_sensor.roll;
                                                 this.pitch = orientation_sensor.pitch;
                                                 this.yaw = orientation_sensor.yaw; 
-                                                if(initialoriobtained == false) //obtain initial longitude
+                                                if(initialoriobtained == false)
                                                 {
-                                                        let yawInitial = orientation_sensor.yaw;
-                                                        longitudeInitial = -yawInitial * 180 / Math.PI;
+                                                        yawInitial = orientation_sensor.yaw;
                                                         initialoriobtained = true;
                                                 }                     
                                         }
@@ -256,15 +257,15 @@ limitations under the License.
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
                                 render() {
-                                        longitude = -this.yaw * 180 / Math.PI;
-                                        latitude = this.roll * 180 / Math.PI - 90;
+                                        this.longitude = -this.yaw * 180 / Math.PI;
+                                        this.latitude = this.roll * 180 / Math.PI - 90;
                                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
-                                        latitude = Math.max(-85, Math.min(85, latitude));
+                                        this.latitude = Math.max(-85, Math.min(85, this.latitude));
 
                                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
-                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
-                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
+                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.cos(THREE.Math.degToRad(this.longitude));
+                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - this.latitude));
+                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.sin(THREE.Math.degToRad(this.longitude));
                                         this.camera.lookAt(this.camera.target);
 
                                         // Render loop
@@ -361,23 +362,17 @@ limitations under the License.
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Not walking";
                                 }
-                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                
-                                if(Math.abs(longitude - longitudeInitial) > 135 && rewinding == false)
-                                {
-                                        console.log("Rewind");
-                                        rewinding = true;
-                                }
-                                else if (Math.abs(longitude - longitudeInitial) < 135 && rewinding == true)
-                                {
-                                        console.log("No rewind");
-                                        rewinding = false;
-                                }
+                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                  
+                                //if(Math.abs(longitude - longitudeInitial) > 90)
+                                //{
+                                        //console.log("Rewind");
+                                //}
 		        }
 
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
                                 myVideo.pause();
-                                document.getElementById('startbutton').remove();     //hide button
+                                document.getElementById('startbutton').style.display="none";     //hide button
                         }	
 
                         function rewind() {
