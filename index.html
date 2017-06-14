@@ -13,14 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<!DOCTYPE html>
+
+<!doctype html>
 <html>
 	<head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=0.6">
                 <link rel="manifest" href="manifest.json" />
-
-                <title>Web sensor 360 video</title>
 		<style>
 			body{
 				margin: 0;
@@ -33,6 +32,8 @@ limitations under the License.
                         margin:10px
                     }
 		</style>
+		
+	</head>
         <template id="video-view">
                 <style>
                 :host {
@@ -41,18 +42,17 @@ limitations under the License.
                 }
                 </style>
         </template>
-                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
-                <script src="three.min.js"></script>
-	</head>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
                 <button onclick="rewind()">Rewind</button>
                 <video-view>
-                        <video id="video1" width="1920" height="1080" crossorigin="anonymous">
+                        <video id="video1" width="3040" height="1520" crossorigin="anonymous">
                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                         </video>
                 </video-view>
+                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
+                <script src="three.min.js"></script>
 
                 <input id="slider_stddev" type="range" min="0.1" max="6" step="0.2" value="2">
 
@@ -71,16 +71,17 @@ limitations under the License.
                 Standard deviation pct: <div id="stddev"></div>
 
                 <script>
-                //TODO: fix rewind by using two video streams, one forward and one backward
+		//TODO: fix rewind by using two video streams, one forward and one backward
                 var myVideo = document.getElementById("video1"); 
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
-                var ppr;
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
-                var accel = {x:null, y:null, z:null};   //here we store sensor readings
+                var accel = {x:null, y:null, z:null};
                 var accelFiltered = {x:null, y:null, z:null};
+                var gravity;
+                var accelNoG;
                 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
                 var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
@@ -109,98 +110,95 @@ limitations under the License.
                 var peakvalleyamtthreshold = [2, 6];
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var initialoriobtained = false;
-                var longitude;
-                var latitude;
+                var roll = 0;
+                var pitch = 0;
+                var yaw = 0;
+                var longitude = 0;
+                var latitude = 0;
                 var longitudeInitial = null;
                 var anglesCurrent = [];            
+                var latitude;
+                var longitude;
                 var videocanvasctx = null;
-                myVideo.onload = function() {
-                        myVideo.pause();
-                };
+
                 //Sliders
-                var slider_stddev = document.getElementById("slider_stddev");
-                var slider_stddev_div = document.getElementById("slider_stddev_amount");
+                var slider_stddev = document.getElementById('slider_stddev'),
+                slider_stddev_div = document.getElementById("slider_stddev_amount");
                 slider_stddev.onchange = () => {
                         stddevthreshold = slider_stddev.value;
                         slider_stddev_div.innerHTML = stddevthreshold;
                         console.log("Std dev threshold:", stddevthreshold);
                 }
-                var slider_stepamt = document.getElementById("slider_stepamt");
-                var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
+                var slider_stepamt = document.getElementById('slider_stepamt'),
+                slider_stepamt_div = document.getElementById("slider_stepamt_amount");
                 slider_stepamt.onchange = () => {
                         stepamt = slider_stepamt.value;
                         amtStepValues = stepamt*sensorfreq;     //recalculate
                         slider_stepamt_div.innerHTML = stepamt;
                         console.log("Step amount:", stepamt);
                 }
-                var slider_bias = document.getElementById("slider_bias");
-                var slider_bias_div = document.getElementById("slider_bias_amount");
+                var slider_bias = document.getElementById('slider_bias'),
+                slider_bias_div = document.getElementById("slider_bias_amount");
                 slider_bias.onchange = () => {
                         bias = slider_bias.value;
                         slider_bias_div.innerHTML = bias;
                         console.log("Filter bias:", bias);
                 }
+                myVideo.pause();
                         class Pedometer {
                                 constructor() {
-                                        const sensor = new Accelerometer({ frequency: sensorfreq });
-                                        sensor.onchange = () => {
-                                                accel = {"x":sensor.x, "y":sensor.y, "z":sensor.z};
-                                                if (this.onchange) {
-                                                        this.onchange();
-                                                }
-                                        };
-                                        sensor.onactivate = () => {
-                                                if (this.onactivate) {
-                                                        this.onactivate();
-                                                }
-                                        }
-                                        const start = () => sensor.start();
-                                        Object.assign(this, { start });
+                                const sensor = new Accelerometer({ frequency: sensorfreq });
+                                gravity =  new LowPassFilterData(sensor, 0.8);
+                                sensor.onchange = () => {
+                                        accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
+                                        if (this.onchange) this.onchange();
+                                };
+                                sensor.onactivate = () => {
+                                        if (this.onactivate) this.onactivate();
+                                }
+                                const start = () => sensor.start();
+                                Object.assign(this, { start });
                                 }
                         }
                         class AbsOriSensor {
                                 constructor() {
-                                        const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
-                                        const mat4 = new Float32Array(16);
-                                        const euler = new Float32Array(3);
-                                        sensor.onchange = () => {
-                                                sensor.populateMatrix(mat4);
-                                                let angles = toEulerianAngle(sensor.quaternion, euler);
-                                                //console.log("ANGLES:", angles);
-                                                this.roll = euler[0];
-                                                this.pitch = euler[1];
-                                                this.yaw = euler[2];
-                                                if (this.onchange) {
-                                                        this.onchange();
-                                                }
-                                        };
-                                        sensor.onactivate = () => {
-                                                if (this.onactivate) {
-                                                        this.onactivate();
-                                                }
-                                        }
-                                        const start = () => sensor.start();
-                                        Object.assign(this, { start });
+                                const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+                                const mat4 = new Float32Array(16);
+                                const euler = new Float32Array(3);
+                                sensor.onchange = () => {
+                                        sensor.populateMatrix(mat4);
+                                        let angles = toEulerianAngle(sensor.quaternion, euler);
+                                        //console.log("ANGLES:", angles);
+                                        this.roll = euler[0];
+                                        this.pitch = euler[1];
+                                        this.yaw = euler[2];
+                                        if (this.onchange) this.onchange();
+                                };
+                                sensor.onactivate = () => {
+                                        if (this.onactivate) this.onactivate();
+                                }
+                                const start = () => sensor.start();
+                                Object.assign(this, { start });
                                 }
                         }
                         class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
-                                  constructor(reading, bias) {
-                                            Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
-                                            this.bias = bias;
-                                  }
+                          constructor(reading, bias) {
+                            Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
+                            this.bias = bias;
+                          }
                                 update(reading) {
                                         this.x = this.x * this.bias + reading.x * (1 - this.bias);
                                         this.y = this.y * this.bias + reading.y * (1 - this.bias);
                                         this.z = this.z * this.bias + reading.z * (1 - this.bias);
                                 }
-                        }
+                        };
 
-                        customElements.define("video-view", class extends HTMLElement {
+                        customElements.define('video-view', class extends HTMLElement {
                                 constructor() {
                                 super();
-                                const template = document.querySelector("#video-view");
+                                const template = document.querySelector('#video-view');
                                 const clone = document.importNode(template.content, true);
-                                const shadowRoot = this.attachShadow({ mode: "open" });
+                                const shadowRoot = this.attachShadow({ mode: 'open' });
                                 shadowRoot.appendChild(clone);
 			        }
 
@@ -256,10 +254,10 @@ limitations under the License.
 			                this.scene.add(sphereMesh);
 
 
-                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                        render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
                                 render() {
-                                        latitude = -this.yaw * 180 / Math.PI;
+                                        longitude = -this.yaw * 180 / Math.PI;
                                         latitude = this.roll * 180 / Math.PI - 90;
                                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
                                         latitude = Math.max(-85, Math.min(85, latitude));
@@ -278,9 +276,10 @@ limitations under the License.
                         });
                         function saveSensorReading()
                         {                       
-                                //accel = {x:accel.x, y:accel.y, z:accel.z};
+                                accel = {x:accel.x, y:accel.y, z:accel.z};
                                 accelFiltered = new LowPassFilterData(accel, bias);
-                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered));
+                                //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
+                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
                                 if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.1)                               
                                 {
                                         //console.log("Accel logged:", magnitude(accelFiltered));
@@ -347,7 +346,7 @@ limitations under the License.
                                         //console.log(accelerationData);
                                 }
                         }
-                        function playPauseRewind()
+                        function render()
                         {
                                 if(stepvar == 1)
                                 {
@@ -379,10 +378,11 @@ limitations under the License.
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
                                 myVideo.pause();
-                                document.getElementById("startbutton").remove();     //hide button
+                                document.getElementById('startbutton').remove();     //hide button
                         }	
+
                         function rewind() {
-/*                                if (rewinding)
+                                if (rewinding)
                                 {
 	                                rewinding = false;
 	                                clearInterval(rw);
@@ -390,11 +390,12 @@ limitations under the License.
                                 else
                                 {
 	                                rewinding = true;
-	                                //rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
-                                        //myVideo.setAttribute('src', 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
-                                }*/
-                        }		
+	                                rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
+                                        //myVideo.setAttribute('src', 'video_backwards.mp4');
+                                }
+                        }			
 		</script>
 	</body>
 </html>
+
 
