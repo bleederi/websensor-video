@@ -373,32 +373,32 @@ limitations under the License.
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
                                 //need the constant checking due to some weird issue with the video not always changing  
                                 //console.log(Math.abs(longitude - longitudeInitial));
-                                let myVideo2 = document.getElementById("video1");             
+                                let video = document.getElementById("video1");             
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
                                         console.log("Rewind");
-                                        if(myVideo2.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
+                                        if(video.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
-                                                myVideo2.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                                myVideo2.load();
-                                                if(myVideo2.canplay)
+                                                video.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
+                                                video.load();
+                                                /*if(myVideo2.canplay)
                                                 {
                                                         myVideo2.play();
-                                                }
+                                                }*/
                                         }
                                         rewinding = true;
                                 }
-                                else if (Math.abs(longitude - longitudeInitial) < 135)
+                                else
                                 {
                                         console.log("No rewind");
-                                        if(myVideo2.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
+                                        if(video.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
         {
-                                                myVideo2.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
-                                                myVideo2.load();
-                                                if(myVideo2.canplay)
+                                                video.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
+                                                video.load();
+                                                /*if(myVideo2.canplay)
                                                 {
                                                         myVideo2.play();
-                                                }                                                
+                                                } */                                               
                                         }
                                         rewinding = false;
                                 }
