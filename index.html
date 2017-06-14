@@ -372,21 +372,18 @@ limitations under the License.
                                 }
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
                                 //need the constant checking due to some weird issue with the video not always changing  
-                                //console.log(Math.abs(longitude - longitudeInitial));         
+                                //console.log(Math.abs(longitude - longitudeInitial));
+                                let myVideo2 = document.getElementsByTagName('video1')[0];             
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
                                         console.log("Rewind");
-                                        if(myVideo.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
+                                        if(myVideo2.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
-                                                myVideo.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                                myVideo.load();
-                                                if(myVideo.canplay)
+                                                myVideo2.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
+                                                myVideo2.load();
+                                                if(myVideo2.canplay)
                                                 {
-                                                        myVideo.play();
-                                                }
-                                                if(!myVideo.paused)
-                                                {
-                                                        myVideo.pause();
+                                                        myVideo2.play();
                                                 }
                                         }
                                         rewinding = true;
@@ -394,18 +391,14 @@ limitations under the License.
                                 else if (Math.abs(longitude - longitudeInitial) < 135)
                                 {
                                         console.log("No rewind");
-                                        if(myVideo.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
+                                        if(myVideo2.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
         {
-                                                myVideo.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
-                                                myVideo.load();
-                                                if(myVideo.canplay)
+                                                myVideo2.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
+                                                myVideo2.load();
+                                                if(myVideo2.canplay)
                                                 {
-                                                        myVideo.play();
+                                                        myVideo2.play();
                                                 }                                                
-                                        if(!myVideo.paused)
-                                                {
-                                                        myVideo.pause();
-                                                }
                                         }
                                         rewinding = false;
                                 }
