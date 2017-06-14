@@ -25,9 +25,9 @@ limitations under the License.
 				margin: 0;
 			}
                    .button {
-                        background-color: #000000;
+                        background-color: red;
                         color: #FFFFFF;
-                        padding: 10px;
+                        padding: 15px 32px;
                         border-radius: 10px;
                         margin:10px
                     }
@@ -372,7 +372,7 @@ limitations under the License.
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
                                 myVideo.pause();
-                                document.getElementById('startbutton').style.display="none";     //hide button
+                                document.getElementById('startbutton').remove();     //hide button
                         }	
 
                         function rewind() {
