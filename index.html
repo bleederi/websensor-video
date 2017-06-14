@@ -370,14 +370,22 @@ limitations under the License.
                                 {
                                         console.log("Rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
-                                        //myVideo.play();
-                                        //myVideo.pause();
+                                        myVideo.play();
+                                        if(!myVideo.paused)
+                                        {
+                                                myVideo.pause();
+                                        }
                                         rewinding = true;
                                 }
                                 else if (Math.abs(longitude - longitudeInitial) < 135 && rewinding == true)
                                 {
                                         console.log("No rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4");
+                                        myVideo.play();
+                                        if(!myVideo.paused)
+                                        {
+                                                myVideo.pause();
+                                        }
                                         rewinding = false;
                                 }
 		        }
