@@ -365,9 +365,14 @@ limitations under the License.
                                         walking_status_div.innerHTML = "Not walking";
                                 }
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                  
-                                if(Math.abs(longitude - longitudeInitial) > 90)
+                                if(Math.abs(longitude - longitudeInitial) > 90 && rewinding == false)
                                 {
-                                        //console.log("Rewind");
+                                        console.log("Rewind");
+                                        rewinding = true;
+                                }
+                                else
+                                {
+                                        rewinding = false;
                                 }
 		        }
 
