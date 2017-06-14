@@ -365,53 +365,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         else
         {
                 return false;
-        } 
-/* 
-        //now find peaks using derivative sequence
-        //create derivative sequence
-        derseq = {'x':null, 'y':null, 'z':null};
-        for (var k in maseq)
-        {
-                derseq[k] = [];
-                for (var i in maseq[k])
-                {
-                        if(i <= 1)
-                        {
-                                derseq[k][i] = null;
-                        }
-                        else
-                        {
-                                derseq[k][i] = maseq[k][i] - maseq[k][i-1];
-                                //console.log(k, derseq[k][i]);
-                        }
-                }
         }
-        //console.log(derseq);
-        //now find the peaks using it
-        for (var k in seq)
-        {
-                for (var i in seq[k])
-                {
-                        if(i >= 1 && i != seq[k].length)
-                        {
-                                //console.log(i);
-                                //if((derseq[k][i] < 0 && derseq[k][i-1] >= 0) || (derseq[k][i] <= 0 && derseq[k][i-1] == 0))
-                                if((seq[k][i] > seq[k][i-1]) && (seq[k][i] > seq[k][i+1]) && (Math.abs(seq[k][i]) > 9))
-                                {
-                                        //console.log("Max", k, "at", i, seq[k][i]);                                
-                                }
-                        }
-                }
-        }
-        let maxval = {'x':Math.max.apply(null, (seq['x'])), 'y':Math.max.apply(null, (seq['y'])), 'z':Math.max.apply(null, (seq['z']))};
-        let minval = {'x':Math.min.apply(null, (seq['x'])), 'y':Math.min.apply(null, (seq['y'])), 'z':Math.min.apply(null, (seq['z']))};
-        let diff = {'x': maxval['x'] - minval['x'], 'y': maxval['y'] - minval['y'], 'z': maxval['z'] - minval['z']};
-        if(diff['y'] > 3 && diff['x'] > 0.4)
-        {
-                //return 1;
-        }
-        return 0;
-        */
 }
 
 function updateSlider(slideAmount)

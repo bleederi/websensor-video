@@ -113,7 +113,7 @@ limitations under the License.
                 var roll = 0;
                 var pitch = 0;
                 var yaw = 0;
-                var yawInitial = 0;
+                var longitudeInitial = null;
                 var anglesCurrent = [];            
                 var latitude;
                 var longitude;
@@ -216,9 +216,11 @@ limitations under the License.
                                                 this.roll = orientation_sensor.roll;
                                                 this.pitch = orientation_sensor.pitch;
                                                 this.yaw = orientation_sensor.yaw; 
-                                                if(initialoriobtained == false)
+                                                if(initialoriobtained == false) //obtain initial longitude
                                                 {
-                                                        yawInitial = orientation_sensor.yaw;
+                                                        let yawInitial = orientation_sensor.yaw;
+                                                        longitudeInitial = -yawInitial * 180 / Math.PI;
+                                                        console.log("Initial longitude", longitudeInitial);
                                                         initialoriobtained = true;
                                                 }                     
                                         }
@@ -257,6 +259,7 @@ limitations under the License.
                                 }
                                 render() {
                                         this.longitude = -this.yaw * 180 / Math.PI;
+                                        console.log(this.longitude);
                                         this.latitude = this.roll * 180 / Math.PI - 90;
                                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
                                         this.latitude = Math.max(-85, Math.min(85, this.latitude));
