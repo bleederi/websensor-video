@@ -372,10 +372,10 @@ limitations under the License.
                                 }
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly       
                                 //console.log(Math.abs(longitude - longitudeInitial));         
-                                if(Math.abs(longitude - longitudeInitial) > 135 && rewinding == false)
+                                if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
                                         console.log("Rewind");
-                                        while(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
+                                        if(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
                                         myVideo.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
                                         myVideo.load();
@@ -390,10 +390,10 @@ limitations under the License.
                                         }
                                         rewinding = true;
                                 }
-                                else if (Math.abs(longitude - longitudeInitial) < 135 && rewinding == true)
+                                else if (Math.abs(longitude - longitudeInitial) < 135)
                                 {
                                         console.log("No rewind");
-                                        while(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
+                                        if(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
         {
                                                 myVideo.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
                                                 myVideo.load();
