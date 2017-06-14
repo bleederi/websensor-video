@@ -212,8 +212,8 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 if(peaks.length >= 2)
                                 {
                                         peakdiff.push(index - lastpeaktime);
-                                        let peakdiff_selected = peakdiff[0:peakdiff.length-1];  //select recent M peaks
-                                        let sum = peakdiff[0:peakdiff.length-1].reduce((previous, current) => current += previous); //sum over the array
+                                        let peakdiff_selected = peakdiff;  //select recent M peaks
+                                        let sum = peakdiff_selected.reduce((previous, current) => current += previous); //sum over the array
                                         peaktimethreshold = sum/peakdiff.length;      //average of peak diffs
                                 }  
                                 else
@@ -237,8 +237,8 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 if(valleys.length >= 2)
                                 {
                                         valleydiff.push(index - lastvalleytime);
-                                        let valleydiff_selected = valleydiff[0:valleydiff.length-1];    //select recent M valleys
-                                        let sum = valleydiff[0:peakdiff.length-1].reduce((previous, current) => current += previous); //sum over the array
+                                        let valleydiff_selected = valleydiff;    //select recent M valleys
+                                        let sum = valleydiff_selected.reduce((previous, current) => current += previous); //sum over the array
                                         valleytimethreshold = sum/valleydiff.length;      //average of valley diffs
                                 }  
                                 else
