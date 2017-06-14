@@ -144,7 +144,7 @@ limitations under the License.
                         slider_bias_div.innerHTML = bias;
                         console.log("Filter bias:", bias);
                 }
-                myVideo.pause();
+                //myVideo.pause();
                         class Pedometer {
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
@@ -358,7 +358,10 @@ limitations under the License.
                                 else
                                 {
                                         //console.log("Not playing");
-                                        myVideo.pause();
+                                        if(!myVideo.paused)
+                                        {
+                                                myVideo.pause();
+                                        }
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Not walking";
                                 }
@@ -367,6 +370,8 @@ limitations under the License.
                                 {
                                         console.log("Rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
+                                        //myVideo.play();
+                                        //myVideo.pause();
                                         rewinding = true;
                                 }
                                 else if (Math.abs(longitude - longitudeInitial) < 135 && rewinding == true)
@@ -378,7 +383,10 @@ limitations under the License.
 
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
-                                myVideo.pause();
+                                if(!myVideo.paused)
+                                {
+                                        myVideo.pause();
+                                }
                                 document.getElementById('startbutton').remove();     //hide button
                         }	
 
