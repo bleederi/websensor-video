@@ -1,4 +1,4 @@
-v<!--
+<!--
 Copyright 2017 Jesse Nieminen
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,10 @@ limitations under the License.
 				margin: 0;
 			}
                    .button {
-                        background-color: #000000;
-                        color: #FFFFFF;
+                        background-color: red;
+                        color: white;
+                        font-size: 20px;
+                        width:10%;
                         padding: 10px;
                         border-radius: 10px;
                         margin:10px
@@ -372,7 +374,7 @@ limitations under the License.
                         function startDemo() {  //need user input to play video
                                 myVideo.play();
                                 myVideo.pause();
-                                document.getElementById('startbutton').style.display="none";     //hide button
+                                document.getElementById('startbutton').remove();
                         }	
 
                         function rewind() {
