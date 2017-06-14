@@ -379,11 +379,10 @@ limitations under the License.
                                         if(myVideo.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
                                                 console.log("Loading backward video");
-                                                let oldElement = myVideo;
+                                                let elementView = document.getElementsByTagName("video-view");
                                                 let newElement = '<video id="video1b" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
-                                                oldElement.insertAdjacentHTML( 'afterend', newElement );
-                                                oldElement.remove();     //hide button
-                                                myVideo = document.getElementById("video1b"); 
+                                                elementView.removeChild(elementView.childNodes[0]);
+                                                //myVideo = document.getElementById("video1b"); 
                                                 /*video.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
                                                 video.load();
                                                 if(myVideo2.canplay)
@@ -399,11 +398,10 @@ limitations under the License.
                                         if(myVideo.currentSrc != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4")
         {
                                                 console.log("Loading forward video");
-                                                let oldElement = myVideo;
-                                                let newElement = '<video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
-                                                oldElement.insertAdjacentHTML( 'afterend', newElement );
-                                                oldElement.remove();     //hide button
-                                                myVideo = document.getElementById("video1f"); 
+                                                let elementView = document.getElementsByTagName("video-view");
+                                                let videoChild = '<video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
+                                                elementView.removeChild(elementView.childNodes[0]);
+                                                //myVideo = document.getElementById("video1f"); 
                                                 /*video.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
 
                                                 video.load();
