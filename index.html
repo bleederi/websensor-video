@@ -41,7 +41,8 @@ limitations under the License.
                 }
                 </style>
         </template>
-		
+                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
+                <script src="three.min.js"></script>
 	</head>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
@@ -52,8 +53,6 @@ limitations under the License.
                         Your browser does not support the video tag.
                         </video>
                 </video-view>
-                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
-                <script src="three.min.js"></script>
 
                 <input id="slider_stddev" type="range" min="0.1" max="6" step="0.2" value="2">
 
@@ -117,16 +116,16 @@ limitations under the License.
                 var videocanvasctx = null;
                 myVideo.onload = function() {
                         myVideo.pause();
-                }
+                };
                 //Sliders
-                var slider_stddev = document.getElementById('slider_stddev');
+                var slider_stddev = document.getElementById("slider_stddev");
                 var slider_stddev_div = document.getElementById("slider_stddev_amount");
                 slider_stddev.onchange = () => {
                         stddevthreshold = slider_stddev.value;
                         slider_stddev_div.innerHTML = stddevthreshold;
                         console.log("Std dev threshold:", stddevthreshold);
                 }
-                var slider_stepamt = document.getElementById('slider_stepamt');
+                var slider_stepamt = document.getElementById("slider_stepamt");
                 var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
                 slider_stepamt.onchange = () => {
                         stepamt = slider_stepamt.value;
@@ -134,7 +133,7 @@ limitations under the License.
                         slider_stepamt_div.innerHTML = stepamt;
                         console.log("Step amount:", stepamt);
                 }
-                var slider_bias = document.getElementById('slider_bias');
+                var slider_bias = document.getElementById("slider_bias");
                 var slider_bias_div = document.getElementById("slider_bias_amount");
                 slider_bias.onchange = () => {
                         bias = slider_bias.value;
@@ -151,7 +150,9 @@ limitations under the License.
                                                 }
                                         };
                                         sensor.onactivate = () => {
-                                                if (this.onactivate) this.onactivate();
+                                                if (this.onactivate) {
+                                                        this.onactivate();
+                                                }
                                         }
                                         const start = () => sensor.start();
                                         Object.assign(this, { start });
