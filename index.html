@@ -46,7 +46,7 @@ limitations under the License.
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
                 <button onclick="rewind()">Rewind</button>
                 <video-view>
-                        <video id="video1" width="3040" height="1520" crossorigin="anonymous">
+                        <video id="video1" width="3040" height="1520" preload="auto" crossorigin="anonymous">
                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                         </video>
@@ -375,10 +375,8 @@ limitations under the License.
                                 {
                                         console.log("Rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
-                                        const playPromise = myVideo.play();
-                                        if (playPromise !== null){
-                                            playPromise.catch(() => { myVideo.play(); })
-                                        }
+                                        if (!isPlaying) {
+                                          video.play();
                                         if(!myVideo.paused)
                                         {
                                                 myVideo.pause();
