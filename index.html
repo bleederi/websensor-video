@@ -145,6 +145,7 @@ limitations under the License.
                         slider_bias_div.innerHTML = bias;
                         console.log("Filter bias:", bias);
                 }
+                //myVideo.load();
                 //myVideo.pause();
                         class Pedometer {
                                 constructor() {
@@ -375,6 +376,7 @@ limitations under the License.
                                 {
                                         console.log("Rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
+                                        myVideo.load();
                                         const playPromise = myVideo.play();
                                         if (playPromise !== null){
                                             playPromise.catch(() => { myVideo.play(); })
@@ -389,6 +391,7 @@ limitations under the License.
                                 {
                                         console.log("No rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4");
+                                        myVideo.load();
                                         const playPromise = myVideo.play();
                                         if (playPromise !== null){
                                             playPromise.catch(() => { myVideo.play(); })
