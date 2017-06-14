@@ -366,6 +366,7 @@ limitations under the License.
                                 if(Math.abs(longitude - longitudeInitial) > 135 && rewinding == false)
                                 {
                                         console.log("Rewind");
+                                        myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
                                         rewinding = true;
                                 }
                                 else if (Math.abs(longitude - longitudeInitial) < 135 && rewinding == true)
