@@ -381,7 +381,7 @@ limitations under the License.
         {
                                                 console.log("Loading backward video");
                                                 video.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                                while(video.readyState != 4)
+                                                while(video.readyState != 2)
                                                 {
                                                         video.load();
                                                 }
@@ -399,7 +399,7 @@ limitations under the License.
         {
                                                 console.log("Loading forward video");
                                                 video.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
-                                                while(video.readyState != 4)
+                                                while(video.readyState != 2)
                                                 {
                                                         video.load();
                                                 }
