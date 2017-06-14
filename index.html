@@ -363,14 +363,13 @@ limitations under the License.
                                         walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Not walking";
                                 }
-                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly          
-                                console.log(Math.abs(longitude - longitudeInitial));        
+                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly                
                                 if(Math.abs(longitude - longitudeInitial) > 160 && rewinding == false)
                                 {
                                         console.log("Rewind");
                                         rewinding = true;
                                 }
-                                else
+                                else if (Math.abs(longitude - longitudeInitial) < 160 && rewinding == true)
                                 {
                                         console.log("No rewind");
                                         rewinding = false;
