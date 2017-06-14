@@ -78,10 +78,8 @@ limitations under the License.
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
-                var accel = {x:null, y:null, z:null};
+                var accel = {x:null, y:null, z:null};   //here we store sensor readings
                 var accelFiltered = {x:null, y:null, z:null};
-                var gravity;
-                var accelNoG;
                 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
                 var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
@@ -110,9 +108,6 @@ limitations under the License.
                 var peakvalleyamtthreshold = [2, 6];
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var initialoriobtained = false;
-                var roll = 0;
-                var pitch = 0;
-                var yaw = 0;
                 var longitude = 0;
                 var latitude = 0;
                 var longitudeInitial = null;
@@ -147,7 +142,6 @@ limitations under the License.
                         class Pedometer {
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
-                                gravity =  new LowPassFilterData(sensor, 0.8);
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                                         if (this.onchange) this.onchange();
@@ -275,10 +269,9 @@ limitations under the License.
                         });
                         function saveSensorReading()
                         {                       
-                                accel = {x:accel.x, y:accel.y, z:accel.z};
+                                //accel = {x:accel.x, y:accel.y, z:accel.z};
                                 accelFiltered = new LowPassFilterData(accel, bias);
-                                //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
-                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
+                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered));
                                 if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.1)                               
                                 {
                                         //console.log("Accel logged:", magnitude(accelFiltered));
