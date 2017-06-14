@@ -377,16 +377,13 @@ limitations under the License.
                                         console.log("Rewind");
                                         if(myVideo.src != "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4")
         {
-                                        myVideo.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                        myVideo.load();
-                                        }
-                                        const playPromise = myVideo.play();
-                                        if (playPromise !== null){
-                                            playPromise.catch(() => { myVideo.play(); })
-                                        }
-                                        if(!myVideo.paused)
-                                        {
-                                                myVideo.pause();
+                                                myVideo.src ="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
+                                                myVideo.load();
+                                                myVideo.play();
+                                                if(!myVideo.paused)
+                                                {
+                                                        myVideo.pause();
+                                                }
                                         }
                                         rewinding = true;
                                 }
