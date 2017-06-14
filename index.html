@@ -375,8 +375,10 @@ limitations under the License.
                                 {
                                         console.log("Rewind");
                                         myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
-                                        if (!isPlaying) {
-                                          video.play();
+                                        const playPromise = myVideo.play();
+                                        if (playPromise !== null){
+                                            playPromise.catch(() => { myVideo.play(); })
+                                        }
                                         if(!myVideo.paused)
                                         {
                                                 myVideo.pause();
