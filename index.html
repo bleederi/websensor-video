@@ -75,6 +75,7 @@ limitations under the License.
                 var myVideo = document.getElementById("video1"); 
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
+                var ppr;
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
@@ -254,7 +255,7 @@ limitations under the License.
 			                this.scene.add(sphereMesh);
 
 
-                                        render = setInterval(render, 1000/(fps+sensorfreq));
+                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                                 }
                                 render() {
                                         longitude = -this.yaw * 180 / Math.PI;
@@ -346,7 +347,7 @@ limitations under the License.
                                         //console.log(accelerationData);
                                 }
                         }
-                        function render()
+                        function playPauseRewind()
                         {
                                 if(stepvar == 1)
                                 {
