@@ -194,6 +194,8 @@ limitations under the License.
                                 const shadowRoot = this.attachShadow({ mode: 'open' });
                                 shadowRoot.appendChild(clone);
 			        }
+                                this.longitude;
+                                this.latitude;
 
                                 connectedCallback() {
                                         try {
@@ -250,15 +252,15 @@ limitations under the License.
                                         render = setInterval(render, 1000/(fps+sensorfreq));
                                 }
                                 render() {
-                                        longitude = -this.yaw * 180 / Math.PI;
-                                        latitude = this.roll * 180 / Math.PI - 90;
+                                        this.longitude = -this.yaw * 180 / Math.PI;
+                                        this.latitude = this.roll * 180 / Math.PI - 90;
                                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
-                                        latitude = Math.max(-85, Math.min(85, latitude));
+                                        this.latitude = Math.max(-85, Math.min(85, this.latitude));
 
                                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
-                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
-                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
+                                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.cos(THREE.Math.degToRad(longitude));
+                                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - this.latitude));
+                                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - this.latitude)) * Math.sin(THREE.Math.degToRad(longitude));
                                         this.camera.lookAt(this.camera.target);
 
                                         // Render loop
