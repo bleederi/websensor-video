@@ -468,15 +468,15 @@ limitations under the License.
                                         newElement.load();
                                         myVideo = newElement;
                                         const playPromise = myVideo.play();
-                                        if (playPromise !== null){
-                                            playPromise.catch(() => { myVideo.play(); })
-                                        }
+                                        //if (playPromise !== null){
+                                        //    playPromise.catch(() => { myVideo.play(); })
+                                        //}
                                         if(!myVideo.paused)
                                         {
                                                 myVideo.pause();
                                         }
-                                                rewinding = true;
-                                                return 0;
+                                        rewinding = true;
+                                        return 0;
                                         }
                                 //console.log("No rewind");
                                 else
