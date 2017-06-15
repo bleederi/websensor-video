@@ -75,7 +75,7 @@ limitations under the License.
                 var myVideo = document.getElementById("video1"); 
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
-                var ppr;
+                var pp;
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
@@ -256,7 +256,8 @@ limitations under the License.
 			                this.scene.add(sphereMesh);
 
 
-                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                        pp = setInterval(playPause, 1000/(fps+sensorfreq));
+                                        rw = setInterval(rewind, 1000);
                                 }
                                 render() {
                                         longitude = -this.yaw * 180 / Math.PI;
@@ -348,7 +349,7 @@ limitations under the License.
                                         //console.log(accelerationData);
                                 }
                         }
-                        function playPauseRewind()
+                        function playPause()
                         {
                                 if(stepvar == 1)
                                 {
@@ -373,6 +374,22 @@ limitations under the License.
                                 //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
                                 //need the constant checking due to some weird issue with the video not always changing  
                                 //console.log(Math.abs(longitude - longitudeInitial));           
+		        }
+
+                        function startDemo() {  //need user input to play video
+                                const playPromise = myVideo.play();
+                                if (playPromise !== null){
+                                    playPromise.catch(() => { myVideo.play(); })
+                                }
+                                if(!myVideo.paused)
+                                {
+                                        myVideo.pause();
+                                }
+                                document.getElementById('startbutton').remove();     //hide button
+                        }	
+
+                        function rewind(mode) {
+                                console.log("Rewind check");
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
                                         if(rewinding === false)
@@ -393,7 +410,6 @@ limitations under the License.
                                                 return 0;
                                         }
                                 }
-                                //console.log("No rewind");
                                 else
                                 {
                                         if(rewinding === true)
@@ -412,58 +428,8 @@ limitations under the License.
                                                 newElement.load(); 
                                                 rewinding = false;
                                                 return 0;   
-                                        }                                          
-                                }
-		        }
-
-                        function startDemo() {  //need user input to play video
-                                const playPromise = myVideo.play();
-                                if (playPromise !== null){
-                                    playPromise.catch(() => { myVideo.play(); })
-                                }
-                                if(!myVideo.paused)
-                                {
-                                        myVideo.pause();
-                                }
-                                document.getElementById('startbutton').remove();     //hide button
-                        }	
-
-                        function rewind() {
-                                if(rewinding === false)
-                                {
-                                        console.log("Loading backward video");
-                                        let elementView = document.getElementById("videoview");
-                                        let newElement = document.createElement("video");
-                                        newElement.id = "video1b";
-                                        newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                        newElement.width = "1920";
-                                        newElement.height = "1080";
-                                        newElement.type = "video/mp4";
-                                        //let newElement = '<video-view> <video id="video1b" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video> </video-view> '
-                                        elementView.innerHTML = "";
-                                        elementView.appendChild(newElement);
-                                        newElement.load();
-                                        rewinding = true;
-                                        return 0;
-                                }
-                        //console.log("No rewind");
-                                if(rewinding === true)
-                                {
-                                        console.log("Loading forward video");
-                                        let elementView = document.getElementById("videoview");
-                                        let newElement = document.createElement("video");
-                                        newElement.id = "video1f";
-                                        newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
-                                        newElement.width = "1920";
-                                        newElement.height = "1080";
-                                        newElement.type = "video/mp4";
-                                        //let videoChild = '<video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
-                                        elementView.innerHTML = "";
-                                        elementView.appendChild(newElement);
-                                        newElement.load(); 
-                                        rewinding = false;
-                                        return 0;   
-                                }                                          
+                                        }     
+                                }                                     
                         }			
 		</script>
 	</body>
