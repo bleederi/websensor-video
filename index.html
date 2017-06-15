@@ -315,12 +315,12 @@ limitations under the License.
                                                         elementView.innerHTML = "";
                                                         elementView.appendChild(newElement);
                                                         newElement.load();
-                                                        myVideo = document.getElementById("video1b"); 
+                                                        myVideo = newElement; 
                                                         rewinding = true;
-			                                this.scene = new THREE.Scene();
+			                                //this.scene = new THREE.Scene();
 
-			                                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-			                                this.camera.target = new THREE.Vector3(0, 0, 0);
+			                                //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+			                                //this.camera.target = new THREE.Vector3(0, 0, 0);
 
 			                                this.sphere = new THREE.SphereGeometry(100, 100, 40);
 			                                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
