@@ -136,6 +136,7 @@ limitations under the License.
                 var videocanvasctx = null;
                 var renderer = null;
                 var scene = null;
+                var sphere = null;
                 var video = null;
                 var videoF = null;
                 var videoB = null;
@@ -264,8 +265,8 @@ limitations under the License.
 			                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 			                this.camera.target = new THREE.Vector3(0, 0, 0);
 
-			                this.sphere = new THREE.SphereGeometry(100, 100, 40);
-			                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+			                sphere = new THREE.SphereGeometry(100, 100, 40);
+			                sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
                                         videoF      = document.createElement('video');
                                         videoF.autoplay = true;
@@ -283,7 +284,7 @@ limitations under the License.
                                         videoTexture.format = THREE.RGBFormat;
 
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
+			                sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
 			                scene.add(sphereMesh);
 
 
@@ -504,9 +505,11 @@ limitations under the License.
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
                                         videoTexture.needsUpdate = true;
+			                scene.remove(sphereMesh);
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
 			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
                                         sphereMaterial.needsUpdate = true;
+			                scene.add(sphereMesh);
                                         rewinding = true;
                                         return 0;
                                         }
