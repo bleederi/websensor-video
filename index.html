@@ -380,7 +380,10 @@ limitations under the License.
                                         {
                                                 console.log("Loading backward video");
                                                 let elementView = document.getElementById("videoview");
+                                                let newElement = document.createElement("video");
+                                                newElement.id = "video1b";
                                                 elementView.innerHTML = "";
+                                                elementView.appendChild(newElement);
                                                 rewinding = true;
                                                 return 0;
                                         }
@@ -392,7 +395,9 @@ limitations under the License.
                                         {
                                                 console.log("Loading forward video");
                                                 let elementView = document.getElementById("videoview");
+                                                let newElement = document.createElement("video");
                                                 elementView.innerHTML = "";
+                                                elementView.appendChild(newElement);
                                                 rewinding = false;
                                                 return 0;                                             
                                         }
