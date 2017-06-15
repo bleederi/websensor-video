@@ -299,7 +299,7 @@ limitations under the License.
                                         //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
                                         //need the constant checking due to some weird issue with the video not always changing  
                                         //console.log(Math.abs(longitude - longitudeInitial));
-/*           
+/*         
                                         if(Math.abs(longitude - longitudeInitial) > 135)
                                         {
                                                 //console.log("Rewind");
@@ -444,7 +444,7 @@ limitations under the License.
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
-                                        let elementView = document.getElementById("videoview");
+                                        let elementView = document.querySelector('#video-view');
                                         let newElement = document.createElement("video");
                                         newElement.id = "video1b";
                                         newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
