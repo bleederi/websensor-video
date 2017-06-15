@@ -31,6 +31,13 @@ limitations under the License.
                         border-radius: 10px;
                         margin:10px
                     }
+                   #rewindbutton {
+                        background-color: blue;
+                        color: #FFFFFF;
+                        padding: 15px 32px;
+                        border-radius: 10px;
+                        margin:10px
+                    }
 		</style>
 		
 	</head>
@@ -44,7 +51,7 @@ limitations under the License.
         </template>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
-                <button onclick="rewind()">Rewind</button>
+                <button id="rewindbutton" onclick="rewind()">Rewind</button>
                 <video-view id="videoview">
                         <video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">
                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4">
@@ -441,6 +448,7 @@ limitations under the License.
                         }	
 
                         function rewind() {
+/*
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
@@ -475,7 +483,7 @@ limitations under the License.
                                         newElement.load(); 
                                         rewinding = false;
                                         return 0;                                             
-                                }
+                                }*/
                         }			
 		</script>
 	</body>
