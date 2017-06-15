@@ -243,8 +243,8 @@ limitations under the License.
 			                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 			                this.camera.target = new THREE.Vector3(0, 0, 0);
 
-			                let sphere = new THREE.SphereGeometry(100, 100, 40);
-			                sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+			                this.sphere = new THREE.SphereGeometry(100, 100, 40);
+			                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
                                         let texture = new THREE.VideoTexture(myVideo);
                                         texture.minFilter = THREE.LinearFilter;
@@ -252,7 +252,7 @@ limitations under the License.
                                         texture.format = THREE.RGBFormat;
 
                                         let sphereMaterial = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
-			                let sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+			                let sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
 			                this.scene.add(sphereMesh);
 
 
@@ -323,7 +323,7 @@ limitations under the License.
                                                         texture.format = THREE.RGBFormat;
 
                                                         let sphereMaterial = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
-			                                let sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+			                                let sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
 			                                this.scene.add(sphereMesh);
                                                         return 0;
                                                 }
