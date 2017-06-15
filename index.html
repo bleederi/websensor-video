@@ -382,13 +382,7 @@ limitations under the License.
                                                 let elementView = document.getElementById("videoview");
                                                 let newElement = document.createElement("video");
                                                 newElement.id = "video1b";
-                                                newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                                newElement.width = "1920";
-                                                newElement.height = "1080";
-                                                newElement.type = "video/mp4";
                                                 elementView.innerHTML = "";
-                                                elementView.appendChild(newElement);
-                                                //myVideo = newElement;
                                                 rewinding = true;
                                                 return 0;
                                         }
@@ -400,9 +394,7 @@ limitations under the License.
                                         {
                                                 console.log("Loading forward video");
                                                 let elementView = document.getElementById("videoview");
-                                                let newElement = document.createElement("video");
                                                 elementView.innerHTML = "";
-                                                elementView.appendChild(newElement);
                                                 rewinding = false;
                                                 return 0;                                             
                                         }
