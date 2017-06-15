@@ -440,16 +440,40 @@ limitations under the License.
                         }	
 
                         function rewind() {
-                                if (rewinding)
+                               if(rewinding === false)
                                 {
-	                                rewinding = false;
-	                                clearInterval(rw);
+                                        console.log("Loading backward video");
+                                        let elementView = document.getElementById("videoview");
+                                        let newElement = document.createElement("video");
+                                        newElement.id = "video1b";
+                                        newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
+                                        newElement.width = "1920";
+                                        newElement.height = "1080";
+                                        newElement.type = "video/mp4";
+                                        //let newElement = '<video-view> <video id="video1b" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video> </video-view> '
+                                        elementView.innerHTML = "";
+                                        elementView.appendChild(newElement);
+                                        newElement.load();
+                                        rewinding = true;
+                                        return 0;
                                 }
-                                else
+                                //console.log("No rewind");
+                                if(rewinding === true)
                                 {
-	                                rewinding = true;
-	                                //rw = setInterval(function(){ myVideo.currentTime = myVideo.currentTime - 1/fps; }, 1000/fps);
-                                        myVideo.setAttribute('src', "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4");
+                                        console.log("Loading forward video");
+                                        let elementView = document.getElementById("videoview");
+                                        let newElement = document.createElement("video");
+                                        newElement.id = "video1f";
+                                        newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
+                                        newElement.width = "1920";
+                                        newElement.height = "1080";
+                                        newElement.type = "video/mp4";
+                                        //let videoChild = '<video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
+                                        elementView.innerHTML = "";
+                                        elementView.appendChild(newElement);
+                                        newElement.load(); 
+                                        rewinding = false;
+                                        return 0;                                             
                                 }
                         }			
 		</script>
