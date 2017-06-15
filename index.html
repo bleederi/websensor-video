@@ -506,12 +506,12 @@ limitations under the License.
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
                                         videoTexture.needsUpdate = true;
-			                //scene.remove(sphereMesh);
+			                scene.remove(sphereMesh);
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
 			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
                                         //sphereMesh.geometry.dynamic = true;
                                         sphereMaterial.needsUpdate = true;
-			                //scene.add(sphereMesh);
+			                scene.add(sphereMesh);
                                         rewinding = true;
                                         return 0;
                                         }
