@@ -53,6 +53,7 @@ limitations under the License.
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
                 <button id="rewindbutton" onclick="rewind()">Rewind</button>
                 <video-view id="videoview">
+<!--
                         <video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">
                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4">
                         Your browser does not support the video tag.
@@ -61,6 +62,7 @@ limitations under the License.
                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                         </video>
+-->
                 </video-view>
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
                 <script src="three.min.js"></script>
@@ -257,12 +259,16 @@ limitations under the License.
 			                this.sphere = new THREE.SphereGeometry(100, 100, 40);
 			                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-                                        var texture = new THREE.VideoTexture(myVideo);
-                                        texture.minFilter = THREE.LinearFilter;
-                                        texture.magFilter = THREE.LinearFilter;
-                                        texture.format = THREE.RGBFormat;
+                                        var video      = document.createElement('video');
+                                        video.autoplay = true;
+                                        video.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
+                                        video.crossOrigin = '';
+                                        var videoTexture = new THREE.Texture(video);
+                                        videoTexture.minFilter = THREE.LinearFilter;
+                                        videoTexture.magFilter = THREE.LinearFilter;
+                                        videoTexture.format = THREE.RGBFormat;
 
-                                        let sphereMaterial = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+                                        let sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
 			                let sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
 			                this.scene.add(sphereMesh);
 
@@ -270,6 +276,9 @@ limitations under the License.
                                         //ppr = setInterval(this.playPauseRewind, 1000/(fps+sensorfreq));
                                 }
                                 render() {
+                                          if( video.readyState === video.HAVE_ENOUGH_DATA ){
+                                            videoTexture.needsUpdate = true;
+                                          }
                                         longitude = -this.yaw * 180 / Math.PI;
                                         latitude = this.roll * 180 / Math.PI - 90;
                                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
