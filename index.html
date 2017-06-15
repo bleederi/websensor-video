@@ -256,7 +256,7 @@ limitations under the License.
 			                this.scene.add(sphereMesh);
 
 
-                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                        ppr = setInterval(this.playPauseRewind, 1000/(fps+sensorfreq));
                                 }
                                 render() {
                                         longitude = -this.yaw * 180 / Math.PI;
@@ -274,75 +274,75 @@ limitations under the License.
                                         this.renderer.render(this.scene, this.camera);
                                         requestAnimationFrame(() => this.render());
                                 }
-                        playPauseRewind()
-                        {
-                                if(stepvar == 1)
+                                playPauseRewind()
                                 {
-                                        //console.log("Playing");
-                                        walking_status_div = document.getElementById("walking_status");
-                                        walking_status_div.innerHTML = "Walking";
-                                        const playPromise = myVideo.play();
-                                        if (playPromise !== null){
-                                            playPromise.catch(() => { myVideo.play(); })
-                                        }
-                                }
-                                else
-                                {
-                                        //console.log("Not playing");
-                                        if(!myVideo.paused)
+                                        if(stepvar == 1)
                                         {
-                                                myVideo.pause();
+                                                //console.log("Playing");
+                                                walking_status_div = document.getElementById("walking_status");
+                                                walking_status_div.innerHTML = "Walking";
+                                                const playPromise = myVideo.play();
+                                                if (playPromise !== null){
+                                                    playPromise.catch(() => { myVideo.play(); })
+                                                }
                                         }
-                                        walking_status_div = document.getElementById("walking_status");
-                                        walking_status_div.innerHTML = "Not walking";
-                                }
-                                //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
-                                //need the constant checking due to some weird issue with the video not always changing  
-                                //console.log(Math.abs(longitude - longitudeInitial));           
-                                if(Math.abs(longitude - longitudeInitial) > 135)
-                                {
-                                        //console.log("Rewind");
-                                        if(!rewinding)
+                                        else
                                         {
-                                                console.log("Loading backward video");
-                                                let elementView = document.getElementById("videoview");
-                                                let newElement = document.createElement("video");
-                                                newElement.id = "video1b";
-                                                newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
-                                                newElement.width = "1920";
-                                                newElement.height = "1080";
-                                                newElement.type = "video/mp4";
-                                                elementView.innerHTML = "";
-                                                elementView.appendChild(newElement);
-                                                newElement.load();
-                                                myVideo = document.getElementById("video1b"); 
-                                                rewinding = true;
-                                                let texture = new THREE.VideoTexture(myVideo);
-                                                texture.minFilter = THREE.LinearFilter;
-                                                texture.magFilter = THREE.LinearFilter;
-                                                texture.format = THREE.RGBFormat;
+                                                //console.log("Not playing");
+                                                if(!myVideo.paused)
+                                                {
+                                                        myVideo.pause();
+                                                }
+                                                walking_status_div = document.getElementById("walking_status");
+                                                walking_status_div.innerHTML = "Not walking";
+                                        }
+                                        //check if need to rewind... On Windows, reference frame is dependent on screen orientation, so hard to get working correctly     
+                                        //need the constant checking due to some weird issue with the video not always changing  
+                                        //console.log(Math.abs(longitude - longitudeInitial));           
+                                        if(Math.abs(longitude - longitudeInitial) > 135)
+                                        {
+                                                //console.log("Rewind");
+                                                if(!rewinding)
+                                                {
+                                                        console.log("Loading backward video");
+                                                        let elementView = document.getElementById("videoview");
+                                                        let newElement = document.createElement("video");
+                                                        newElement.id = "video1b";
+                                                        newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
+                                                        newElement.width = "1920";
+                                                        newElement.height = "1080";
+                                                        newElement.type = "video/mp4";
+                                                        elementView.innerHTML = "";
+                                                        elementView.appendChild(newElement);
+                                                        newElement.load();
+                                                        myVideo = document.getElementById("video1b"); 
+                                                        rewinding = true;
+                                                        let texture = new THREE.VideoTexture(myVideo);
+                                                        texture.minFilter = THREE.LinearFilter;
+                                                        texture.magFilter = THREE.LinearFilter;
+                                                        texture.format = THREE.RGBFormat;
 
-                                                let sphereMaterial = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
-			                        let sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
-			                        this.scene.add(sphereMesh);
-                                                return 0;
+                                                        let sphereMaterial = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+			                                let sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+			                                this.scene.add(sphereMesh);
+                                                        return 0;
+                                                }
                                         }
-                                }
-                                else
-                                {
-                                        //console.log("No rewind");
-                                        if(rewinding)
+                                        else
                                         {
-                                                console.log("Loading forward video");
-                                                let elementView = document.getElementById("videoview");
-                                                let newElement = document.createElement("video");
-                                                elementView.innerHTML = "";
-                                                elementView.appendChild(newElement);
-                                                rewinding = false;
-                                                return 0;                                             
+                                                //console.log("No rewind");
+                                                if(rewinding)
+                                                {
+                                                        console.log("Loading forward video");
+                                                        let elementView = document.getElementById("videoview");
+                                                        let newElement = document.createElement("video");
+                                                        elementView.innerHTML = "";
+                                                        elementView.appendChild(newElement);
+                                                        rewinding = false;
+                                                        return 0;                                             
+                                                }
                                         }
-                                }
-		        }
+		                }
 
                         });
                         function saveSensorReading()
