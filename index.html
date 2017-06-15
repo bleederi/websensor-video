@@ -285,6 +285,7 @@ limitations under the License.
 
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
 			                sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+                                        sphereMesh.geometry.dynamic = true;
 			                scene.add(sphereMesh);
 
 
@@ -508,6 +509,7 @@ limitations under the License.
 			                scene.remove(sphereMesh);
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
 			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
+                                        sphereMesh.geometry.dynamic = true;
                                         sphereMaterial.needsUpdate = true;
 			                scene.add(sphereMesh);
                                         rewinding = true;
