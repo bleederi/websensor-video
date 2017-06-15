@@ -135,10 +135,13 @@ limitations under the License.
                 var longitude;
                 var videocanvasctx = null;
                 var renderer = null;
+                var scene = null;
                 var video = null;
                 var videoF = null;
                 var videoB = null;
                 var videoTexture = null;
+                var sphereMaterial = null;
+                var sphereMesh = null;
 
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
@@ -256,7 +259,7 @@ limitations under the License.
 			                renderer.setSize(window.innerWidth, window.innerHeight);
 			                document.body.appendChild(renderer.domElement);
 
-			                this.scene = new THREE.Scene();
+			                scene = new THREE.Scene();
 
 			                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 			                this.camera.target = new THREE.Vector3(0, 0, 0);
@@ -279,9 +282,9 @@ limitations under the License.
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
 
-                                        let sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-			                let sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
-			                this.scene.add(sphereMesh);
+                                        sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
+			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
+			                scene.add(sphereMesh);
 
 
                                         //ppr = setInterval(this.playPauseRewind, 1000/(fps+sensorfreq));
@@ -501,6 +504,9 @@ limitations under the License.
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
                                         videoTexture.needsUpdate = true;
+                                        sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
+			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
+                                        sphereMaterial.needsUpdate = true;
                                         rewinding = true;
                                         return 0;
                                         }
