@@ -317,6 +317,18 @@ limitations under the License.
                                                         newElement.load();
                                                         myVideo = document.getElementById("video1b"); 
                                                         rewinding = true;
+			                                this.renderer = new THREE.WebGLRenderer();
+			                                this.renderer.setSize(window.innerWidth, window.innerHeight);
+			                                document.body.appendChild(this.renderer.domElement);
+
+			                                this.scene = new THREE.Scene();
+
+			                                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+			                                this.camera.target = new THREE.Vector3(0, 0, 0);
+
+			                                this.sphere = new THREE.SphereGeometry(100, 100, 40);
+			                                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+
                                                         let texture = new THREE.VideoTexture(myVideo);
                                                         texture.minFilter = THREE.LinearFilter;
                                                         texture.magFilter = THREE.LinearFilter;
