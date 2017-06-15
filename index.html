@@ -134,6 +134,8 @@ limitations under the License.
                 var latitude;
                 var longitude;
                 var videocanvasctx = null;
+                var video = null;
+                var videoTexture = null;
 
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
@@ -259,11 +261,11 @@ limitations under the License.
 			                this.sphere = new THREE.SphereGeometry(100, 100, 40);
 			                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-                                        var video      = document.createElement('video');
+                                        video      = document.createElement('video');
                                         video.autoplay = true;
                                         video.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
                                         video.crossOrigin = '';
-                                        var videoTexture = new THREE.Texture(video);
+                                        videoTexture = new THREE.Texture(video);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
