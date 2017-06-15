@@ -134,6 +134,7 @@ limitations under the License.
                 var latitude;
                 var longitude;
                 var videocanvasctx = null;
+                var renderer = null;
                 var video = null;
                 var videoTexture = null;
 
@@ -249,7 +250,7 @@ limitations under the License.
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         //ThreeJS scene setup below
 
-			                var renderer = new THREE.WebGLRenderer();
+			                renderer = new THREE.WebGLRenderer();
 			                renderer.setSize(window.innerWidth, window.innerHeight);
 			                document.body.appendChild(renderer.domElement);
 
@@ -293,7 +294,7 @@ limitations under the License.
                                         this.camera.lookAt(this.camera.target);
 
                                         // Render loop
-                                        this.renderer.render(this.scene, this.camera);
+                                        renderer.render(this.scene, this.camera);
                                         requestAnimationFrame(() => this.render());
                                 }
                                 playPauseRewind()
