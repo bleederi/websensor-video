@@ -379,7 +379,7 @@ limitations under the License.
                                         if(!rewinding)
                                         {
                                                 console.log("Loading backward video");
-                                                let elementView = document.getElementsById("videoview");
+                                                let elementView = document.getElementById("videoview");
                                                 let newElement = '<video id="video1b" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
                                                 elementView.remove();
                                                 rewinding = true;
@@ -391,7 +391,7 @@ limitations under the License.
                                         if(rewinding)
                                         {
                                                 console.log("Loading forward video");
-                                                let elementView = document.getElementsById("videoview");
+                                                let elementView = document.getElementById("videoview");
                                                 let videoChild = '<video id="video1f" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video>'
                                                 elementView.remove();
                                                 rewinding = false;                                              
