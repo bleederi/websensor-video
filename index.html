@@ -273,7 +273,7 @@ limitations under the License.
                                         videoB.autoplay = true;
                                         videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
                                         videoB.crossOrigin = '';
-                                        video = videoB;
+                                        video = videoF;
                                         videoTexture = new THREE.Texture(video);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
@@ -495,7 +495,8 @@ limitations under the License.
                                         //{
                                         //        myVideo.pause();
                                         //}
-                                        videoTexture = new THREE.Texture(videoB);
+                                        video = videoB;
+                                        videoTexture = new THREE.Texture(video);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
