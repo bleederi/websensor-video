@@ -462,9 +462,18 @@ limitations under the License.
                                         elementView.innerHTML = "";
                                         elementView.appendChild(newElement);
                                         newElement.load();
-                                        rewinding = true;
-                                        return 0;
-                                }
+                                        myVideo = newElement;
+                                        const playPromise = myVideo.play();
+                                        if (playPromise !== null){
+                                            playPromise.catch(() => { myVideo.play(); })
+                                        }
+                                        if(!myVideo.paused)
+                                        {
+                                                myVideo.pause();
+                                        }
+                                                rewinding = true;
+                                                return 0;
+                                        }
                                 //console.log("No rewind");
                                 else
                                 {
