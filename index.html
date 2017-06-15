@@ -393,7 +393,7 @@ limitations under the License.
                                                 return 0;
                                         }
                                 }
-                                else
+                                else if(Math.abs(longitude - longitudeInitial) < 135)
                                 {
                                         //console.log("No rewind");
                                         if(rewinding)
