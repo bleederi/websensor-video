@@ -245,9 +245,9 @@ limitations under the License.
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         //ThreeJS scene setup below
 
-			                this.renderer = new THREE.WebGLRenderer();
-			                this.renderer.setSize(window.innerWidth, window.innerHeight);
-			                document.body.appendChild(this.renderer.domElement);
+			                var renderer = new THREE.WebGLRenderer();
+			                renderer.setSize(window.innerWidth, window.innerHeight);
+			                document.body.appendChild(renderer.domElement);
 
 			                this.scene = new THREE.Scene();
 
@@ -257,7 +257,7 @@ limitations under the License.
 			                this.sphere = new THREE.SphereGeometry(100, 100, 40);
 			                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-                                        let texture = new THREE.VideoTexture(myVideo);
+                                        var texture = new THREE.VideoTexture(myVideo);
                                         texture.minFilter = THREE.LinearFilter;
                                         texture.magFilter = THREE.LinearFilter;
                                         texture.format = THREE.RGBFormat;
@@ -463,12 +463,11 @@ limitations under the License.
                                         newElement.height = "1520";
                                         newElement.type = "video/mp4";
                                         newElement.crossorigin = "anonymous"
-                                        //let newElement = '<video-view> <video id="video1b" width="3040" height="1520" preload="auto" crossorigin="anonymous">                         <source src="https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4" type="video/mp4"> Your browser does not support the video tag. </video> </video-view> '
                                         elementView.innerHTML = "";
                                         elementView.appendChild(newElement);
                                         newElement.load();
                                         myVideo = newElement;
-                                        const playPromise = myVideo.play();
+                                        //const playPromise = myVideo.play();
                                         //if (playPromise !== null){
                                         //    playPromise.catch(() => { myVideo.play(); })
                                         //}
@@ -476,6 +475,7 @@ limitations under the License.
                                         //{
                                         //        myVideo.pause();
                                         //}
+                                        texture.needsUpdate = true;
                                         rewinding = true;
                                         return 0;
                                         }
