@@ -257,7 +257,7 @@ limitations under the License.
 
 
                                         pp = setInterval(playPause, 1000/(fps+sensorfreq));
-                                        rw = setInterval(rewind, 1000);
+                                        //rw = setInterval(rewind, 1000);
                                 }
                                 render() {
                                         longitude = -this.yaw * 180 / Math.PI;
@@ -390,7 +390,6 @@ limitations under the License.
 
                         function rewind(mode) {
                                 console.log("Rewind check");
-                                /*
                                 if(Math.abs(longitude - longitudeInitial) > 135)
                                 {
                                         if(rewinding === false)
@@ -430,8 +429,7 @@ limitations under the License.
                                                 rewinding = false;
                                                 return 0;   
                                         }     
-                                }  
-*/                                   
+                                }                                     
                         }			
 		</script>
 	</body>
