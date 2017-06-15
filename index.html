@@ -487,6 +487,14 @@ limitations under the License.
                                         //{
                                         //        myVideo.pause();
                                         //}
+                                        video      = document.createElement('video');
+                                        video.autoplay = true;
+                                        video.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
+                                        video.crossOrigin = '';
+                                        videoTexture = new THREE.Texture(video);
+                                        videoTexture.minFilter = THREE.LinearFilter;
+                                        videoTexture.magFilter = THREE.LinearFilter;
+                                        videoTexture.format = THREE.RGBFormat;
                                         videoTexture.needsUpdate = true;
                                         rewinding = true;
                                         return 0;
