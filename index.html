@@ -135,7 +135,8 @@ limitations under the License.
                 var longitude;
                 var videocanvasctx = null;
                 var renderer = null;
-                var video = null;
+                var videoF = null;
+                var videoB = null;
                 var videoTexture = null;
 
                 //Sliders
@@ -262,11 +263,16 @@ limitations under the License.
 			                this.sphere = new THREE.SphereGeometry(100, 100, 40);
 			                this.sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
-                                        video      = document.createElement('video');
-                                        video.autoplay = true;
-                                        video.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
-                                        video.crossOrigin = '';
-                                        videoTexture = new THREE.Texture(video);
+                                        videoF      = document.createElement('video');
+                                        videoF.autoplay = true;
+                                        videoF.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
+                                        videoF.crossOrigin = '';
+
+                                        videoB      = document.createElement('video');
+                                        videoB.autoplay = true;
+                                        videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
+                                        videoB.crossOrigin = '';
+                                        videoTexture = new THREE.Texture(videoF);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
@@ -467,7 +473,7 @@ limitations under the License.
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
-                                        let elementView = document.querySelector('#video-view');
+                                       /* let elementView = document.querySelector('#video-view');
                                         let newElement = document.createElement("video");
                                         newElement.id = "video1b";
                                         newElement.src = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
@@ -478,7 +484,7 @@ limitations under the License.
                                         elementView.innerHTML = "";
                                         elementView.appendChild(newElement);
                                         newElement.load();
-                                        myVideo = newElement;
+                                        myVideo = newElement;*/
                                         //const playPromise = myVideo.play();
                                         //if (playPromise !== null){
                                         //    playPromise.catch(() => { myVideo.play(); })
@@ -487,11 +493,7 @@ limitations under the License.
                                         //{
                                         //        myVideo.pause();
                                         //}
-                                        video      = document.createElement('video');
-                                        video.autoplay = true;
-                                        video.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
-                                        video.crossOrigin = '';
-                                        videoTexture = new THREE.Texture(video);
+                                        videoTexture = new THREE.Texture(videoB);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
