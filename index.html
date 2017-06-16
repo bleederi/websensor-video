@@ -236,7 +236,7 @@ limitations under the License.
                                 walking_status_div.innerHTML = "Not walking";
                         }
                         //rewind
-                        if((Math.abs(longitude - longitudeInitial) > 135 && rewinding === false) || (Math.abs(longitude - longitudeInitial) < 135 && rewinding === true))
+                        if((Math.abs(longitude - longitudeInitial) > 175 && rewinding === false) || (Math.abs(longitude - longitudeInitial) < 5 && rewinding === true))
                         {
                                 rewind();
                         }
