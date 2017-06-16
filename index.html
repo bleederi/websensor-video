@@ -343,7 +343,6 @@ limitations under the License.
                                         catch(err) {
                                                 console.log(err.message);
                                         }
-                                        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                                 }
 
@@ -422,15 +421,18 @@ limitations under the License.
                         }
 
                         function startDemo() {  //need user input to play video
-                                const playPromise = video.play();
+                                videoF.play();
+                                videoB.play();
+                                /*const playPromise = video.play();
                                 if (playPromise !== null){
                                     playPromise.catch(() => { video.play(); })
-                                }/*
+                                }
                                 if(!myVideo.paused)
                                 {
                                         myVideo.pause();
                                 }*/
                                 //document.getElementById('startbutton').remove();     //hide button
+                                reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                         }	
 
                  /*       function rewind() {
