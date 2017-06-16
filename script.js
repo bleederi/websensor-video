@@ -269,6 +269,18 @@ function detectPeaksValleys(seq, mode = 'magnitude')
         return result;
 }
 
+//http://phrogz.net/js/framerate-independent-low-pass-filter.html
+// values:    an array of numbers that will be modified in place
+// smoothing: the strength of the smoothing filter; 1=no change, larger values smoothes more
+function smoothArray( values, smoothing ){
+  var value = values[0]; // start with the first input
+  for (var i=1, len=values.length; i<len; ++i){
+    var currentValue = values[i];
+    value += (currentValue - value) / smoothing;
+    values[i] = value;
+  }
+}
+
 /*
 //https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
 Array.prototype.simpleSMA=function(N) {
@@ -293,6 +305,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         magseq = magnitude2(seq);
         //console.log("Magnitude of acceleration:");
         //console.log(magseq);
+        //Smoothen (filter noise)
+        smoothseq = smoothArray(magseq);
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
@@ -300,7 +314,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
               maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);*/
-        for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
+        for (var i = 0; i < smoothseq.length+1; i++)       //analyze sequence sample by sample
         {
                 peaksvalleys = detectPeaksValleys(magseq.slice(0, i)); 
         }  
