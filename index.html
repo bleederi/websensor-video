@@ -423,8 +423,30 @@ limitations under the License.
 
                         function startDemo() {  //need user input to play video
                                 render();
-                                videoF.play();
-                                videoB.play();
+                                var playPromiseF = videoF.play();
+
+                                // In browsers that don’t yet support this functionality,
+                                // playPromise won’t be defined.
+                                if (playPromiseF !== undefined) {
+                                  playPromiseF.then(function() {
+                                    // Automatic playback started!
+                                  }).catch(function(error) {
+                                    // Automatic playback failed.
+                                    // Show a UI element to let the user manually start playback.
+                                  });
+                                }
+                                var playPromiseB = videoB.play();
+
+                                // In browsers that don’t yet support this functionality,
+                                // playPromise won’t be defined.
+                                if (playPromiseB !== undefined) {
+                                  playPromiseB.then(function() {
+                                    // Automatic playback started!
+                                  }).catch(function(error) {
+                                    // Automatic playback failed.
+                                    // Show a UI element to let the user manually start playback.
+                                  });
+                                }
                                 /*const playPromise = video.play();
                                 if (playPromise !== null){
                                     playPromise.catch(() => { video.play(); })
