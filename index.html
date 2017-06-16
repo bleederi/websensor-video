@@ -198,8 +198,8 @@ limitations under the License.
                         }
                         else
                         {
-                                longitude = -this.yaw * 180 / Math.PI;
-                                latitude = this.roll * 180 / Math.PI - 90;
+                                longitude = -yaw * 180 / Math.PI;
+                                latitude = roll * 180 / Math.PI - 90;
 
                         }
                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
@@ -338,9 +338,9 @@ limitations under the License.
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => { 
-                                                this.roll = orientation_sensor.roll;
-                                                this.pitch = orientation_sensor.pitch;
-                                                this.yaw = orientation_sensor.yaw; 
+                                                roll = orientation_sensor.roll;
+                                                pitch = orientation_sensor.pitch;
+                                                yaw = orientation_sensor.yaw; 
                                                 if(initialoriobtained == false) //obtain initial longitude
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
