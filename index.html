@@ -215,19 +215,19 @@ limitations under the License.
 
                 function playPauseRewind()
                 {
-                        if(stepvar === 1)
+                        if(stepvar === true)
                         {
-                                //console.log("Playing");
+                                console.log("Playing");
                                 let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Walking";
-                                const playPromise = myVideo.play();
+                                const playPromise = video.play();
                                 if (playPromise !== null){
-                                    playPromise.catch(() => { myVideo.play(); })
+                                    playPromise.catch(() => { video.play(); })
                                 }
                         }
                         else
                         {
-                                //console.log("Not playing");
+                                console.log("Not playing");
                                 if(!video.paused)
                                 {
                                         video.pause();
@@ -390,13 +390,13 @@ limitations under the License.
                                         stddev_div = document.getElementById("stddev");
                                         stddev_div.innerHTML = stddevpct;
                                         //console.log(maseq);                                     
-                                        if(stepvar == true)
+                                        if(stepvar === true)
                                         {
-                                                console.log("Walking");                                        
+                                                //console.log("Walking");                                        
                                         }
                                         else
                                         {
-                                                console.log("Not walking");
+                                                //console.log("Not walking");
                                         }
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
