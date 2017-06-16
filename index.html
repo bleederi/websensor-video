@@ -450,7 +450,7 @@ function startPlaybackB() {
                                     // Automatic playback started!
                                         console.log("Playing");
                                   }).catch(function(error) {
-                                        console.log("Promise failed", err.name);
+                                        console.log("Promise failed", error.name);
                                     // Automatic playback failed.
                                     // Show a UI element to let the user manually start playback.
                                   var playButton = document.querySelector('#play2');
