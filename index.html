@@ -450,6 +450,7 @@ function startPlaybackB() {
                                     // Automatic playback started!
                                         console.log("Playing");
                                   }).catch(function(error) {
+                                        console.log("Promise failed");
                                     // Automatic playback failed.
                                     // Show a UI element to let the user manually start playback.
                                   var playButton = document.querySelector('#play2');
@@ -469,6 +470,7 @@ function startPlaybackB() {
                                   }).catch(function(error) {
                                     // Automatic playback failed.
                                     // Show a UI element to let the user manually start playback.
+                                        console.log("Promise failed");
 
                                   });*/
                                 }
