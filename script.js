@@ -360,13 +360,13 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }                
                 }
         }
-        //console.log("Step diff:");
-        //console.log(stepdiff);
+        console.log("Step diff:");
+        console.log(stepdiff);
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
         stddevpct = stddev / min;
-        //console.log("Std dev pct", stddevpct);
+        console.log("Std dev pct", stddevpct);
         if(Math.abs(stepamt-stepdiff.length) <= 4)        //stepamt-1 for windows tablet
         {
                 //console.log(max, min);  
