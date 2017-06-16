@@ -599,8 +599,8 @@ function startPlaybackB() {
                                 {
                                         console.log("Loading backward video");
                                         video = videoB;
-                                        video.load();
-                                        videoTexture = new THREE.Texture(video);
+                                        videoB.load();
+                                        videoTexture = new THREE.Texture(videoB);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
@@ -620,8 +620,8 @@ function startPlaybackB() {
                                 {
                                         console.log("Loading forward video");
                                         video = videoF;
-                                        video.load();
-                                        videoTexture = new THREE.Texture(video);
+                                        videoF.load();
+                                        videoTexture = new THREE.Texture(videoF);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
