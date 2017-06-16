@@ -235,6 +235,15 @@ limitations under the License.
                                 let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Not walking";
                         }
+                        //rewind
+                        if((Math.abs(longitude - longitudeInitial) > 135 && rewinding === false) || (Math.abs(longitude - longitudeInitial) < 135 && rewinding === true))
+                        {
+                                rewind();
+                        }
+                        else
+                        {
+                                rewind();
+                        }
                 }
 
                         function play()
