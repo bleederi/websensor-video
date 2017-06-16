@@ -202,7 +202,8 @@ limitations under the License.
                         }
                         else
                         {
-                                longitude = -yaw * 180 / Math.PI + longitudeOffset;;
+                                longitude = -yaw * 180 / Math.PI;
+                                longitude = longitude + longitudeOffset;        //add offset
                                 latitude = roll * 180 / Math.PI - 90;
 
                         }
