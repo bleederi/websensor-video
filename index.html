@@ -113,7 +113,7 @@ limitations under the License.
                 var orientation_sensor = null;
                 var discardedsamples = 0;
                 //In below arrays, first values for Windows tablet, second values for Nexus tablet
-                var stddevthreshold = 2.9;      //0.4 good for walking in place, 2.9 with tablet
+                var stddevthreshold = 1.4;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
                 var peakvalleyamtthreshold = [2, 6];
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var initialoriobtained = false;
@@ -121,6 +121,7 @@ limitations under the License.
                 var pitch = 0;
                 var yaw = 0;
                 var longitude = 0;
+                var longitudeOffset = 0;
                 var latitude = 0;
                 var longitudeInitial = null;
                 var anglesCurrent = [];            
@@ -201,10 +202,12 @@ limitations under the License.
                         }
                         else
                         {
-                                longitude = -yaw * 180 / Math.PI;
+                                longitude = -yaw * 180 / Math.PI + longitudeOffset;;
                                 latitude = roll * 180 / Math.PI - 90;
 
                         }
+                        // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
+                        latitude = Math.max(-85, Math.min(85, latitude));
                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
                         this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
                         this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
@@ -446,6 +449,7 @@ limitations under the License.
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
                                                         longitudeInitial = -yawInitial * 180 / Math.PI;
+                                                        longitudeOffset = longitudeInitial;
                                                         initialoriobtained = true;
                                                 }                     
                                         }
