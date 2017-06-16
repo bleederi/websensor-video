@@ -51,13 +51,10 @@ limitations under the License.
         </template>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
+<div id="debug">
                 <button id="rewindbutton" onclick="rewind()">Rewind</button>
                 <button onclick="playButton()">Play</button>
                 <button id="play2" hidden>Play2</button>
-                <video-view id="videoview">
-                </video-view>
-                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
-                <script src="three.min.js"></script>
 
                 <input id="slider_stddev" type="range" min="0.1" max="6" step="0.2" value="2">
 
@@ -74,7 +71,11 @@ limitations under the License.
                 Walking status: <div id="walking_status"></div>
 
                 Standard deviation pct: <div id="stddev"></div>
-
+</div>
+                <video-view id="videoview">
+                </video-view>
+                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
+                <script src="three.min.js"></script>
                 <script>
 		//TODO: fix rewind by using two video streams, one forward and one backward
                 var myVideo = document.getElementById("video1f"); 
