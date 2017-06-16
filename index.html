@@ -147,13 +147,15 @@ limitations under the License.
 
                 //Load two video elements, one forward and one backward
                 var videoF = document.createElement('video');
-                //videoF.autoplay = true;
+                videoF.id = 'videof';
+                videoF.autoplay = true;
                 videoF.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
                 videoF.crossOrigin = '';
                 videoF.load();
 
                 var videoB = document.createElement('video');
-                //videoB.autoplay = true;
+                videoF.id = 'videob';
+                videoB.autoplay = true;
                 videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
                 videoB.crossOrigin = '';
                 videoB.load();
