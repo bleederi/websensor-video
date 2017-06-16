@@ -217,7 +217,7 @@ limitations under the License.
                 {
                         if(stepvar === true)
                         {
-                                console.log("Playing");
+                                //console.log("Playing");
                                 let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Walking";
                                 const playPromise = video.play();
@@ -227,7 +227,7 @@ limitations under the License.
                         }
                         else
                         {
-                                console.log("Not playing");
+                                //console.log("Not playing");
                                 if(!video.paused)
                                 {
                                         video.pause();
@@ -420,7 +420,7 @@ limitations under the License.
                                 if(discardedsamples >= amtStepValues/3)     //device most likely stationary
                                 {
                                         stepvar = 0;
-                                        console.log("Stationary, not walking");
+                                        //console.log("Stationary, not walking");
                                         discardedsamples = 0;
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
