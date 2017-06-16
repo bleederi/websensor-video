@@ -146,7 +146,6 @@ limitations under the License.
                 //videoF.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4');
                 videoF.crossOrigin = '';
                 videoF.load();
-                videoF.play();
                 document.body.insertBefore(videoF, videoDiv);
                 var videoFdiv = document.getElementById("videof");
 
@@ -157,9 +156,8 @@ limitations under the License.
                 videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
                 //videoB.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
                 videoB.crossOrigin = '';
-                videoB.load();
                 document.body.insertBefore(videoB, videoFdiv);
-
+                videoB.load();
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -174,7 +172,7 @@ limitations under the License.
                 sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
                 //document.getElementById('videof').load();
                 //document.getElementById('videob').load();
-                video = document.getElementById('videof'); //start with the forward video
+                video = videoF; //start with the forward video
                 //video.load();
                 videoTexture = new THREE.Texture(video);
                 videoTexture.minFilter = THREE.LinearFilter;
