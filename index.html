@@ -246,7 +246,10 @@ limitations under the License.
                         {
                                 if(video.paused)
                                 {
-                                        video.play();
+                                        const playPromise = video.play();
+                                        if (playPromise !== null){
+                                            playPromise.catch(() => { video.play(); })
+                                        }
                                 }   
                                 else
                                 {
