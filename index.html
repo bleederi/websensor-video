@@ -136,6 +136,8 @@ limitations under the License.
                 var sphereMaterial = null;
                 var sphereMesh = null;
                 var nosensors = false;
+                //for timekeeping
+                var time = null;
 
                 //Load two video elements, one forward and one backward
                 var videoDiv = document.getElementById("videoview"); 
@@ -598,8 +600,12 @@ function startPlaybackB() {
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
+                                        time = videoF.currentTime;
+                                        videoF.pause();
                                         video = videoB;
                                         //videoB.load();
+                                        videoB.currentTime = videoB.duration - time;
+                                        //console.log(videoB.currentTime);
                                         videoTexture = new THREE.Texture(videoB);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
@@ -616,11 +622,15 @@ function startPlaybackB() {
                                         return 0;
                                         }
                                 //console.log("No rewind");
-                                else
+                                else if (rewinding === true)
                                 {
                                         console.log("Loading forward video");
+                                        time = videoB.currentTime;
+                                        videoB.pause();
                                         video = videoF;
                                         //videoF.load();
+                                        videoF.currentTime = videoF.duration - time;
+                                        //console.log(videoF.currentTime);
                                         videoTexture = new THREE.Texture(videoF);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
