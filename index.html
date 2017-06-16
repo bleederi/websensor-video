@@ -145,7 +145,7 @@ limitations under the License.
                 videoF.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
                 //videoF.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4');
                 //videoF.srcObject = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
-                //videoF.crossOrigin = '';
+                videoF.crossOrigin = 'anonymous';
                 videoF.load();
                 document.body.insertBefore(videoF, videoDiv);
                 var videoFdiv = document.getElementById("videof");
@@ -156,7 +156,7 @@ limitations under the License.
                 videoB.autoplay = true;
                 videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
                 //videoB.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
-                //videoB.crossOrigin = '';
+                videoB.crossOrigin = 'anonymous';
                 document.body.insertBefore(videoB, videoFdiv);
                 videoB.load();
 
