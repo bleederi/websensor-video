@@ -367,7 +367,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let stddev = standardDeviation(stepdiff);
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
-        if(Math.abs(stepamt-stepdiff.length) <= 4)        //stepamt-1 for windows tablet
+        if(Math.abs(stepamt-stepdiff.length) <= 1)        //stepamt-1 for windows tablet, <=1 for Pixel
         {
                 //console.log(max, min);  
                 //if(((max-min)/max) < 0.5)
