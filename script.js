@@ -320,7 +320,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }  
         peaks = peaksvalleys['peaks'];
         valleys = peaksvalleys['valleys'];
-        //console.log("Peaks and valleys:");
+        console.log("Peaks and valleys:");
         //console.log(peaks);
         //console.log(valleys);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
@@ -343,8 +343,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }
         peaks = peaks.filter(function(n){ return n != undefined });  
         valleys = valleys.filter(function(n){ return n != undefined }); 
-        //console.log(peaks);
-        //console.log(valleys);
+        console.log(peaks);
+        console.log(valleys);
         let stepdiff = [];
         for (ipeak in peaks)
         {
