@@ -539,8 +539,7 @@ function startPlaybackB() {
                                 }*/
                                 videoF.pause();
                                 videoB.pause();
-                                //document.getElementById('startbutton').remove();     //hide button
-                                nosensors = true;
+                                document.getElementById('startbutton').remove();     //hide button
                                 if(!nosensors)
                                 {
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
