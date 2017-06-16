@@ -139,26 +139,26 @@ limitations under the License.
                 var videoDiv = document.getElementById("videoview"); 
 
                 var videoF = document.createElement('video');
-                videoF.id = 'videof';
+                //videoF.id = 'videof';
                 //videoF.hidden = true;
                 //videoF.autoplay = true;
                 videoF.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
                 //videoF.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4');
                 //videoF.srcObject = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
-                //videoF.crossorigin = 'anonymous';
-                videoF.load();
-                document.body.insertBefore(videoF, videoDiv);
+                videoF.crossOrigin = 'anonymous';
+                //videoF.load();
+                //document.body.insertBefore(videoF, videoDiv);
                 var videoFdiv = document.getElementById("videof");
 
                 var videoB = document.createElement('video');
-                videoB.id = 'videob';
+                //videoB.id = 'videob';
                 //videoB.hidden = true;
                 //videoB.autoplay = true;
                 videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
                 //videoB.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
-                videoB.crossorigin = 'anonymous';
-                document.body.insertBefore(videoB, videoFdiv);
-                videoB.load();
+                videoB.crossOrigin = 'anonymous';
+                //document.body.insertBefore(videoB, videoFdiv);
+                //videoB.load();
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -174,7 +174,7 @@ limitations under the License.
                 //document.getElementById('videof').load();
                 //document.getElementById('videob').load();
                 video = videoF; //start with the forward video
-                //video.load();
+                video.load();
                 videoTexture = new THREE.Texture(video);
                 videoTexture.minFilter = THREE.LinearFilter;
                 videoTexture.magFilter = THREE.LinearFilter;
@@ -338,7 +338,8 @@ limitations under the License.
                                                         initialoriobtained = true;
                                                 }                     
                                         }
-                                        orientation_sensor.onactivate = () => render();
+                                        orientation_sensor.onactivate = () => {
+                                        }
                                         orientation_sensor.start();
                                         }
                                         catch(err) {
@@ -421,6 +422,7 @@ limitations under the License.
                         }
 
                         function startDemo() {  //need user input to play video
+                                render();
                                 videoF.play();
                                 videoB.play();
                                 /*const playPromise = video.play();
@@ -432,7 +434,7 @@ limitations under the License.
                                         myVideo.pause();
                                 }*/
                                 //document.getElementById('startbutton').remove();     //hide button
-                                reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                                //reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                 //ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                         }	
 
@@ -488,7 +490,7 @@ limitations under the License.
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
-                                        video = document.getElementById("videob");
+                                        video = videoB;
                                         video.load();
                                         videoTexture = new THREE.Texture(video);
                                         videoTexture.minFilter = THREE.LinearFilter;
@@ -509,7 +511,7 @@ limitations under the License.
                                 else
                                 {
                                         console.log("Loading forward video");
-                                        video = document.getElementById("videof");
+                                        video = videoF;
                                         video.load();
                                         videoTexture = new THREE.Texture(video);
                                         videoTexture.minFilter = THREE.LinearFilter;
