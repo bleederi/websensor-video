@@ -306,7 +306,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log("Magnitude of acceleration:");
         //console.log(magseq);
         //Smoothen (filter noise)
-        smoothseq = smoothArray(magseq, 3);
+        smoothArray(magseq, 3);        //smooths "in-place"
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
@@ -314,7 +314,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
               maseq[k] = seq[k].simpleSMA(3);
         }
         console.log(maseq);*/
-        for (var i = 0; i < smoothseq.length+1; i++)       //analyze sequence sample by sample
+        for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
         {
                 peaksvalleys = detectPeaksValleys(magseq.slice(0, i)); 
         }  
