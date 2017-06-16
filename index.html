@@ -343,7 +343,6 @@ limitations under the License.
                                         catch(err) {
                                                 console.log(err.message);
                                         }
-                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                                 }
 
                         });
@@ -433,6 +432,7 @@ limitations under the License.
                                 }*/
                                 //document.getElementById('startbutton').remove();     //hide button
                                 reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                                //ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                         }	
 
                  /*       function rewind() {
