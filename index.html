@@ -111,6 +111,7 @@ limitations under the License.
                 var accel_sensor = null;
                 var orientation_sensor = null;
                 var discardedsamples = 0;
+                var accdiffthreshold = 0.3;     //if acceleration changes less than this, ignore it(for removing noise)
                 //In below arrays, first values for Windows tablet, second values for Nexus tablet
                 var stddevthreshold = 1.4;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
                 var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
@@ -468,7 +469,7 @@ limitations under the License.
                                 accelFiltered = new LowPassFilterData(accel, bias);
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
                                 //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
-                                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > 0.3)                               
+                                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)                               
                                 {
                                         //console.log("Accel logged:", magnitude(accelFiltered));
                                         accelerationData.push(accelFiltered);
