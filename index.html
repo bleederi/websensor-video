@@ -481,8 +481,11 @@ function startPlaybackB() {
                                         myVideo.pause();
                                 }*/
                                 //document.getElementById('startbutton').remove();     //hide button
-                                //reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-                                //ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                if(!nosensors)
+                                {
+                                        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                }
                         }	
 
                  /*       function rewind() {
