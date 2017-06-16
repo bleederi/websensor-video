@@ -222,8 +222,6 @@ limitations under the License.
                         }
                 }
 
-                render();
-
                 //Sliders
                 var slider_stddev = document.getElementById('slider_stddev'),
                 slider_stddev_div = document.getElementById("slider_stddev_amount");
@@ -303,6 +301,33 @@ limitations under the License.
 			        }
 
                                 connectedCallback() {
+                                        try {
+                                        //Acceleration sensor
+                                        accel_sensor = new Pedometer();
+                                        accel_sensor.onchange = () => { saveSensorReading(); 
+                                        }
+                                        accel_sensor.onactivate = () => {
+                                        }
+                                        accel_sensor.start();
+                                        orientation_sensor = new AbsOriSensor();
+                                        orientation_sensor.onchange = () => { 
+                                                this.roll = orientation_sensor.roll;
+                                                this.pitch = orientation_sensor.pitch;
+                                                this.yaw = orientation_sensor.yaw; 
+                                                if(initialoriobtained == false) //obtain initial longitude
+                                                {
+                                                        let yawInitial = orientation_sensor.yaw;
+                                                        longitudeInitial = -yawInitial * 180 / Math.PI;
+                                                        initialoriobtained = true;
+                                                }                     
+                                        }
+                                        orientation_sensor.onactivate = () => render();
+                                        orientation_sensor.start();
+                                        }
+                                        catch(err) {
+                                                console.log(err.message);
+                                        }
+                                        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                         ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                                 }
 
