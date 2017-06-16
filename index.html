@@ -203,7 +203,9 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
+                                console.log(longitude);
                                 longitude = longitude + longitudeOffset;        //add offset
+                                console.log(longitude);
                                 latitude = roll * 180 / Math.PI - 90;
 
                         }
