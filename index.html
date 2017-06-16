@@ -135,6 +135,7 @@ limitations under the License.
                 var videoTexture = null;
                 var sphereMaterial = null;
                 var sphereMesh = null;
+                var nosensors = false;
 
                 //Load two video elements, one forward and one backward
                 var videoDiv = document.getElementById("videoview"); 
@@ -190,9 +191,17 @@ limitations under the License.
                         if( video.readyState === video.HAVE_ENOUGH_DATA ){
                                 videoTexture.needsUpdate = true;
                         }
-                        longitude = 0;
-                        latitude = 0;
+                        if(nosensors)   //for testing
+                        {
+                                longitude = 0;
+                                latitude = 0;
+                        }
+                        else
+                        {
+                                longitude = -this.yaw * 180 / Math.PI;
+                                latitude = this.roll * 180 / Math.PI - 90;
 
+                        }
                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
                         this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
                         this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
@@ -345,6 +354,7 @@ limitations under the License.
                                         }
                                         catch(err) {
                                                 console.log(err.message);
+                                                nosensors = true;
                                         }
                                 }
 
