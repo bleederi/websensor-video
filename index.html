@@ -219,14 +219,14 @@ limitations under the License.
 
                 function playPauseRewind()
                 {
-                        if(stepvar === true)
+                        if(stepvar)
                         {
                                 //console.log("Playing");
                                 let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Walking";
                                 play();
                         }
-                        else if (stepvar === false)
+                        else if (!stepvar)
                         {
                                 //console.log("Not playing");
                                 if(!video.paused)
@@ -501,6 +501,7 @@ limitations under the License.
                                         {
                                                 console.log("Not walking");
                                         }
+                                        playPauseRewind();
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
@@ -595,7 +596,7 @@ function startPlaybackB() {
                                 if(!nosensors)
                                 {
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-                                        ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                       //ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
                                 }
                         }	
 
