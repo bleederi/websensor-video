@@ -244,31 +244,34 @@ limitations under the License.
 
                         function play(video)
                         {
-                                if(video.paused)
+                                if(!rewinding)
                                 {
-                                var playPromiseF = videoF.play();
+                                        if(videoF.paused)
+                                        {
+                                        var playPromiseF = videoF.play();
 
-                                // In browsers that don’t yet support this functionality,
-                                // playPromise won’t be defined.
-                                if (playPromiseF !== undefined) {
-                                  playPromiseF.then(function() {
-                                    // Automatic playback started!
-                                        console.log("Playing");
-                                  }).catch(function(error) {
-                                        console.log("Promise failed", error.name);
-                                    // Automatic playback failed.
-                                    // Show a UI element to let the user manually start playback.
-                                  var playButton = document.querySelector('#play2');
-                                  // The user interaction requirement is met if
-                                  // playback is triggered via a click event.
-                                  playButton.addEventListener('click', startPlaybackF);
-                                  playButton.hidden = false;
-                                  });
-                                }   }
-                                else
-                                {
-                                        video.pause();                                
-                                }                     
+                                        // In browsers that don’t yet support this functionality,
+                                        // playPromise won’t be defined.
+                                        if (playPromiseF !== undefined) {
+                                          playPromiseF.then(function() {
+                                            // Automatic playback started!
+                                                console.log("Playing");
+                                          }).catch(function(error) {
+                                                console.log("Promise failed", error.name);
+                                            // Automatic playback failed.
+                                            // Show a UI element to let the user manually start playback.
+                                          var playButton = document.querySelector('#play2');
+                                          // The user interaction requirement is met if
+                                          // playback is triggered via a click event.
+                                          playButton.addEventListener('click', startPlaybackF);
+                                          playButton.hidden = false;
+                                          });
+                                        }   }
+                                        else
+                                        {
+                                                videoF.pause();                                
+                                        }
+                                }                
                         }
 
                 //Sliders
