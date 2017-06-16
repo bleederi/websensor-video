@@ -514,7 +514,7 @@ function startPlaybackB() {
                                   playButton.addEventListener('click', startPlaybackF);
                                   playButton.hidden = false;
                                   });
-                         /*       var playPromiseB = videoB.play();
+                                var playPromiseB = videoB.play();
 
                                 // In browsers that don’t yet support this functionality,
                                 // playPromise won’t be defined.
@@ -523,11 +523,15 @@ function startPlaybackB() {
                                     // Automatic playback started!
                                         console.log("Playing");
                                   }).catch(function(error) {
+                                        console.log("Promise failed", error.name);
                                     // Automatic playback failed.
                                     // Show a UI element to let the user manually start playback.
-                                        console.log("Promise failed");
-
-                                  });*/
+                                  var playButton = document.querySelector('#play2');
+                                  // The user interaction requirement is met if
+                                  // playback is triggered via a click event.
+                                  playButton.addEventListener('click', startPlaybackB);
+                                  playButton.hidden = false;
+                                  });
                                 }
                                 /*const playPromise = video.play();
                                 if (playPromise !== null){
