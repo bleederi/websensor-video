@@ -119,14 +119,12 @@ limitations under the License.
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
-                var yaw = 0;
-                var longitude = 0;
-                var longitudeOffset = 0;
-                var latitude = 0;
+                var yaw = 0;;
                 var longitudeInitial = null;
                 var anglesCurrent = [];            
                 var latitude;
                 var longitude;
+                var longitudeOffset;
                 var videocanvasctx = null;
                 var renderer = null;
                 var scene = null;
@@ -203,8 +201,7 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
-                                console.log(longitude);
-                                longitude = longitude + longitudeOffset;        //add offset
+                                longitude = longitude - longitudeInitial;        //add offset
                                 console.log(longitude);
                                 latitude = roll * 180 / Math.PI - 90;
 
