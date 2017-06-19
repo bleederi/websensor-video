@@ -468,8 +468,8 @@ limitations under the License.
                                                 if(initialoriobtained == false) //obtain initial longitude
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
-                                                        longitudeInitial = -yawInitial * 180 / Math.PI;
-                                                        longitudeOffset = longitudeInitial + 180;
+                                                        longitudeInitial = (-yawInitial * 180 / Math.PI) + 180;
+                                                        longitudeOffset = longitudeInitial;
                                                         initialoriobtained = true;
                                                 }                     
                                         }
