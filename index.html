@@ -220,7 +220,7 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
-                                longitude = longitude - longitudeInitial;        //add offset
+                                //longitude = longitude - longitudeInitial;        //add offset
                                 latitude = roll * 180 / Math.PI - 90;
 
                         }
@@ -257,8 +257,9 @@ limitations under the License.
                                 walking_status_div.innerHTML = "Not walking";
                         }
                         //rewind
-                        if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
-                        {
+                       // if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
+                        if((Math.abs(longitude) < 10 || (Math.abs(longitude) > 350) && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))                       
+ {
                                 rewind();
                         }
                 }
