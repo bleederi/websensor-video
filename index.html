@@ -489,6 +489,8 @@ limitations under the License.
                                 if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
                                 {
                                         rewinding = !rewinding;
+                                        rw_div = document.getElementById("rewind_status");
+                                        rw_div.innerHTML = rewinding;
                                 }
                                         if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
@@ -661,8 +663,8 @@ function startPlaybackB() {
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
-                                        rw_div = document.getElementById("rewind_status");
-                                        rw_div.innerHTML = "Rewinding";
+                                        //rw_div = document.getElementById("rewind_status");
+                                        //rw_div.innerHTML = "Rewinding";
                                         time = videoF.currentTime;
                                         videoF.pause();
                                         video = videoB;
@@ -689,8 +691,8 @@ function startPlaybackB() {
                                 else if (rewinding === true)
                                 {
                                         console.log("Loading forward video");
-                                        rw_div = document.getElementById("rewind_status");
-                                        rw_div.innerHTML = "Not rewinding";
+                                        //rw_div = document.getElementById("rewind_status");
+                                        //rw_div.innerHTML = "Not rewinding";
                                         time = videoB.currentTime;
                                         videoB.pause();
                                         video = videoF;
