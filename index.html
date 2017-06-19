@@ -488,7 +488,7 @@ limitations under the License.
                                 //rewind
                                 if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
                                 {
-                                        rewind();
+                                        rewinding = !rewinding;
                                 }
                                         if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
