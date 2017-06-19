@@ -468,7 +468,7 @@ limitations under the License.
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
                                 accelFiltered = new LowPassFilterData(accel, bias);
                                 //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
-                                console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
+                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
                                 if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)                               
                                 {
                                         //console.log("Accel logged:", magnitude(accelFiltered));
@@ -521,8 +521,6 @@ limitations under the License.
                                 {
                                         stepvar = 0;
                                         console.log("Stationary, not walking");
-                                        let walking_status_div = document.getElementById("walking_status");
-                                        walking_status_div.innerHTML = "Stationary, not walking";
                                         playPauseRewind();
                                         discardedsamples = 0;
                                         //clear buffer
