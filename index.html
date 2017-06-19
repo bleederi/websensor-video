@@ -520,7 +520,9 @@ limitations under the License.
                                 if(discardedsamples >= amtStepValues/3)     //device most likely stationary
                                 {
                                         stepvar = 0;
-                                        //console.log("Stationary, not walking");
+                                        console.log("Stationary, not walking");
+                                        let walking_status_div = document.getElementById("walking_status");
+                                        walking_status_div.innerHTML = "Stationary, not walking";
                                         discardedsamples = 0;
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
