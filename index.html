@@ -264,7 +264,7 @@ limitations under the License.
                         }
                         //rewind
                        // if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
-                        if((Math.abs(longitude - 180) < 10 && rewinding === false) || ((longitude < 10 || longitude > 360 ) && rewinding === true))                       
+                        if(((Math.abs(longitude - 180) < 10 && rewinding === false) || ((longitude < 10 || longitude > 360 ) && rewinding === true))                       
  {
                                 rewind();
                         }
