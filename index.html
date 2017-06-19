@@ -523,6 +523,7 @@ limitations under the License.
                                         console.log("Stationary, not walking");
                                         let walking_status_div = document.getElementById("walking_status");
                                         walking_status_div.innerHTML = "Stationary, not walking";
+                                        playPauseRewind();
                                         discardedsamples = 0;
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
