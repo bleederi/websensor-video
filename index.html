@@ -220,7 +220,8 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
-                                //longitude = longitude - longitudeInitial;        //add offset
+                                longitude = longitude - longitudeInitial;        //add offset
+                                console.log(longitude);
                                 latitude = roll * 180 / Math.PI - 90;
 
                         }
@@ -504,11 +505,11 @@ limitations under the License.
                                 accData2 = [];
                                 accel2 = {x:null, y:null, z:null}
                                 //rewind
-                                console.log("Longitude:", longitude);
+         /*                       console.log("Longitude:", longitude);
                                 if((Math.abs(longitude) > 175 && rewinding == false) || (Math.abs(longitude) < 5 && rewinding == true))
                                 {
                                         rewinding = !rewinding;
-                                }
+                                }*/
                                         if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
