@@ -70,6 +70,8 @@ limitations under the License.
 
                 Walking status: <div id="walking_status"></div>
 
+                Rewind status: <div id="rewind_status"></div>
+
                 Standard deviation pct: <div id="stddev"></div>
 </div>
                 <video-view id="videoview">
@@ -654,6 +656,8 @@ function startPlaybackB() {
                                if(rewinding === false)
                                 {
                                         console.log("Loading backward video");
+                                        rw_div = document.getElementById("rewind_status");
+                                        rw_div.innerHTML = "Rewinding";
                                         time = videoF.currentTime;
                                         videoF.pause();
                                         video = videoB;
@@ -680,6 +684,8 @@ function startPlaybackB() {
                                 else if (rewinding === true)
                                 {
                                         console.log("Loading forward video");
+                                        rw_div = document.getElementById("rewind_status");
+                                        rw_div.innerHTML = "Not rewinding";
                                         time = videoB.currentTime;
                                         videoB.pause();
                                         video = videoF;
