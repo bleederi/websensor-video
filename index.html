@@ -82,6 +82,7 @@ limitations under the License.
                 var myVideo = document.getElementById("video1f"); 
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
+                var ut; //debug text update var
                 var ppr;
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
@@ -190,6 +191,22 @@ limitations under the License.
                 sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
                 //sphereMesh.geometry.dynamic = true;
                 scene.add(sphereMesh);
+
+                function updateText()   //For updating debug text
+                {
+                        if(stepvar)
+                        {
+                                let walking_status_div = document.getElementById("walking_status");
+                                walking_status_div.innerHTML = "Walking";                
+                        }
+                        else if (!stepvar)
+                        {
+                                let walking_status_div = document.getElementById("walking_status");
+                                walking_status_div.innerHTML = "Not walking";
+                        }
+                        rw_div = document.getElementById("rewind_status");
+                        rw_div.innerHTML = rewinding;                  
+                }
 
                 function render() {
                         if( video.readyState === video.HAVE_ENOUGH_DATA ){
@@ -489,8 +506,6 @@ limitations under the License.
                                 if((Math.abs(longitude) > 175 && rewinding == false) || (Math.abs(longitude) < 5 && rewinding == true))
                                 {
                                         rewinding = !rewinding;
-                                        rw_div = document.getElementById("rewind_status");
-                                        rw_div.innerHTML = rewinding;
                                 }
                                         if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
@@ -608,6 +623,7 @@ function startPlaybackB() {
                                 {
                                         reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
                                        //ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
+                                        ut = setInterval(updateText, 1000);
                                 }
                         }	
 
