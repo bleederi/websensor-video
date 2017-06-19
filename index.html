@@ -220,7 +220,7 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
-                                //longitude = longitude - longitudeInitial;        //add offset
+                                longitude = longitude + 180;        //convert from -180 - 180 to 0 - 360
                                 console.log(longitude);
                                 latitude = roll * 180 / Math.PI - 90;
 
