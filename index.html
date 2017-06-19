@@ -663,8 +663,8 @@ function startPlaybackB() {
                                if(rewinding == false)
                                 {
                                         console.log("Loading backward video");
-                                        //rw_div = document.getElementById("rewind_status");
-                                        //rw_div.innerHTML = "Rewinding";
+                                        rw_div = document.getElementById("rewind_status");
+                                        rw_div.innerHTML = "Not rewinding";
                                         time = videoF.currentTime;
                                         videoF.pause();
                                         video = videoB;
@@ -691,8 +691,8 @@ function startPlaybackB() {
                                 else if (rewinding == true)
                                 {
                                         console.log("Loading forward video");
-                                        //rw_div = document.getElementById("rewind_status");
-                                        //rw_div.innerHTML = "Not rewinding";
+                                        rw_div = document.getElementById("rewind_status");
+                                        rw_div.innerHTML = "Rewinding";
                                         time = videoB.currentTime;
                                         videoB.pause();
                                         video = videoF;
