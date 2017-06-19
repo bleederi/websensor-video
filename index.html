@@ -220,7 +220,8 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
-                                longitude = longitude - longitudeInitial;        //remove offset
+                                //remove offset, scale to 0-360
+                                longitude = longitude - longitudeInitial;
                                 if(longitude < 0)
                                 {
                                         longitude = longitude + 360;
@@ -263,7 +264,7 @@ limitations under the License.
                         }
                         //rewind
                        // if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
-                        if((Math.abs(longitude) < 10 || (Math.abs(longitude) > 350) && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))                       
+                        if((Math.abs(longitude - 180) < 10) && rewinding === false) || ((longitude < 10 || longitude > 360 ) && rewinding === true))                       
  {
                                 rewind();
                         }
