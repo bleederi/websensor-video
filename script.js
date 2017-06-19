@@ -234,7 +234,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 lastpeakmag = curr;
                                 lastpeaktime = index;                              
                         }
-                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < avg)     //valley
+                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance))     //valley
                                 {
                                 //update time average regardless of valley accepted or not
                                 if(valleys.length >= 2)
