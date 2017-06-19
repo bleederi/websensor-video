@@ -486,7 +486,7 @@ limitations under the License.
                                 accData2 = [];
                                 accel2 = {x:null, y:null, z:null}
                                 //rewind
-                                if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
+                                if((Math.abs(longitude) > 175 && rewinding == false) || (Math.abs(longitude) < 5 && rewinding == true))
                                 {
                                         rewinding = !rewinding;
                                         rw_div = document.getElementById("rewind_status");
