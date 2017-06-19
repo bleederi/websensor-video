@@ -658,6 +658,7 @@ function startPlaybackB() {
                                         videoF.pause();
                                         video = videoB;
                                         //videoB.load();
+                                        videoF.pause();
                                         videoB.currentTime = videoB.duration - time;
                                         //console.log(videoB.currentTime);
                                         videoTexture = new THREE.Texture(videoB);
@@ -683,6 +684,7 @@ function startPlaybackB() {
                                         videoB.pause();
                                         video = videoF;
                                         //videoF.load();
+                                        videoF.pause();
                                         videoF.currentTime = videoF.duration - time;
                                         //console.log(videoF.currentTime);
                                         videoTexture = new THREE.Texture(videoF);
