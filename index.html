@@ -220,6 +220,11 @@ limitations under the License.
 
                 function playPauseRewind()
                 {
+                        //rewind
+                        if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
+                        {
+                                rewind();
+                        }
                         if(stepvar)
                         {
                                 //console.log("Playing");
@@ -236,11 +241,6 @@ limitations under the License.
                                 }
                                 let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Not walking";
-                        }
-                        //rewind
-                        if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
-                        {
-                                rewind();
                         }
                 }
 
