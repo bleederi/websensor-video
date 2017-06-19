@@ -220,7 +220,7 @@ limitations under the License.
                         else
                         {
                                 longitude = -yaw * 180 / Math.PI;
-                                longitude = longitude + 180;        //convert from -180 - 180 to 0 - 360
+                                longitude = longitude + 180 - longitudeInitial;        //convert from -180 - 180 to 0 - 360 and remove offset
                                 console.log(longitude);
                                 latitude = roll * 180 / Math.PI - 90;
 
@@ -469,7 +469,7 @@ limitations under the License.
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
                                                         longitudeInitial = -yawInitial * 180 / Math.PI;
-                                                        longitudeOffset = longitudeInitial;
+                                                        longitudeOffset = longitudeInitial + 180;
                                                         initialoriobtained = true;
                                                 }                     
                                         }
