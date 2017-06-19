@@ -207,7 +207,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                         let curr = seq[index];
                         let next = seq[index+1];
                         let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
-                        let variance = 0.5;
+                        let variance = 1;
 
                         if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
                         {
