@@ -56,7 +56,7 @@ limitations under the License.
                 <button onclick="playButton()">Play</button>
                 <button id="play2" hidden>Play2</button>
 
-                <input id="slider_stddev" type="range" min="0.1" max="2" step="0.1" value="1.4">
+                <input id="slider_stddev" type="range" min="0.1" max="3" step="0.2" value="1.4">
 
                 Standard deviation threshold: <div id="slider_stddev_amount"></div>
 
@@ -123,7 +123,7 @@ limitations under the License.
                 var stddevthreshold = 1.4;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
                 var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
-                var smoothingvalue = 5; //for smoothing out noise (extra peaks and valleys) - 5 seems to work well
+                var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;

@@ -309,7 +309,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log("Magnitude of acceleration:");
         //console.log(magseq);
         //Smoothen (filter noise)
-        smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 5 seems to be a good value
+        smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 8 seems to be a good value
         //first filter the sequence using a MA-3 filter
         /*maseq = {'x':null, 'y':null, 'z':null};
         for (var k in seq)
