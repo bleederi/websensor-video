@@ -368,8 +368,10 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
+        let stddev_accel = standardDeviation(magseq);
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
+        console.log("Std dev accel",stddev_accel/Math.min( ...stddev_accel ));
         if(Math.abs(stepamt-stepdiff.length) <= 3)        //stepamt-1 for windows tablet, <=1 for Pixel
         {
                 //console.log(max, min);  
