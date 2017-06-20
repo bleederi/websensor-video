@@ -336,7 +336,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 if(peakdiff[i] < peaktimethreshold)
                 {
-                        peaks[i] = null;
+                        peaks[i] = 666;
                 }
         }
         //remove valleys that don't meet condition
@@ -344,7 +344,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 if(valleydiff[i] < valleytimethreshhold)
                 {
-                        valleys[i] = null;
+                        valleys[i] = 666;
                 }
         }
         peaks = peaks.filter(function(n){ return n != undefined });  
