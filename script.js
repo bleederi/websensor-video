@@ -207,7 +207,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                         let curr = seq[index];
                         let next = seq[index+1];
                         let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
-                        let variance = 0.5;
+                        let variance = Math.pow(standardDeviation(seq), 2);
 
                         if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
                         {
@@ -328,20 +328,18 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(valleys);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
 
-        let varpeak = 0;
         //remove peaks that don't meet condition
         for (var i in peakdiff)
         {
-                if(peakdiff[i] < Math.abs(peaktimethreshold+varpeak))
+                if(peakdiff[i] < peaktimethreshold)
                 {
                         peaks[i] = null;
                 }
         }
-        let varvalley = 0;
         //remove valleys that don't meet condition
         for (var i in valleydiff)
         {
-                if(valleydiff[i] < Math.abs(valleytimethreshold-varvalley))
+                if(valleydiff[i] < valleytimethreshhold)
                 {
                         valleys[i] = null;
                 }
