@@ -464,7 +464,7 @@ limitations under the License.
                                                 roll = orientation_sensor.roll;
                                                 pitch = orientation_sensor.pitch;
                                                 yaw = orientation_sensor.yaw; 
-                                                if(initialoriobtained == false) //obtain initial longitude
+                                                if(!initialoriobtained) //obtain initial longitude
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
                                                         longitudeInitial = -yawInitial * 180 / Math.PI;
