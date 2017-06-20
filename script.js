@@ -200,7 +200,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
         {
                 peaks = [];
                 valleys = [];
-                let variance = 0.4 + standardDeviation(seq)/alpha;
+                let variance = 0.5 + standardDeviation(seq)/alpha;
                 let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
                 for (var i in seq)
                 {
