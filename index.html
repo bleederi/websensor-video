@@ -262,14 +262,6 @@ limitations under the License.
                                 let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Not walking";
                         }
-                        //rewind
-                       // if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
-                        console.log(longitude);
-if((Math.abs(longitude - 180) < 10 && rewinding === false) || ((longitude < 10 || longitude > 350 ) && rewinding === true))                       
- {
-                                console.log("RW");
-                                rewind();
-                        }
                 }
 
                         function play()
@@ -508,6 +500,14 @@ if((Math.abs(longitude - 180) < 10 && rewinding === false) || ((longitude < 10 |
                                 else
                                 {
                                         discardedsamples = discardedsamples + 1;
+                                }
+                        //rewind
+                               // if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
+                                console.log(longitude);
+                                if((Math.abs(longitude - 180) < 10 && rewinding == false) || ((longitude < 10 || longitude > 350 ) && rewinding == true))                       
+                                 {
+                                        console.log("RW");
+                                        rewind();
                                 }
                                 //console.log(accelerationData);
                                 accData2 = [];
