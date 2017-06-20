@@ -347,8 +347,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         valleys[i] = null;
                 }
         }
-        //peaks = peaks.filter(function(n){ return n != undefined });  
-        //valleys = valleys.filter(function(n){ return n != undefined }); 
+        peaks = peaks.filter(function(n){ return n != undefined });  
+        valleys = valleys.filter(function(n){ return n != undefined }); 
         console.log(peaks);
         console.log(valleys);
         let stepdiff = [];
