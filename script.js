@@ -332,7 +332,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //remove peaks that don't meet condition
         for (var i in peakdiff)
         {
-                if(peakdiff[i] < peaktimethreshold+varpeak)
+                if(peakdiff[i] < Math.abs(peaktimethreshold+varpeak))
                 {
                         peaks[i] = null;
                 }
@@ -341,7 +341,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //remove valleys that don't meet condition
         for (var i in valleydiff)
         {
-                if(valleydiff[i] < valleytimethreshold+varvalley)
+                if(valleydiff[i] < Math.abs(valleytimethreshold-varvalley))
                 {
                         valleys[i] = null;
                 }
