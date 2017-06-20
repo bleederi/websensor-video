@@ -68,6 +68,10 @@ limitations under the License.
 
                 Filter bias: <div id="slider_bias_amount"></div>
 
+                <input id="smoothing_value" type="range" min="0" max="10" step="1" value="5">
+
+                Smoothing value: <div id="smoothing_amount"></div>
+
                 Walking status: <div id="walking_status"></div>
 
                 Rewind status: <div id="rewind_status"></div>
@@ -119,6 +123,7 @@ limitations under the License.
                 var stddevthreshold = 1.4;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
                 var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
+                var smoothingvalue = 5; //for smoothing out noise (extra peaks and valleys) - 5 seems to work well
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
@@ -394,6 +399,14 @@ limitations under the License.
                         bias = slider_bias.value;
                         slider_bias_div.innerHTML = bias;
                         console.log("Filter bias:", bias);
+                }
+
+                var smoothing_value = document.getElementById('smoothing_value'),
+                smoothing_value_div = document.getElementById("smoothing_amount");
+                smoothing_value.onchange = () => {
+                        smoothingvalue = smoothing_value.value;
+                        smoothing_value_div.innerHTML = smoothingvalue;
+                        console.log("Smoothing value:", smoothingvalue);
                 }
                 //myVideo.load();
                 //myVideo.pause();
