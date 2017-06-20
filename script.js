@@ -269,8 +269,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 //console.log(lastpeakmag, lastvalleymag, stepaverage);  
                         } 
                 }
-        } 
-        console.log(peaktimethreshold, valleytimethreshold);
+        }
         result['peaks'] = peaks;
         result['valleys'] = valleys;
         return result;
@@ -328,8 +327,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         peaks = peaksvalleys['peaks'];
         valleys = peaksvalleys['valleys'];
         console.log("Peaks and valleys:");
-        //console.log(peaks);
-        //console.log(valleys);
+        console.log(peaks);
+        console.log(valleys);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
         console.log(peaktimethreshold, valleytimethreshold);
         //remove peaks that don't meet condition
