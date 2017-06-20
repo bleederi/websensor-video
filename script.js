@@ -358,7 +358,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         if(ipeak == ivalley)
                         {
                                 let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
-                                if(stepdiffamt >= 20)     //at least 5 samples between peak and valley
+                                if(stepdiffamt >= 5)     //at least 5 samples between peak and valley
                                 {
                                         stepdiff.push(stepdiffamt);
                                 }
