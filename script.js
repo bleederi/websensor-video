@@ -327,8 +327,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         peaks = peaksvalleys['peaks'];
         valleys = peaksvalleys['valleys'];
         console.log("Peaks and valleys:");
-        console.log(peaksvalleys['peaks']);
-        console.log(peaksvalleys['valleys']);
+        //console.log(peaksvalleys['peaks']);
+        //console.log(peaksvalleys['valleys']);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
         console.log(peaktimethreshold, valleytimethreshold);
         //remove peaks that don't meet condition
@@ -336,7 +336,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 if(peakdiff[i] < peaktimethreshold)
                 {
-                        peaks[i] = 666;
+                        peaks[i] = null;
                 }
         }
         //remove valleys that don't meet condition
@@ -344,7 +344,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 if(valleydiff[i] < valleytimethreshhold)
                 {
-                        valleys[i] = 666;
+                        valleys[i] = null;
                 }
         }
         peaks = peaks.filter(function(n){ return n != undefined });  
@@ -359,7 +359,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         if(ipeak == ivalley)
                         {
                                 let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
-                                if(stepdiffamt >= 5)     //at least 5 samples between peak and valley
+                                if(stepdiffamt >= 10)     //at least 5 samples between peak and valley
                                 {
                                         stepdiff.push(stepdiffamt);
                                 }
