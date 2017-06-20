@@ -369,7 +369,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
         let stddev_accel = standardDeviation(magseq);
-        let min_accel = Math.min(...stddev_accel);
+        let min_accel = Math.min(...magseq);
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
         console.log("Std dev accel", stddev_accel/min_accel);
