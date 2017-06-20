@@ -203,11 +203,12 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                 for (var i in seq)
                 {
                         index = parseInt(i);
+                        seq_slice = seq.slice(0, i+1);
                         let prev = seq[index-1];
                         let curr = seq[index];
                         let next = seq[index+1];
-                        let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
-                        let variance = Math.pow(standardDeviation(seq), 2);
+                        let avg = seq_slice.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
+                        let variance = Math.pow(standardDeviation(seq_slice), 2);
 
                         if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
                         {
