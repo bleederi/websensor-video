@@ -376,7 +376,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         console.log("Std dev pct", stddevpct);
         console.log("Std dev accel", stddev_accel/min_accel);
         //if(Math.abs(stepamt-stepdiff.length) <= (stepamt) && stepdiff.length > 2)        //stepamt-1 for windows tablet, <=3 for Pixel
-        if(stepdiff.length >= stepamt)
+        if(stepdiff.length >= Math.floor(stepamt))
         {
                 //console.log(max, min);  
                 //if(((max-min)/max) < 0.5)
