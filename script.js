@@ -380,7 +380,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 //console.log(max, min);  
                 //if(((max-min)/max) < 0.5)
-                if(stddevpct < stddevthreshold && stddevpct > 0 && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2])     //What characterises a step...?
+                if(stddevpct < stddevthreshold && !isNan(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2])     //What characterises a step...?
                 {
                         return true;
                 }   
