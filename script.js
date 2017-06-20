@@ -212,7 +212,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                         //let avg = seq_slice.reduce(function(sum, a) { return sum + a },0)/(seq_slice.length||1);
                         //console.log(variance);
 
-                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
+                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance) && (index - lastpeaktime) > peaktimethreshold)  //peak
                         {
                                 //update time average regardless of peak accepted or not
                                 if(peaks.length >= 2)
@@ -237,7 +237,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 lastpeakmag = curr;
                                 lastpeaktime = index;                              
                         }
-                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance))     //valley
+                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance) && (index - lastvalleytime) > valleytimethreshold)     //valley
                                 {
                                 //update time average regardless of valley accepted or not
                                 if(valleys.length >= 2)
