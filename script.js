@@ -200,7 +200,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
         {
                 peaks = [];
                 valleys = [];
-                let variance = 10*standardDeviation(seq)/alpha;
+                let variance = 6*standardDeviation(seq)/alpha;
                 for (var i in seq)
                 {
                         index = parseInt(i);
