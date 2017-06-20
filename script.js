@@ -270,6 +270,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                         } 
                 }
         } 
+        console.log(peaktimethreshold, valleytimethreshold);
         result['peaks'] = peaks;
         result['valleys'] = valleys;
         return result;
