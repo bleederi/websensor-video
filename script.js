@@ -328,7 +328,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(valleys);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
 
-        let varpeak = 2;
+        let varpeak = 0;
         //remove peaks that don't meet condition
         for (var i in peakdiff)
         {
@@ -337,7 +337,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         peaks[i] = null;
                 }
         }
-        let varvalley = 2;
+        let varvalley = 0;
         //remove valleys that don't meet condition
         for (var i in valleydiff)
         {
