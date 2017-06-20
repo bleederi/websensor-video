@@ -200,8 +200,6 @@ function detectPeaksValleys(seq, mode = 'magnitude')
         {
                 peaks = [];
                 valleys = [];
-                peaktimethreshold = 0;
-                valleytimethreshold = 0;
                 let variance = 0.5 + standardDeviation(seq)/alpha;
                 let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
                 for (var i in seq)
@@ -214,7 +212,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                         //let avg = seq_slice.reduce(function(sum, a) { return sum + a },0)/(seq_slice.length||1);
                         //console.log(variance);
 
-                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance) && (index - lastpeaktime > 0.8 * peaktimethreshold)  //peak
+                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
                         {
                                 //update time average regardless of peak accepted or not
                                 if(peaks.length >= 2)
@@ -239,7 +237,7 @@ function detectPeaksValleys(seq, mode = 'magnitude')
                                 lastpeakmag = curr;
                                 lastpeaktime = index;                              
                         }
-                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance) && (index - lastvalleytime > 0.8 * valleytimethreshold)     //valley
+                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance))     //valley
                                 {
                                 //update time average regardless of valley accepted or not
                                 if(valleys.length >= 2)
@@ -332,7 +330,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         //console.log(peaks);
         //console.log(valleys);
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
-
+        console.log(peaktimethreshold, valleytimethreshold);
         //remove peaks that don't meet condition
         for (var i in peakdiff)
         {
