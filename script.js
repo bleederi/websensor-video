@@ -371,7 +371,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
-var magseqnog = numberarr.map( function(value) {        //substract gravity (approx.9.81m/s2)
+var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s2)
     return value - 9.81; 
 } );
         let stddev_accel = standardDeviation(magseqnog);
