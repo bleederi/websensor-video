@@ -126,6 +126,7 @@ limitations under the License.
                 var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
+                var stddev_accel = null;
                 var alpha = 4;
                 var initialoriobtained = false;
                 var roll = 0;
