@@ -378,7 +378,7 @@ var magseqnog = magseq.map( function(value) {        //substract gravity (approx
         let min_accel = Math.min(...magseqnog);
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
-        console.log("Std dev accel", stddev_accel/min_accel);
+        console.log("Std dev accel", stddev_accel);
         //if(Math.abs(stepamt-stepdiff.length) <= (stepamt) && stepdiff.length > 2)        //stepamt-1 for windows tablet, <=3 for Pixel
         if(stepdiff.length >= Math.floor(stepamt))
         {
