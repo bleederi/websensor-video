@@ -77,6 +77,8 @@ limitations under the License.
                 Rewind status: <div id="rewind_status"></div>
 
                 Standard deviation pct: <div id="stddev"></div>
+
+                Standard deviation accel: <div id="stddev_accel"></div>
 </div>
                 <video-view id="videoview">
                 </video-view>
@@ -101,7 +103,7 @@ limitations under the License.
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 60;
                 var stepvar = null;
-                var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet
+                var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
                 var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
                 var derseq;
@@ -123,7 +125,7 @@ limitations under the License.
                 var stddevthreshold = 2.8;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
                 var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
-                var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well
+                var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
                 var alpha = 4;
                 var initialoriobtained = false;
                 var roll = 0;
@@ -542,6 +544,8 @@ limitations under the License.
                                         //Show data
                                         stddev_div = document.getElementById("stddev");
                                         stddev_div.innerHTML = stddevpct;
+                                        stddev_accel_div = document.getElementById("stddev_accel");
+                                        stddev_accel_div.innerHTML = stddev_accel;
                                         //console.log(maseq);                                     
                                         if(stepvar === true)
                                         {
