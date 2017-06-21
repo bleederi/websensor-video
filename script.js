@@ -375,10 +375,12 @@ var magseqnog = magseq.map( function(value) {        //substract gravity (approx
     return value - 9.81; 
 } );
         stddev_accel = standardDeviation(magseqnog);
+        average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a },0)/(magseqnogseq.length||1);
         let min_accel = Math.min(...magseqnog);
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
         console.log("Std dev accel", stddev_accel);
+        console.log("Average accel nog", average_accel_nog)
         //if(Math.abs(stepamt-stepdiff.length) <= (stepamt) && stepdiff.length > 2)        //stepamt-1 for windows tablet, <=3 for Pixel
         if(stepdiff.length >= Math.floor(stepamt))
         {
