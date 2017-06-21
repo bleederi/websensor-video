@@ -384,7 +384,7 @@ var magseqnog = magseq.map( function(value) {        //substract gravity (approx
         {
                 //console.log(max, min);  
                 //if(((max-min)/max) < 0.5)
-                if(stddevpct < stddevthreshold && !isNaN(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2])     //What characterises a step...?
+                if(stddevpct < stddevthreshold && !isNaN(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2] && stddev_accel < 1)     //What characterises a step...?
                 {
                         return true;
                 }   
