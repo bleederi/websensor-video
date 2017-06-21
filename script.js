@@ -407,8 +407,8 @@ var magseqnog = magseq.map( function(value) {        //substract gravity (approx
         fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
         console.log(fft);
         fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
-        let valuesAboveAverage = fft.filter(findAboveAverage);
-        console.log("Values above average", valuesAboveAverage);
+        //let valuesAboveAverage = fft.filter(findAboveAverage);
+        //console.log("Values above average", valuesAboveAverage);
         if(fft_index > 4)    //definitely walking
         {
                 return true;
