@@ -375,7 +375,7 @@ var magseqnog = magseq.map( function(value) {        //substract gravity (approx
     return value - 9.81; 
 } );
         let stddev_accel = standardDeviation(magseqnog);
-        let min_accel = Math.min(...magseq);
+        let min_accel = Math.min(...magseqnog);
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
         console.log("Std dev accel", stddev_accel/min_accel);
