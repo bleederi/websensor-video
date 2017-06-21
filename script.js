@@ -117,6 +117,18 @@ function average(data){
   var avg = sum / data.length;
   return avg;
 }
+
+function findAboveAverage(value, index, arr) {  //find all values that are above average in an array
+        let sum = arr.reduce((previous, current) => current += previous); 
+        let average = sum/arr.length;
+        let maximum = Math.max(...arr);  
+        if(value > (2/3)*maximum)
+        { 
+                return true; 
+        }
+        return false;
+    }  
+
 /*
  *  Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
  */
@@ -380,7 +392,31 @@ var magseqnog = magseq.map( function(value) {        //substract gravity (approx
         stddevpct = stddev / min;
         console.log("Std dev pct", stddevpct);
         console.log("Std dev accel", stddev_accel);
-        console.log("Average accel nog", average_accel_nog)
+        console.log("Average accel nog", average_accel_nog);
+
+        let real = magseqnog.slice();
+        let imag = Array.apply(null, Array(magseqnog.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
+        transform(real, imag);  //not normalized
+        real = real.map(x => x/real.length);      //normalize
+        imag = imag.map(x => x/imag.length);      //normalize
+        let fft = [];
+        for(var i=0; i< real.length; i++) {
+        fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
+        }
+        //fft = fft.map(x => x/Math.max(...fft));      //normalize
+        fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
+        console.log(fft);
+        fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
+        let valuesAboveAverage = fft.filter(findAboveAverage);
+        console.log("Values above average", valuesAboveAverage);
+        if(fft_index > 4)    //definitely walking
+        {
+                return true;
+        }
+        /*if(valuesAboveAverage.length >= 4)      //definitely not walking
+        {
+                return false;
+        }*/
         //if(Math.abs(stepamt-stepdiff.length) <= (stepamt) && stepdiff.length > 2)        //stepamt-1 for windows tablet, <=3 for Pixel
         if(stepdiff.length >= Math.floor(stepamt))
         {

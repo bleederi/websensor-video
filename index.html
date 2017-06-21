@@ -79,9 +79,12 @@ limitations under the License.
                 Standard deviation pct: <div id="stddev"></div>
 
                 Standard deviation of acceleration (no gravity): <div id="stddev_accel"></div>
+
+                Largest FFT index: <div id="fft_index"></div>
 </div>
                 <video-view id="videoview">
                 </video-view>
+                <script type="text/javascript" src="fft.js"></script>        <!-- Contains FFT -->
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
                 <script src="three.min.js"></script>
                 <script>
@@ -128,6 +131,7 @@ limitations under the License.
                 var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
                 var stddev_accel = null;
                 var average_accel_nog = null;
+                var fft_index = null;
                 var alpha = 4;
                 var initialoriobtained = false;
                 var roll = 0;
@@ -548,6 +552,8 @@ limitations under the License.
                                         stddev_div.innerHTML = stddevpct;
                                         stddev_accel_div = document.getElementById("stddev_accel");
                                         stddev_accel_div.innerHTML = stddev_accel;
+                                        fftindex_div = document.getElementById("fft_index");
+                                        fftindex_div.innerHTML = fft_index;
                                         //console.log(maseq);                                     
                                         if(stepvar === true)
                                         {
