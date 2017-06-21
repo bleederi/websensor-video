@@ -79,6 +79,8 @@ limitations under the License.
                 Standard deviation pct: <div id="stddev"></div>
 
                 Standard deviation of acceleration (no gravity): <div id="stddev_accel"></div>
+
+                Average of acceleration (no gravity): <div id="avg_accel_nog"></div>
 </div>
                 <video-view id="videoview">
                 </video-view>
@@ -127,6 +129,7 @@ limitations under the License.
                 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
                 var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
                 var stddev_accel = null;
+                var average_accel_nog = null;
                 var alpha = 4;
                 var initialoriobtained = false;
                 var roll = 0;
@@ -547,6 +550,8 @@ limitations under the License.
                                         stddev_div.innerHTML = stddevpct;
                                         stddev_accel_div = document.getElementById("stddev_accel");
                                         stddev_accel_div.innerHTML = stddev_accel;
+                                        average_accel_nog_div = document.getElementById("avg_accel_nog");
+                                        average_accel_nog_div.innerHTML = average_accel_nog;
                                         //console.log(maseq);                                     
                                         if(stepvar === true)
                                         {
