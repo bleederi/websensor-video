@@ -18,8 +18,6 @@
  *
 */
 
-'use strict';
-
 //WINDOWS 10 HAS DIFFERENT CONVENTION: Yaw z, pitch x, roll y
 function toEulerianAngle(quat, out)
 {
