@@ -420,7 +420,7 @@ limitations under the License.
                                 };
                                 sensor.onactivate = () => {
                                         if (this.onactivate) this.onactivate();
-                                };
+                                }
                                 const start = () => sensor.start();
                                 Object.assign(this, { start });
                                 }
@@ -447,9 +447,9 @@ limitations under the License.
                                         //Initialize sensors
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => {
-                                        };
+                                        }
                                         accel_sensor.onactivate = () => {
-                                        };
+                                        }
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => {
@@ -463,9 +463,9 @@ limitations under the License.
                                                         longitudeOffset = longitudeInitial;
                                                         initialoriobtained = true;
                                                 }
-                                        };
+                                        }
                                         orientation_sensor.onactivate = () => {
-                                        };
+                                        }
                                         orientation_sensor.start();
                                         }
                                         catch(err) {
