@@ -420,7 +420,7 @@ limitations under the License.
                                 };
                                 sensor.onactivate = () => {
                                         if (this.onactivate) this.onactivate();
-                                }
+                                };
                                 const start = () => sensor.start();
                                 Object.assign(this, { start });
                                 }
@@ -444,12 +444,12 @@ limitations under the License.
 
                                 connectedCallback() {
                                         try {
-                                        //Acceleration sensor
+                                        //Initialize sensors
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => {
-                                        }
+                                        };
                                         accel_sensor.onactivate = () => {
-                                        }
+                                        };
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
                                         orientation_sensor.onchange = () => {
@@ -463,9 +463,9 @@ limitations under the License.
                                                         longitudeOffset = longitudeInitial;
                                                         initialoriobtained = true;
                                                 }
-                                        }
+                                        };
                                         orientation_sensor.onactivate = () => {
-                                        }
+                                        };
                                         orientation_sensor.start();
                                         }
                                         catch(err) {
@@ -489,7 +489,7 @@ limitations under the License.
                                 {
                                         discardedsamples = discardedsamples + 1;
                                 }
-                                if((Math.abs(longitude - 180) < 20 && rewinding == false) || ((longitude < 10 || longitude > 350 ) && rewinding == true))
+                                if((Math.abs(longitude - 180) < 20 && rewinding === false) || ((longitude < 10 || longitude > 350 ) && rewinding === true))
                                  {
                                         rewind();
                                 }
@@ -593,7 +593,7 @@ limitations under the License.
                         }
                 }
                         function rewind() {
-                               if(rewinding == false)
+                               if(rewinding === false)
                                 {
                                         rw_div = document.getElementById("rewind_status");
                                         rw_div.innerHTML = "Not rewinding";
@@ -615,7 +615,7 @@ limitations under the License.
                                         rewinding = true;
                                         return 0;
                                         }
-                                else if (rewinding == true)
+                                else if (rewinding === true)
                                 {
                                         rw_div = document.getElementById("rewind_status");
                                         rw_div.innerHTML = "Rewinding";
