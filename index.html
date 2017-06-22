@@ -129,7 +129,6 @@ limitations under the License.
                 var rw; //variable for controlling the rewind loop
                 var ut; //debug text update var
                 var ppr;
-                var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
                 var accel = {x:null, y:null, z:null};
@@ -145,10 +144,6 @@ limitations under the License.
                 var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
                 var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
-                var derseq;
-                var derseq_old;
-                var maseq = null;
-                var maseq_old = null;
                 var lastpeakmag = null;
                 var lastvalleymag = null;
                 var lastpeaktime = null;
@@ -458,7 +453,7 @@ limitations under the License.
 
                                 connectedCallback() {
                                         try {
-                                        //Acceleration sensor
+                                        //Initialize sensors
                                         accel_sensor = new Pedometer();
                                         accel_sensor.onchange = () => {
                                         }
