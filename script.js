@@ -18,6 +18,162 @@
  *
 */
 
+'use strict';
+
+/* Global variables below */
+var videoDiv = document.getElementById("videoview");
+//Debug stuff(sliders, text)
+var walking_status_div = document.getElementById("walking_status");
+var stddev_div = document.getElementById("stddev");
+var stddev_accel_div = document.getElementById("stddev_accel");
+var fftindex_div = document.getElementById("fft_index");
+var rw_div = document.getElementById("rewind_status");
+var sliderDiv = document.getElementById("sliderAmount");
+//Sliders
+var slider_stddev = document.getElementById("slider_stddev");
+var slider_stddev_div = document.getElementById("slider_stddev_amount");
+slider_stddev.onchange = () => {
+        stddevthreshold = slider_stddev.value;
+        slider_stddev_div.innerHTML = stddevthreshold;
+        console.log("Std dev threshold:", stddevthreshold);
+};
+var slider_stepamt = document.getElementById("slider_stepamt");
+var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
+slider_stepamt.onchange = () => {
+        stepamt = slider_stepamt.value;
+        amtStepValues = stepamt*sensorfreq;     //recalculate
+        slider_stepamt_div.innerHTML = stepamt;
+        console.log("Step amount:", stepamt);
+};
+var slider_bias = document.getElementById("slider_bias");
+var slider_bias_div = document.getElementById("slider_bias_amount");
+slider_bias.onchange = () => {
+        bias = slider_bias.value;
+        slider_bias_div.innerHTML = bias;
+        console.log("Filter bias:", bias);
+};
+
+var smoothing_value = document.getElementById("smoothing_value");
+var smoothing_value_div = document.getElementById("smoothing_amount");
+smoothing_value.onchange = () => {
+        smoothingvalue = smoothing_value.value;
+        smoothing_value_div.innerHTML = smoothingvalue;
+        console.log("Smoothing value:", smoothingvalue);
+}
+var rewinding = false;
+var rw; //variable for controlling the rewind loop
+var reading;    //variable for controlling the data reading loop
+var ut; //debug text update var
+var accelerationData = [];        //sequence to store xyz accelerometer readings
+var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
+var accel = {x:null, y:null, z:null};
+var accelFiltered = {x:null, y:null, z:null};
+var gravity;
+var accelNoG;
+var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
+var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
+var prevaccel = {x:null, y:null, z:null};
+var diff = {x:null, y:null, z:null};
+var sensorfreq = 60;
+var stepvar = null;     //0 when not walking, 1 when walking
+var accel_sensor = null;
+var orientation_sensor = null;
+var initialoriobtained = false;
+var roll = 0;
+var pitch = 0;
+var yaw = 0;
+var longitudeInitial = null;
+var latitude;
+var longitude;
+var longitudeOffset;
+
+//Thresholds and other values for the algorithm
+var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
+var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
+var stepaverage = null;
+var peaktimethreshold = null;
+var valleytimethreshold = null;
+var discardedsamples = 0;
+var accdiffthreshold = 0.15;     //if acceleration changes less than this, ignore it(for removing noise)
+//In below arrays, first values for Windows tablet, second values for Nexus tablet
+var stddevthreshold = 2.8;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
+var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
+var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
+var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
+var average_accel_nog = null;
+var stddevpct = null;
+var stddev_accel = null;
+var fft_index = null;
+var alpha = 4;
+
+//Rendering vars (Three.JS)
+var camera = null;
+var videocanvasctx = null;
+var renderer = null;
+var scene = null;
+var sphere = null;
+var video = null;
+var videoF = null;
+var videoB = null;
+var videoTexture = null;
+var sphereMaterial = null;
+var sphereMesh = null;
+
+//for systems with no sensors
+var nosensors = false;
+//For timekeeping used in switching video
+var time = null;
+
+//Sensor classes and low-pass filter
+class Pedometer {
+        constructor() {
+        const sensor = new Accelerometer({ frequency: sensorfreq });
+        //gravity =  new LowPassFilterData(sensor, 0.8);        //Maybe should calculate gravity this way?
+        sensor.onchange = () => {
+                accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
+                if (this.onchange) this.onchange();
+        };
+        sensor.onactivate = () => {
+                if (this.onactivate) this.onactivate();
+        }
+        const start = () => sensor.start();
+        Object.assign(this, { start });
+        }
+}
+class AbsOriSensor {
+        constructor() {
+        const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+        const mat4 = new Float32Array(16);
+        const euler = new Float32Array(3);
+        sensor.onchange = () => {
+                sensor.populateMatrix(mat4);
+                toEulerianAngle(sensor.quaternion, euler);      //From quaternion to Eulerian angles
+                this.roll = euler[0];
+                this.pitch = euler[1];
+                this.yaw = euler[2];
+                if (this.onchange) this.onchange();
+        };
+        sensor.onactivate = () => {
+                if (this.onactivate) this.onactivate();
+        }
+        const start = () => sensor.start();
+        Object.assign(this, { start });
+        }
+}
+class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
+  constructor(reading, bias) {
+    Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
+    this.bias = bias;
+  }
+        update(reading) {
+                this.x = this.x * this.bias + reading.x * (1 - this.bias);
+                this.y = this.y * this.bias + reading.y * (1 - this.bias);
+                this.z = this.z * this.bias + reading.z * (1 - this.bias);
+        }
+};
+
+//Functions to handle data
+
 //WINDOWS 10 HAS DIFFERENT CONVENTION: Yaw z, pitch x, roll y
 function toEulerianAngle(quat, out)
 {
@@ -167,6 +323,8 @@ function pcorr(x, y) {
     return answer;
 }
 
+//Functions for the WD algorithm and that the algorithm uses
+
 function detectPeaksValleys(seq)
 {
         let result = {"peaks":null, "valleys":null};
@@ -178,10 +336,14 @@ function detectPeaksValleys(seq)
         let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
         for (var i in seq)
         {
-                index = parseInt(i);
+                let index = parseInt(i);
                 let prev = seq[index-1];
                 let curr = seq[index];
                 let next = seq[index+1];
+                let lastpeakmag = null;
+                let lastvalleymag = null;
+                let lastpeaktime = null;
+                let lastvalleytime = null;
 
                 if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
                 {
@@ -261,6 +423,9 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         let magseq = magnitude2(seq);
         //Smoothen (filter noise)
         smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 8 seems to be a good value
+        let peaksvalleys = null;
+        let peakdiff = [];
+        let valleydiff = [];
         for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
         {
                 peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
@@ -284,6 +449,7 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         valleys[i] = null;
                 }
         }
+        //filter the non-valid peaks and valleys out
         peaks = peaks.filter(function(n){ return n !== undefined });
         valleys = valleys.filter(function(n){ return n !== undefined });
         let stepdiff = [];
@@ -301,7 +467,6 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         }
                 }
         }
-        let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
         var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s2)
@@ -309,7 +474,6 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         } );
         stddev_accel = standardDeviation(magseqnog);
         average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a },0)/(magseqnog.length||1);
-        let min_accel = Math.min(...magseqnog);
         stddevpct = stddev / min;
 
         let real = magseqnog.slice();
@@ -340,24 +504,72 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         }
 }
 
+function clearVars()    //Clear vars every loop iteration
+{
+        discardedsamples = 0;
+        for (var k in accelSeq) delete accelSeq[k];
+        accelerationData.splice(0);
+        stepaverage = null;
+        peaktimethreshold = null;
+        valleytimethreshold = null;
+}
+
+
+//TODO: Split this function into parts
+function saveSensorReading()    //Function to save the sensor readings, check if we need to rewind and send the sensor readings to be analyzed for whether the user is walking or not
+{
+        accel = {x:accel.x, y:accel.y, z:accel.z};
+        accelFiltered = new LowPassFilterData(accel, bias);
+        if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)
+        {
+                accelerationData.push(accelFiltered);
+                prevaccel = accel;
+                discardedsamples = discardedsamples - 3;
+        }
+        else
+        {
+                discardedsamples = discardedsamples + 1;
+        }
+        if((Math.abs(longitude - 180) < 20 && rewinding == false) || ((longitude < 10 || longitude > 350 ) && rewinding == true))
+        {
+                rewind();
+        }
+        if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
+        {
+                accelSeq = toCoordSeq(accelerationData);
+                var as = Object.assign({}, accelSeq);
+                stepvar = stepDetection(as);
+                playPause();
+                clearVars();
+        }
+        if(discardedsamples >= amtStepValues/5)     //device most likely stationary
+        {
+                stepvar = 0;
+                playPause();
+                clearVars();
+        }
+}
+
+//Functions for the debug text and sliders
+
 function updateSlider(slideAmount)
 {
 alert("error");
-var sliderDiv = document.getElementById("sliderAmount");
 sliderDiv.innerHTML = slideAmount;
 }
 
-                function updateText()   //For updating debug text
-                {
-                        if(stepvar)
-                        {
-                                walking_status_div = document.getElementById("walking_status");
-                                walking_status_div.innerHTML = "Walking";
-                        }
-                        else if (!stepvar)
-                        {
-                                walking_status_div = document.getElementById("walking_status");
-                                walking_status_div.innerHTML = "Not walking";
-                        }
-                        rw_div.innerHTML = rewinding;
-                }
+function updateText()   //For updating debug text
+{
+        if(stepvar)
+        {
+                walking_status_div.innerHTML = "Walking";
+        }
+        else if (!stepvar)
+        {
+                walking_status_div.innerHTML = "Not walking";
+        }
+        rw_div.innerHTML = rewinding;
+        stddev_div.innerHTML = stddevpct;
+        stddev_accel_div.innerHTML = stddev_accel;
+        fftindex_div.innerHTML = fft_index;
+}
