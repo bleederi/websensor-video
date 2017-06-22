@@ -18,6 +18,8 @@
  *
 */
 
+'use strict';
+
 //WINDOWS 10 HAS DIFFERENT CONVENTION: Yaw z, pitch x, roll y
 function toEulerianAngle(quat, out)
 {
@@ -169,11 +171,11 @@ function pcorr(x, y) {
 
 function detectPeaksValleys(seq)
 {
-        result = {"peaks":null, "valleys":null};
+        let result = {"peaks":null, "valleys":null};
         let peakdiff = [];
-        var valleydiff = [];
-        peaks = [];
-        valleys = [];
+        let valleydiff = [];
+        let peaks = [];
+        let valleys = [];
         let variance = 0.5 + standardDeviation(seq)/alpha;
         let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
         for (var i in seq)
@@ -258,15 +260,15 @@ function smoothArray( values, smoothing ){
 
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        magseq = magnitude2(seq);
+        let magseq = magnitude2(seq);
         //Smoothen (filter noise)
         smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 8 seems to be a good value
         for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
         {
                 peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
         }
-        peaks = peaksvalleys.peaks;
-        valleys = peaksvalleys.valleys;
+        let peaks = peaksvalleys.peaks;
+        let valleys = peaksvalleys.valleys;
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
         //remove peaks that don't meet condition
         for (var i in peakdiff)
@@ -359,6 +361,5 @@ sliderDiv.innerHTML = slideAmount;
                                 walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Not walking";
                         }
-                        rw_div = document.getElementById("rewind_status");
                         rw_div.innerHTML = rewinding;
                 }
