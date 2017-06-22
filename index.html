@@ -88,7 +88,7 @@ limitations under the License.
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
                 <script src="three.min.js"></script>
                 <script>
-                var myVideo = document.getElementById("video1f");
+                var videoDiv = document.getElementById("videoview");
                 //Debug stuff(sliders, text)
                 var walking_status_div = document.getElementById("walking_status");
                 var stddev_div = document.getElementById("stddev");
@@ -128,7 +128,6 @@ limitations under the License.
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
                 var ut; //debug text update var
-                var ppr;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
                 var accel = {x:null, y:null, z:null};
@@ -190,17 +189,13 @@ limitations under the License.
 
                 //for systems with no sensors
                 var nosensors = false;
-                //for timekeeping
-                var time = null;
 
                 //Load two video elements, one forward and one backward
-                var videoDiv = document.getElementById("videoview");
 
                 videoF = document.createElement("video");
                 videoF.id = "videof";
                 videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
                 videoF.crossOrigin = "anonymous";
-                var videoFdiv = document.getElementById("videof");
 
                 videoB = document.createElement("video");
                 videoB.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
