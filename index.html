@@ -88,7 +88,6 @@ limitations under the License.
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
                 <script src="three.min.js"></script>
                 <script>
-                var myVideo = document.getElementById("video1f");
                 //Debug stuff(sliders, text)
                 var walking_status_div = document.getElementById("walking_status");
                 var stddev_div = document.getElementById("stddev");
@@ -96,59 +95,47 @@ limitations under the License.
                 var fftindex_div = document.getElementById("fft_index");
                 //Sliders
                 var slider_stddev = document.getElementById("slider_stddev");
-                slider_stddev_div = document.getElementById("slider_stddev_amount");
+                var slider_stddev_div = document.getElementById("slider_stddev_amount");
                 slider_stddev.onchange = () => {
                         stddevthreshold = slider_stddev.value;
                         slider_stddev_div.innerHTML = stddevthreshold;
                         console.log("Std dev threshold:", stddevthreshold);
-                }
+                };
                 var slider_stepamt = document.getElementById("slider_stepamt");
-                slider_stepamt_div = document.getElementById("slider_stepamt_amount");
+                var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
                 slider_stepamt.onchange = () => {
                         stepamt = slider_stepamt.value;
                         amtStepValues = stepamt*sensorfreq;     //recalculate
                         slider_stepamt_div.innerHTML = stepamt;
                         console.log("Step amount:", stepamt);
-                }
+                };
                 var slider_bias = document.getElementById("slider_bias");
-                slider_bias_div = document.getElementById("slider_bias_amount");
+                var slider_bias_div = document.getElementById("slider_bias_amount");
                 slider_bias.onchange = () => {
                         bias = slider_bias.value;
                         slider_bias_div.innerHTML = bias;
                         console.log("Filter bias:", bias);
-                }
+                };
 
                 var smoothing_value = document.getElementById("smoothing_value");
-                smoothing_value_div = document.getElementById("smoothing_amount");
+                var smoothing_value_div = document.getElementById("smoothing_amount");
                 smoothing_value.onchange = () => {
                         smoothingvalue = smoothing_value.value;
                         smoothing_value_div.innerHTML = smoothingvalue;
                         console.log("Smoothing value:", smoothingvalue);
                 }
                 var rewinding = false;
-                var rw; //variable for controlling the rewind loop
                 var ut; //debug text update var
-                var ppr;
-                var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
                 var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
                 var accel = {x:null, y:null, z:null};
                 var accelFiltered = {x:null, y:null, z:null};
-                var gravity;
-                var accelNoG;
-                var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
-                var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
                 var prevaccel = {x:null, y:null, z:null};
-                var diff = {x:null, y:null, z:null};
                 var sensorfreq = 60;
                 var stepvar = null;
                 var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
                 var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
-                var derseq;
-                var derseq_old;
-                var maseq = null;
-                var maseq_old = null;
                 var lastpeakmag = null;
                 var lastvalleymag = null;
                 var lastpeaktime = null;
@@ -426,7 +413,6 @@ limitations under the License.
                                 const euler = new Float32Array(3);
                                 sensor.onchange = () => {
                                         sensor.populateMatrix(mat4);
-                                        let angles = toEulerianAngle(sensor.quaternion, euler);
                                         this.roll = euler[0];
                                         this.pitch = euler[1];
                                         this.yaw = euler[2];
@@ -609,7 +595,6 @@ limitations under the License.
                         function rewind() {
                                if(rewinding == false)
                                 {
-                                        console.log("Loading backward video");
                                         rw_div = document.getElementById("rewind_status");
                                         rw_div.innerHTML = "Not rewinding";
                                         time = videoF.currentTime;
@@ -632,7 +617,6 @@ limitations under the License.
                                         }
                                 else if (rewinding == true)
                                 {
-                                        console.log("Loading forward video");
                                         rw_div = document.getElementById("rewind_status");
                                         rw_div.innerHTML = "Rewinding";
                                         time = videoB.currentTime;

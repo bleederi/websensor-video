@@ -46,9 +46,9 @@ function toCoordSeq(buffer)
         let seq_z = [];
         for (var i in buffer)
         {
-                seq_x.push(buffer[i]['x']);        
-                seq_y.push(buffer[i]['y']);
-                seq_z.push(buffer[i]['z']);
+                seq_x.push(buffer[i].x);        
+                seq_y.push(buffer[i].y);
+                seq_z.push(buffer[i].z);
         }
         var seq = {'x':seq_x, 'y':seq_y, 'z':seq_z};
         return seq;
@@ -87,7 +87,7 @@ function magnitude2(seq)      //Calculate the magnitude sequence for 3 accelerat
         {
                 for (var i in seq[k])
                 {
-                        magseq[i] = Math.sqrt(seq['x'][i] * seq['x'][i] + seq['y'][i] * seq['y'][i] + seq['z'][i] * seq['z'][i]);
+                        magseq[i] = Math.sqrt(seq.x[i] * seq.x[i] + seq.y[i] * seq.y[i] + seq.z[i] * seq.z[i]);
                 }
         }
         return magseq;
@@ -239,8 +239,8 @@ function detectPeaksValleys(seq)
                         stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                 }
         }
-        result["peaks"] = peaks;
-        result["valleys"] = valleys;
+        result.peaks = peaks;
+        result.valleys = valleys;
         return result;
 }
 
@@ -265,8 +265,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
         {
                 peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
         }
-        peaks = peaksvalleys["peaks"];
-        valleys = peaksvalleys["valleys"];
+        peaks = peaksvalleys.peaks;
+        valleys = peaksvalleys.valleys;
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
         //remove peaks that don't meet condition
         for (var i in peakdiff)
@@ -284,12 +284,12 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         valleys[i] = null;
                 }
         }
-        peaks = peaks.filter(function(n){ return n != undefined });
-        valleys = valleys.filter(function(n){ return n != undefined });
+        peaks = peaks.filter(function(n){ return n !== undefined });
+        valleys = valleys.filter(function(n){ return n !== undefined });
         let stepdiff = [];
-        for (ipeak in peaks)
+        for (var ipeak in peaks)
         {
-                for (ivalley in valleys)
+                for (var ivalley in valleys)
                 {
                         if(ipeak == ivalley)
                         {
