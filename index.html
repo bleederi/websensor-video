@@ -88,14 +88,50 @@ limitations under the License.
                 <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
                 <script src="three.min.js"></script>
                 <script>
-                var myVideo = document.getElementById("video1f"); 
+                var myVideo = document.getElementById("video1f");
+                //Debug stuff(sliders, text)
+                var walking_status_div = document.getElementById("walking_status");
+                var stddev_div = document.getElementById("stddev");
+                var stddev_accel_div = document.getElementById("stddev_accel");
+                var fftindex_div = document.getElementById("fft_index");
+                //Sliders
+                var slider_stddev = document.getElementById("slider_stddev");
+                slider_stddev_div = document.getElementById("slider_stddev_amount");
+                slider_stddev.onchange = () => {
+                        stddevthreshold = slider_stddev.value;
+                        slider_stddev_div.innerHTML = stddevthreshold;
+                        console.log("Std dev threshold:", stddevthreshold);
+                }
+                var slider_stepamt = document.getElementById("slider_stepamt");
+                slider_stepamt_div = document.getElementById("slider_stepamt_amount");
+                slider_stepamt.onchange = () => {
+                        stepamt = slider_stepamt.value;
+                        amtStepValues = stepamt*sensorfreq;     //recalculate
+                        slider_stepamt_div.innerHTML = stepamt;
+                        console.log("Step amount:", stepamt);
+                }
+                var slider_bias = document.getElementById("slider_bias");
+                slider_bias_div = document.getElementById("slider_bias_amount");
+                slider_bias.onchange = () => {
+                        bias = slider_bias.value;
+                        slider_bias_div.innerHTML = bias;
+                        console.log("Filter bias:", bias);
+                }
+
+                var smoothing_value = document.getElementById("smoothing_value");
+                smoothing_value_div = document.getElementById("smoothing_amount");
+                smoothing_value.onchange = () => {
+                        smoothingvalue = smoothing_value.value;
+                        smoothing_value_div.innerHTML = smoothingvalue;
+                        console.log("Smoothing value:", smoothingvalue);
+                }
                 var rewinding = false;
                 var rw; //variable for controlling the rewind loop
                 var ut; //debug text update var
                 var ppr;
                 var fps = 30;
                 var accelerationData = [];        //sequence to store xyz accelerometer readings
-                var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences 
+                var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
                 var accel = {x:null, y:null, z:null};
                 var accelFiltered = {x:null, y:null, z:null};
                 var gravity;
@@ -136,12 +172,13 @@ limitations under the License.
                 var initialoriobtained = false;
                 var roll = 0;
                 var pitch = 0;
-                var yaw = 0;;
+                var yaw = 0;
                 var longitudeInitial = null;
-                var anglesCurrent = [];            
                 var latitude;
                 var longitude;
                 var longitudeOffset;
+                //Rendering vars (Three.JS)
+                var camera = null;
                 var videocanvasctx = null;
                 var renderer = null;
                 var scene = null;
@@ -152,34 +189,23 @@ limitations under the License.
                 var videoTexture = null;
                 var sphereMaterial = null;
                 var sphereMesh = null;
+
                 var nosensors = false;
                 //for timekeeping
                 var time = null;
 
                 //Load two video elements, one forward and one backward
-                var videoDiv = document.getElementById("videoview"); 
+                var videoDiv = document.getElementById("videoview");
 
-                var videoF = document.createElement('video');
-                videoF.id = 'videof';
-                //videoF.hidden = true;
-                //videoF.autoplay = true;
-                videoF.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
-                //videoF.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4');
-                //videoF.srcObject = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4';
-                videoF.crossOrigin = 'anonymous';
-                //videoF.load();
-                //document.body.insertBefore(videoF, videoDiv);
+                videoF = document.createElement("video");
+                videoF.id = "videof";
+                videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
+                videoF.crossOrigin = "anonymous";
                 var videoFdiv = document.getElementById("videof");
 
-                var videoB = document.createElement('video');
-                //videoB.id = 'videob';
-                //videoB.hidden = true;
-                //videoB.autoplay = true;
-                videoB.src    = 'https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4';
-                //videoB.src = window.URL.createObjectURL('https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4');
-                videoB.crossOrigin = 'anonymous';
-                //document.body.insertBefore(videoB, videoFdiv);
-                //videoB.load();
+                videoB = document.createElement("video");
+                videoB.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
+                videoB.crossOrigin = "anonymous";
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -187,13 +213,11 @@ limitations under the License.
 
                 scene = new THREE.Scene();
 
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-                this.camera.target = new THREE.Vector3(0, 0, 0);
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.target = new THREE.Vector3(0, 0, 0);
 
                 sphere = new THREE.SphereGeometry(100, 100, 40);
                 sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
-                //document.getElementById('videof').load();
-                //document.getElementById('videob').load();
                 video = videoF; //start with the forward video
                 video.load();
                 videoTexture = new THREE.Texture(video);
@@ -203,23 +227,22 @@ limitations under the License.
 
                 sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
                 sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
-                //sphereMesh.geometry.dynamic = true;
                 scene.add(sphereMesh);
 
                 function updateText()   //For updating debug text
                 {
                         if(stepvar)
                         {
-                                let walking_status_div = document.getElementById("walking_status");
-                                walking_status_div.innerHTML = "Walking";                
+                                walking_status_div = document.getElementById("walking_status");
+                                walking_status_div.innerHTML = "Walking";
                         }
                         else if (!stepvar)
                         {
-                                let walking_status_div = document.getElementById("walking_status");
+                                walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Not walking";
                         }
                         rw_div = document.getElementById("rewind_status");
-                        rw_div.innerHTML = rewinding;                  
+                        rw_div.innerHTML = rewinding;
                 }
 
                 function render() {
@@ -240,40 +263,36 @@ limitations under the License.
                                 {
                                         longitude = longitude + 360;
                                 }
-                                //console.log(longitude);
                                 latitude = roll * 180 / Math.PI - 90;
 
                         }
+                        //Below based on http://www.emanueleferonato.com/2014/12/10/html5-webgl-360-degrees-panorama-viewer-with-three-js/
                         // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
                         latitude = Math.max(-85, Math.min(85, latitude));
                         // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                        this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
-                        this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
-                        this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
-                        this.camera.lookAt(this.camera.target);
+                        camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
+                        camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
+                        camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
+                        camera.lookAt(camera.target);
 
                         // Render loop
-                        this.renderer.render(this.scene, this.camera);
-                        requestAnimationFrame(() => this.render());
+                        renderer.render(scene, camera);
+                        requestAnimationFrame(() => render());
                 }
 
                 function playPauseRewind()
                 {
                         if(stepvar)
                         {
-                                //console.log("Playing");
-                                let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Walking";
                                 play();
                         }
                         else if (!stepvar)
                         {
-                                //console.log("Not playing");
                                 if(!video.paused)
                                 {
                                         video.pause();
                                 }
-                                let walking_status_div = document.getElementById("walking_status");
                                 walking_status_div.innerHTML = "Not walking";
                         }
                 }
@@ -301,7 +320,7 @@ limitations under the License.
                                           playButton.hidden = false;
                                           });
                                         }
-                                }    
+                                }
                                 else if(rewinding)
                                 {
                                         var playPromiseB = videoB.play();
@@ -323,7 +342,7 @@ limitations under the License.
                                           playButton.hidden = false;
                                           });
                                         }
-                                }               
+                                }         
                         }
 
                         function playButton()
@@ -355,7 +374,7 @@ limitations under the License.
                                         {
                                                 videoF.pause();                                
                                         }
-                                }    
+                                }
                                 else if(rewinding)
                                 {
                                         if(videoB.paused)
@@ -383,46 +402,12 @@ limitations under the License.
                                         {
                                                 videoB.pause();                                
                                         }
-                                }               
+                                }
                         }
-
-                //Sliders
-                var slider_stddev = document.getElementById('slider_stddev'),
-                slider_stddev_div = document.getElementById("slider_stddev_amount");
-                slider_stddev.onchange = () => {
-                        stddevthreshold = slider_stddev.value;
-                        slider_stddev_div.innerHTML = stddevthreshold;
-                        console.log("Std dev threshold:", stddevthreshold);
-                }
-                var slider_stepamt = document.getElementById('slider_stepamt'),
-                slider_stepamt_div = document.getElementById("slider_stepamt_amount");
-                slider_stepamt.onchange = () => {
-                        stepamt = slider_stepamt.value;
-                        amtStepValues = stepamt*sensorfreq;     //recalculate
-                        slider_stepamt_div.innerHTML = stepamt;
-                        console.log("Step amount:", stepamt);
-                }
-                var slider_bias = document.getElementById('slider_bias'),
-                slider_bias_div = document.getElementById("slider_bias_amount");
-                slider_bias.onchange = () => {
-                        bias = slider_bias.value;
-                        slider_bias_div.innerHTML = bias;
-                        console.log("Filter bias:", bias);
-                }
-
-                var smoothing_value = document.getElementById('smoothing_value'),
-                smoothing_value_div = document.getElementById("smoothing_amount");
-                smoothing_value.onchange = () => {
-                        smoothingvalue = smoothing_value.value;
-                        smoothing_value_div.innerHTML = smoothingvalue;
-                        console.log("Smoothing value:", smoothingvalue);
-                }
-                //myVideo.load();
-                //myVideo.pause();
                         class Pedometer {
                                 constructor() {
                                 const sensor = new Accelerometer({ frequency: sensorfreq });
-                                gravity =  new LowPassFilterData(sensor, 0.8);
+                                //gravity =  new LowPassFilterData(sensor, 0.8);        //Maybe should calculate gravity this way?
                                 sensor.onchange = () => {
                                         accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                                         if (this.onchange) this.onchange();
@@ -442,7 +427,6 @@ limitations under the License.
                                 sensor.onchange = () => {
                                         sensor.populateMatrix(mat4);
                                         let angles = toEulerianAngle(sensor.quaternion, euler);
-                                        //console.log("ANGLES:", angles);
                                         this.roll = euler[0];
                                         this.pitch = euler[1];
                                         this.yaw = euler[2];
@@ -467,7 +451,7 @@ limitations under the License.
                                 }
                         };
 
-                        customElements.define('video-view', class extends HTMLElement {
+                        customElements.define("video-view", class extends HTMLElement {
                                 constructor() {
                                 super();
 			        }
@@ -482,18 +466,17 @@ limitations under the License.
                                         }
                                         accel_sensor.start();
                                         orientation_sensor = new AbsOriSensor();
-                                        orientation_sensor.onchange = () => { 
+                                        orientation_sensor.onchange = () => {
                                                 roll = orientation_sensor.roll;
                                                 pitch = orientation_sensor.pitch;
-                                                yaw = orientation_sensor.yaw; 
+                                                yaw = orientation_sensor.yaw;
                                                 if(!initialoriobtained) //obtain initial longitude
                                                 {
                                                         let yawInitial = orientation_sensor.yaw;
                                                         longitudeInitial = -yawInitial * 180 / Math.PI;
-                                                        console.log("Initial longitude", longitudeInitial);
                                                         longitudeOffset = longitudeInitial;
                                                         initialoriobtained = true;
-                                                }                     
+                                                }
                                         }
                                         orientation_sensor.onactivate = () => {
                                         }
@@ -507,14 +490,11 @@ limitations under the License.
 
                         });
                         function saveSensorReading()
-                        {                       
+                        {
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
                                 accelFiltered = new LowPassFilterData(accel, bias);
-                                //accelNoG = {x:accel.x - gravity.x, y:accel.y - gravity.y, z:accel.z - gravity.z};
-                                //console.log("Mags:", magnitude(prevaccel), magnitude(accelFiltered))
-                                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)                               
+                                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)
                                 {
-                                        //console.log("Accel logged:", magnitude(accelFiltered));
                                         accelerationData.push(accelFiltered);
                                         prevaccel = accel;
                                         discardedsamples = discardedsamples - 3;
@@ -523,24 +503,11 @@ limitations under the License.
                                 {
                                         discardedsamples = discardedsamples + 1;
                                 }
-                        //rewind
-                               // if((Math.abs(longitude) > 175 && rewinding === false) || (Math.abs(longitude) < 5 && rewinding === true))
-                                //console.log(longitude);
-                                if((Math.abs(longitude - 180) < 20 && rewinding == false) || ((longitude < 10 || longitude > 350 ) && rewinding == true))                       
+                                if((Math.abs(longitude - 180) < 20 && rewinding == false) || ((longitude < 10 || longitude > 350 ) && rewinding == true))
                                  {
-                                        console.log("RW");
                                         rewind();
                                 }
-                                //console.log(accelerationData);
-                                accData2 = [];
-                                accel2 = {x:null, y:null, z:null}
-                                //rewind
-         /*                       console.log("Longitude:", longitude);
-                                if((Math.abs(longitude) > 175 && rewinding == false) || (Math.abs(longitude) < 5 && rewinding == true))
-                                {
-                                        rewinding = !rewinding;
-                                }*/
-                                        if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
+                                if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                                 {
                                         accelSeq = toCoordSeq(accelerationData);
                                         var as = Object.assign({}, accelSeq);
@@ -548,21 +515,9 @@ limitations under the License.
                                         valleydiff = [];
                                         stepvar = stepDetection(as);
                                         //Show data
-                                        stddev_div = document.getElementById("stddev");
                                         stddev_div.innerHTML = stddevpct;
-                                        stddev_accel_div = document.getElementById("stddev_accel");
                                         stddev_accel_div.innerHTML = stddev_accel;
-                                        fftindex_div = document.getElementById("fft_index");
                                         fftindex_div.innerHTML = fft_index;
-                                        //console.log(maseq);                                     
-                                        if(stepvar === true)
-                                        {
-                                                console.log("Walking");                                        
-                                        }
-                                        else
-                                        {
-                                                console.log("Not walking");
-                                        }
                                         playPauseRewind();
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
@@ -576,12 +531,10 @@ limitations under the License.
                                         peaktimethreshold = null;
                                         valleytimethreshold = null;
                                         discardedsamples = 0;
-                                        //console.log(accelerationData);
                                 }
                                 if(discardedsamples >= amtStepValues/5)     //device most likely stationary
                                 {
                                         stepvar = 0;
-                                        console.log("Stationary, not walking");
                                         playPauseRewind();
                                         discardedsamples = 0;
                                         //clear buffer
@@ -595,123 +548,64 @@ limitations under the License.
                                         stepaverage = null;
                                         peaktimethreshold = null;
                                         valleytimethreshold = null;
-                                        //console.log(accelerationData);
                                 }
                         }
 
-function startPlaybackF() {
-  return videoF.play();
-}
-function startPlaybackB() {
-  return videoB.play();
-}
+                function startPlaybackF() {
+                  return videoF.play();
+                }
+                function startPlaybackB() {
+                  return videoB.play();
+                }
 
-                        function startDemo() {  //need user input to play video
-                                render();
-                                var playPromiseF = videoF.play();
+                function startDemo() {  //need user input to play video
+                        render();
+                        var playPromiseF = videoF.play();
 
-                                // In browsers that don’t yet support this functionality,
-                                // playPromise won’t be defined.
-                                if (playPromiseF !== undefined) {
-                                  playPromiseF.then(function() {
-                                    // Automatic playback started!
-                                       //console.log("Playing");
-                                  }).catch(function(error) {
-                                        console.log("Promise failed", error.name);
-                                    // Automatic playback failed.
-                                    // Show a UI element to let the user manually start playback.
-                                  var playButton = document.querySelector('#play2');
-                                  // The user interaction requirement is met if
-                                  // playback is triggered via a click event.
-                                  playButton.addEventListener('click', startPlaybackF);
-                                  playButton.hidden = false;
-                                  });
-                                var playPromiseB = videoB.play();
+                        // In browsers that don’t yet support this functionality,
+                        // playPromise won’t be defined.
+                        if (playPromiseF !== undefined) {
+                          playPromiseF.then(function() {
+                            // Automatic playback started!
+                               //console.log("Playing");
+                          }).catch(function(error) {
+                                console.log("Promise failed", error.name);
+                            // Automatic playback failed.
+                            // Show a UI element to let the user manually start playback.
+                          var playButton = document.querySelector('#play2');
+                          // The user interaction requirement is met if
+                          // playback is triggered via a click event.
+                          playButton.addEventListener('click', startPlaybackF);
+                          playButton.hidden = false;
+                          });
+                        var playPromiseB = videoB.play();
 
-                                // In browsers that don’t yet support this functionality,
-                                // playPromise won’t be defined.
-                                if (playPromiseB !== undefined) {
-                                  playPromiseB.then(function() {
-                                    // Automatic playback started!
-                                       //console.log("Playing");
-                                  }).catch(function(error) {
-                                        console.log("Promise failed", error.name);
-                                    // Automatic playback failed.
-                                    // Show a UI element to let the user manually start playback.
-                                  var playButton = document.querySelector('#play2');
-                                  // The user interaction requirement is met if
-                                  // playback is triggered via a click event.
-                                  playButton.addEventListener('click', startPlaybackB);
-                                  playButton.hidden = false;
-                                  });
-                                }}
-                                /*const playPromise = video.play();
-                                if (playPromise !== null){
-                                    playPromise.catch(() => { video.play(); })
-                                }
-                                if(!myVideo.paused)
-                                {
-                                        myVideo.pause();
-                                }*/
-                                videoF.pause();
-                                videoB.pause();
-                                document.getElementById('startbutton').remove();     //hide button
-                                if(!nosensors)
-                                {
-                                        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-                                       //ppr = setInterval(playPauseRewind, 1000/(fps+sensorfreq));
-                                        ut = setInterval(updateText, 1000);
-                                }
-                        }	
-
-                 /*       function rewind() {
-                               if(rewinding === false)
-                                {
-                                        console.log("Loading backward video");
-                                        //const playPromise = myVideo.play();
-                                        //if (playPromise !== null){
-                                        //    playPromise.catch(() => { myVideo.play(); })
-                                        //}
-                                        //if(!myVideo.paused)
-                                        //{
-                                        //        myVideo.pause();
-                                        //}
-                                        video = videoB;
-                                        videoTexture = new THREE.Texture(video);
-                                        videoTexture.minFilter = THREE.LinearFilter;
-                                        videoTexture.magFilter = THREE.LinearFilter;
-                                        videoTexture.format = THREE.RGBFormat;
-                                        videoTexture.needsUpdate = true;
-			                scene.remove(sphereMesh);
-                                        sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
-                                        //sphereMesh.geometry.dynamic = true;
-                                        sphereMaterial.needsUpdate = true;
-			                scene.add(sphereMesh);
-                                        rewinding = true;
-                                        return 0;
-                                        }
-                                //console.log("No rewind");
-                                else
-                                {
-                                        console.log("Loading forward video");
-                                        video = videoF;
-                                        videoTexture = new THREE.Texture(video);
-                                        videoTexture.minFilter = THREE.LinearFilter;
-                                        videoTexture.magFilter = THREE.LinearFilter;
-                                        videoTexture.format = THREE.RGBFormat;
-                                        videoTexture.needsUpdate = true;
-			                scene.remove(sphereMesh);
-                                        sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
-                                        //sphereMesh.geometry.dynamic = true;
-                                        sphereMaterial.needsUpdate = true;
-			                scene.add(sphereMesh);
-                                        rewinding = false;
-                                        return 0;                                             
-                                }
+                        // In browsers that don’t yet support this functionality,
+                        // playPromise won’t be defined.
+                        if (playPromiseB !== undefined) {
+                          playPromiseB.then(function() {
+                            // Automatic playback started!
+                               //console.log("Playing");
+                          }).catch(function(error) {
+                                console.log("Promise failed", error.name);
+                            // Automatic playback failed.
+                            // Show a UI element to let the user manually start playback.
+                          var playButton = document.querySelector('#play2');
+                          // The user interaction requirement is met if
+                          // playback is triggered via a click event.
+                          playButton.addEventListener('click', startPlaybackB);
+                          playButton.hidden = false;
+                          });
+                        }}
+                        videoF.pause();
+                        videoB.pause();
+                        document.getElementById("startbutton").remove();     //hide button
+                        if(!nosensors)
+                        {
+                                reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                                ut = setInterval(updateText, 1000);
                         }
-	*/		
+                }
                         function rewind() {
                                if(rewinding == false)
                                 {
@@ -721,26 +615,21 @@ function startPlaybackB() {
                                         time = videoF.currentTime;
                                         videoF.pause();
                                         video = videoB;
-                                        //videoB.load();
                                         videoF.pause();
                                         videoB.currentTime = videoB.duration - time;
-                                        //console.log(videoB.currentTime);
                                         videoTexture = new THREE.Texture(videoB);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
                                         videoTexture.needsUpdate = true;
-			                scene.remove(sphereMesh);
+                                        scene.remove(sphereMesh);
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
-                                        //sphereMesh.geometry.dynamic = true;
+                                        sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
                                         sphereMaterial.needsUpdate = true;
-			                scene.add(sphereMesh);
-                                        //video.play();
+                                        scene.add(sphereMesh);
                                         rewinding = true;
                                         return 0;
                                         }
-                                //console.log("No rewind");
                                 else if (rewinding == true)
                                 {
                                         console.log("Loading forward video");
@@ -749,24 +638,20 @@ function startPlaybackB() {
                                         time = videoB.currentTime;
                                         videoB.pause();
                                         video = videoF;
-                                        //videoF.load();
                                         videoF.pause();
                                         videoF.currentTime = videoF.duration - time;
-                                        //console.log(videoF.currentTime);
                                         videoTexture = new THREE.Texture(videoF);
                                         videoTexture.minFilter = THREE.LinearFilter;
                                         videoTexture.magFilter = THREE.LinearFilter;
                                         videoTexture.format = THREE.RGBFormat;
                                         videoTexture.needsUpdate = true;
-			                scene.remove(sphereMesh);
+                                        scene.remove(sphereMesh);
                                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-			                sphereMesh = new THREE.Mesh(this.sphere, sphereMaterial);
-                                        //sphereMesh.geometry.dynamic = true;
+                                        sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
                                         sphereMaterial.needsUpdate = true;
-			                scene.add(sphereMesh);
-                                        //video.play();
+                                        scene.add(sphereMesh);
                                         rewinding = false;
-                                        return 0;                                             
+                                        return 0;
                                 }
                         }
 		</script>

@@ -116,18 +116,7 @@ function average(data){
 
   var avg = sum / data.length;
   return avg;
-}
-
-function findAboveAverage(value, index, arr) {  //find all values that are above average in an array
-        let sum = arr.reduce((previous, current) => current += previous); 
-        let average = sum/arr.length;
-        let maximum = Math.max(...arr);  
-        if(value > (2/3)*maximum)
-        { 
-                return true; 
-        }
-        return false;
-    }  
+} 
 
 /*
  *  Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
@@ -178,112 +167,80 @@ function pcorr(x, y) {
     return answer;
 }
 
-function detectPeaksValleys(seq, mode = 'magnitude')
+function detectPeaksValleys(seq)
 {
-        result = {'peaks':null, 'valleys':null}; 
-        //console.log(seq);
+        result = {"peaks":null, "valleys":null};
         let peakdiff = [];
         var valleydiff = [];
-        if(mode != 'magnitude')
+        peaks = [];
+        valleys = [];
+        let variance = 0.5 + standardDeviation(seq)/alpha;
+        let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
+        for (var i in seq)
         {
-                peaks = {'x':null, 'y':null, 'z':null};
-                for (var k in seq)
-                { 
-                        peaks[k] = [];
-                        for (var i in seq[k])
-                        {
-                                index = parseInt(i);
-                                let prev = seq[k][index-1];
-                                let curr = seq[k][index];
-                                let next = seq[k][index+1];
-                                if(curr > prev && curr > next && curr > stepaverage)
-                                        {
-                                                peaks[k].push(index);
-                                                lastpeakmag = curr;
-                                                //update step average
-                                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                                //console.log(lastpeakmag, lastvalleymag, stepaverage); 
-                                        }
-                        }
-                      
-                }
-        }
-        else
-        {
-                peaks = [];
-                valleys = [];
-                let variance = 0.5 + standardDeviation(seq)/alpha;
-                let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
-                for (var i in seq)
-                {
-                        index = parseInt(i);
-                        //seq_slice = seq.slice(0, i+1);
-                        let prev = seq[index-1];
-                        let curr = seq[index];
-                        let next = seq[index+1];
-                        //let avg = seq_slice.reduce(function(sum, a) { return sum + a },0)/(seq_slice.length||1);
-                        //console.log(variance);
+                index = parseInt(i);
+                let prev = seq[index-1];
+                let curr = seq[index];
+                let next = seq[index+1];
 
-                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
+                if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
+                {
+                        //update time average regardless of peak accepted or not
+                        if(peaks.length >= 2)
                         {
-                                //update time average regardless of peak accepted or not
-                                if(peaks.length >= 2)
+                                peakdiff.push(index - lastpeaktime);
+                                let peakdiff_selected = peakdiff;  //select recent M peaks
+                                let sum = peakdiff_selected.reduce((previous, current) => current += previous); //sum over the array
+                                peaktimethreshold = sum/peakdiff.length;      //average of peak diffs
+                        }
+                        else
+                        {
+                                if(lastpeaktime > 0 && index > lastpeaktime)
                                 {
                                         peakdiff.push(index - lastpeaktime);
-                                        let peakdiff_selected = peakdiff;  //select recent M peaks
-                                        let sum = peakdiff_selected.reduce((previous, current) => current += previous); //sum over the array
-                                        peaktimethreshold = sum/peakdiff.length;      //average of peak diffs
-                                }  
+                                }
                                 else
                                 {
-                                        if(lastpeaktime > 0 && index > lastpeaktime)
-                                        {
-                                                peakdiff.push(index - lastpeaktime);
-                                        }
-                                        else
-                                        {
-                                                peakdiff.push(index);
-                                        }
-                                }                                   
-                                peaks.push(index);
-                                lastpeakmag = curr;
-                                lastpeaktime = index;                              
+                                        peakdiff.push(index);
+                                }
                         }
-                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance))     //valley
-                                {
-                                //update time average regardless of valley accepted or not
-                                if(valleys.length >= 2)
+                        peaks.push(index);
+                        lastpeakmag = curr;
+                        lastpeaktime = index;
+                }
+                else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance))     //valley
+                        {
+                        //update time average regardless of valley accepted or not
+                        if(valleys.length >= 2)
+                        {
+                                valleydiff.push(index - lastvalleytime);
+                                let valleydiff_selected = valleydiff;    //select recent M valleys
+                                let sum = valleydiff_selected.reduce((previous, current) => current += previous); //sum over the array
+                                valleytimethreshold = sum/valleydiff.length;      //average of valley diffs
+                        }
+                        else
+                        {
+                                if(lastvalleytime > 0 && index > lastvalleytime)
                                 {
                                         valleydiff.push(index - lastvalleytime);
-                                        let valleydiff_selected = valleydiff;    //select recent M valleys
-                                        let sum = valleydiff_selected.reduce((previous, current) => current += previous); //sum over the array
-                                        valleytimethreshold = sum/valleydiff.length;      //average of valley diffs
-                                }  
+                                }
                                 else
                                 {
-                                        if(lastvalleytime > 0 && index > lastvalleytime)
-                                        {
-                                                valleydiff.push(index - lastvalleytime);
-                                        }
-                                        else
-                                        {
-                                                valleydiff.push(index);
-                                        }
-                                }  
-                                valleys.push(index);
-                                lastvalleymag = curr;
-                                lastvalleytime = index;
+                                        valleydiff.push(index);
+                                }
                         }
-                        //update step average
-                        if(lastpeakmag && lastvalleymag)
-                        {
-                                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                                //console.log(lastpeakmag, lastvalleymag, stepaverage);  
-                        } 
+                        valleys.push(index);
+                        lastvalleymag = curr;
+                        lastvalleytime = index;
+                }
+                //update step average
+                if(lastpeakmag && lastvalleymag)
+                {
+                        stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
                 }
         }
-        result['peaks'] = peaks;
-        result['valleys'] = valleys;
+        result["peaks"] = peaks;
+        result["valleys"] = valleys;
         return result;
 }
 
@@ -299,50 +256,18 @@ function smoothArray( values, smoothing ){
   }
 }
 
-/*
-//https://rosettacode.org/wiki/Averages/Simple_moving_average#JavaScript
-Array.prototype.simpleSMA=function(N) {
-return this.map(
-  function(el,index, _arr) { 
-      return _arr.filter(
-      function(x2,i2) { 
-        return i2 <= index && i2 > index - N;
-        })
-      .reduce(
-      function(current, last, index, arr){ 
-        return (current + last); 
-        })/index || 1;
-      }); 
-};
-*/
-
 function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
 {
-        //console.log("Sequence:");
-        //console.log(seq);
         magseq = magnitude2(seq);
-        //console.log("Magnitude of acceleration:");
-        //console.log(magseq);
         //Smoothen (filter noise)
         smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 8 seems to be a good value
-        //first filter the sequence using a MA-3 filter
-        /*maseq = {'x':null, 'y':null, 'z':null};
-        for (var k in seq)
-        { 
-              maseq[k] = seq[k].simpleSMA(3);
-        }
-        console.log(maseq);*/
         for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
         {
-                peaksvalleys = detectPeaksValleys(magseq.slice(0, i)); 
-        }  
-        peaks = peaksvalleys['peaks'];
-        valleys = peaksvalleys['valleys'];
-        console.log("Peaks and valleys:");
-        //console.log(peaksvalleys['peaks']);
-        //console.log(peaksvalleys['valleys']);
+                peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
+        }
+        peaks = peaksvalleys["peaks"];
+        valleys = peaksvalleys["valleys"];
         //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
-        console.log(peaktimethreshold, valleytimethreshold);
         //remove peaks that don't meet condition
         for (var i in peakdiff)
         {
@@ -359,10 +284,8 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         valleys[i] = null;
                 }
         }
-        peaks = peaks.filter(function(n){ return n != undefined });  
-        valleys = valleys.filter(function(n){ return n != undefined }); 
-        console.log(peaks);
-        console.log(valleys);
+        peaks = peaks.filter(function(n){ return n != undefined });
+        valleys = valleys.filter(function(n){ return n != undefined });
         let stepdiff = [];
         for (ipeak in peaks)
         {
@@ -371,61 +294,45 @@ function stepDetection(seq)      //Returns 1 if there was a step in the given se
                         if(ipeak == ivalley)
                         {
                                 let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
-                                if(stepdiffamt >= 10)     //at least 5 samples between peak and valley
+                                if(stepdiffamt >= 10)     //at least 10 samples between peak and valley
                                 {
                                         stepdiff.push(stepdiffamt);
                                 }
-                        }                
+                        }
                 }
         }
-        console.log("Step diff:");
-        console.log(stepdiff);
         let max = Math.max( ...stepdiff );
         let min = Math.min( ...stepdiff );
         let stddev = standardDeviation(stepdiff);
-var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s2)
-    return value - 9.81; 
-} );
+        var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s2)
+            return value - 9.81;
+        } );
         stddev_accel = standardDeviation(magseqnog);
         average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a },0)/(magseqnog.length||1);
         let min_accel = Math.min(...magseqnog);
         stddevpct = stddev / min;
-        console.log("Std dev pct", stddevpct);
-        console.log("Std dev accel", stddev_accel);
-        console.log("Average accel nog", average_accel_nog);
 
         let real = magseqnog.slice();
         let imag = Array.apply(null, Array(magseqnog.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
-        transform(real, imag);  //not normalized
+        transform(real, imag);  //not normalized, from FFT.js
         real = real.map(x => x/real.length);      //normalize
         imag = imag.map(x => x/imag.length);      //normalize
         let fft = [];
         for(var i=0; i< real.length; i++) {
         fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
         }
-        //fft = fft.map(x => x/Math.max(...fft));      //normalize
         fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
-        console.log(fft);
         fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
-        //let valuesAboveAverage = fft.filter(findAboveAverage);
-        //console.log("Values above average", valuesAboveAverage);
         if(fft_index > 4)    //definitely walking
         {
                 return true;
         }
-        /*if(valuesAboveAverage.length >= 4)      //definitely not walking
-        {
-                return false;
-        }*/
-        //if(Math.abs(stepamt-stepdiff.length) <= (stepamt) && stepdiff.length > 2)        //stepamt-1 for windows tablet, <=3 for Pixel
         if(stepdiff.length >= Math.floor(stepamt))
         {
-                //console.log(max, min);  
-                //if(((max-min)/max) < 0.5)
                 if(stddevpct < stddevthreshold && !isNaN(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2] && stddev_accel < 1.5)     //What characterises a step...?
                 {
                         return true;
-                }   
+                }
         }
         else
         {
