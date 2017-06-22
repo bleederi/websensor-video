@@ -140,7 +140,19 @@ limitations under the License.
                 var prevaccel = {x:null, y:null, z:null};
                 var diff = {x:null, y:null, z:null};
                 var sensorfreq = 60;
-                var stepvar = null;
+                var stepvar = null;     //0 when not walking, 1 when walking
+                var accel_sensor = null;
+                var orientation_sensor = null;
+                var initialoriobtained = false;
+                var roll = 0;
+                var pitch = 0;
+                var yaw = 0;
+                var longitudeInitial = null;
+                var latitude;
+                var longitude;
+                var longitudeOffset;
+
+                //Thresholds and other values for the algorithm
                 var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
                 var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
                 var reading;    //variable for controlling the data reading loop
@@ -151,8 +163,6 @@ limitations under the License.
                 var stepaverage = null;
                 var peaktimethreshold = null;
                 var valleytimethreshold = null;
-                var accel_sensor = null;
-                var orientation_sensor = null;
                 var discardedsamples = 0;
                 var accdiffthreshold = 0.15;     //if acceleration changes less than this, ignore it(for removing noise)
                 //In below arrays, first values for Windows tablet, second values for Nexus tablet
@@ -164,14 +174,7 @@ limitations under the License.
                 var average_accel_nog = null;
                 var fft_index = null;
                 var alpha = 4;
-                var initialoriobtained = false;
-                var roll = 0;
-                var pitch = 0;
-                var yaw = 0;
-                var longitudeInitial = null;
-                var latitude;
-                var longitude;
-                var longitudeOffset;
+
                 //Rendering vars (Three.JS)
                 var camera = null;
                 var videocanvasctx = null;
@@ -185,6 +188,7 @@ limitations under the License.
                 var sphereMaterial = null;
                 var sphereMesh = null;
 
+                //for systems with no sensors
                 var nosensors = false;
                 //for timekeeping
                 var time = null;
@@ -224,22 +228,6 @@ limitations under the License.
                 sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
                 scene.add(sphereMesh);
 
-                function updateText()   //For updating debug text
-                {
-                        if(stepvar)
-                        {
-                                walking_status_div = document.getElementById("walking_status");
-                                walking_status_div.innerHTML = "Walking";
-                        }
-                        else if (!stepvar)
-                        {
-                                walking_status_div = document.getElementById("walking_status");
-                                walking_status_div.innerHTML = "Not walking";
-                        }
-                        rw_div = document.getElementById("rewind_status");
-                        rw_div.innerHTML = rewinding;
-                }
-
                 function render() {
                         if( video.readyState === video.HAVE_ENOUGH_DATA ){
                                 videoTexture.needsUpdate = true;
@@ -275,7 +263,7 @@ limitations under the License.
                         requestAnimationFrame(() => render());
                 }
 
-                function playPauseRewind()
+                function playPause()
                 {
                         if(stepvar)
                         {
@@ -484,7 +472,7 @@ limitations under the License.
                                 }
 
                         });
-                        function saveSensorReading()
+                        function saveSensorReading()    //Function to save the sensor readings, check if we need to rewind and send the sensor readings to be analyzed for whether the user is walking or not
                         {
                                 accel = {x:accel.x, y:accel.y, z:accel.z};
                                 accelFiltered = new LowPassFilterData(accel, bias);
@@ -513,7 +501,7 @@ limitations under the License.
                                         stddev_div.innerHTML = stddevpct;
                                         stddev_accel_div.innerHTML = stddev_accel;
                                         fftindex_div.innerHTML = fft_index;
-                                        playPauseRewind();
+                                        playPause();
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];
                                         //maybe try slicing?
@@ -530,7 +518,7 @@ limitations under the License.
                                 if(discardedsamples >= amtStepValues/5)     //device most likely stationary
                                 {
                                         stepvar = 0;
-                                        playPauseRewind();
+                                        playPause();
                                         discardedsamples = 0;
                                         //clear buffer
                                         for (var k in accelSeq) delete accelSeq[k];

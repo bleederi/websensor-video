@@ -346,3 +346,19 @@ alert("error");
 var sliderDiv = document.getElementById("sliderAmount");
 sliderDiv.innerHTML = slideAmount;
 }
+
+                function updateText()   //For updating debug text
+                {
+                        if(stepvar)
+                        {
+                                walking_status_div = document.getElementById("walking_status");
+                                walking_status_div.innerHTML = "Walking";
+                        }
+                        else if (!stepvar)
+                        {
+                                walking_status_div = document.getElementById("walking_status");
+                                walking_status_div.innerHTML = "Not walking";
+                        }
+                        rw_div = document.getElementById("rewind_status");
+                        rw_div.innerHTML = rewinding;
+                }
