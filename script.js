@@ -320,7 +320,7 @@ function play()
                   var playButton = document.querySelector('#play2');
                   // The user interaction requirement is met if
                   // playback is triggered via a click event.
-                  playButton.addEventListener('click', startPlaybackF);
+                  playButton.addEventListener('click', videoF.play());
                   playButton.hidden = false;
                   });
                 }
@@ -342,79 +342,11 @@ function play()
                   var playButton = document.querySelector('#play2');
                   // The user interaction requirement is met if
                   // playback is triggered via a click event.
-                  playButton.addEventListener('click', startPlaybackB);
+                  playButton.addEventListener('click', videoB.play());
                   playButton.hidden = false;
                   });
                 }
         }         
-}
-
-function playButton()
-{
-        if(!rewinding)
-        {
-                if(videoF.paused)
-                {
-                        var playPromiseF = videoF.play();
-
-                        // In browsers that don’t yet support this functionality,
-                        // playPromise won’t be defined.
-                        if (playPromiseF !== undefined) {
-                          playPromiseF.then(function() {
-                            // Automatic playback started!
-                                //console.log("Playing");
-                          }).catch(function(error) {
-                                console.log("Promise failed", error.name);
-                            // Automatic playback failed.
-                            // Show a UI element to let the user manually start playback.
-                          var playButton = document.querySelector('#play2');
-                          // The user interaction requirement is met if
-                          // playback is triggered via a click event.
-                          playButton.addEventListener('click', startPlaybackF);
-                          playButton.hidden = false;
-                          });
-                }   }
-                else
-                {
-                        videoF.pause();                                
-                }
-        }
-        else if(rewinding)
-        {
-                if(videoB.paused)
-                {
-                        var playPromiseB = videoB.play();
-
-                        // In browsers that don’t yet support this functionality,
-                        // playPromise won’t be defined.
-                        if (playPromiseB !== undefined) {
-                          playPromiseB.then(function() {
-                            // Automatic playback started!
-                                //console.log("Playing");
-                          }).catch(function(error) {
-                                console.log("Promise failed", error.name);
-                            // Automatic playback failed.
-                            // Show a UI element to let the user manually start playback.
-                          var playButton = document.querySelector('#play2');
-                          // The user interaction requirement is met if
-                          // playback is triggered via a click event.
-                          playButton.addEventListener('click', startPlaybackB);
-                          playButton.hidden = false;
-                          });
-                }   }
-                else
-                {
-                        videoB.pause();                                
-                }
-        }
-}
-//Functions related to video playback
-
-function startPlaybackF() {
-return videoF.play();
-}
-function startPlaybackB() {
-return videoB.play();
 }
 
 function startDemo() {  //need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
@@ -433,7 +365,7 @@ function startDemo() {  //need user input to play video, so here both the forwar
           var playButton = document.querySelector('#play2');
           // The user interaction requirement is met if
           // playback is triggered via a click event.
-          playButton.addEventListener('click', startPlaybackF);
+          playButton.addEventListener('click', videoF.play());
           playButton.hidden = false;
           });
         var playPromiseB = videoB.play();
@@ -451,7 +383,7 @@ function startDemo() {  //need user input to play video, so here both the forwar
           var playButton = document.querySelector('#play2');
           // The user interaction requirement is met if
           // playback is triggered via a click event.
-          playButton.addEventListener('click', startPlaybackB);
+          playButton.addEventListener('click', videoB.play());
           playButton.hidden = false;
           });
         }}
@@ -464,7 +396,7 @@ function startDemo() {  //need user input to play video, so here both the forwar
                 ut = setInterval(updateText, 1000);
         }
 }
-function rewind() {
+function rewind() {     //Called when the video needs to be rewound (F to B or B to F)
        if(!rewinding)
         {
                 rw_div.innerHTML = "Not rewinding";
