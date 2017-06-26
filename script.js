@@ -58,7 +58,7 @@ smoothing_value.onchange = () => {
         ALGORITHM.smoothingvalue = smoothing_value.value;
         smoothing_value_div.innerHTML = ALGORITHM.smoothingvalue;
         console.log("Smoothing value:", ALGORITHM.smoothingvalue);
-}
+};
 
 var accel = {x:null, y:null, z:null};
 var rewinding = false;
@@ -66,11 +66,13 @@ var reading;    //variable for controlling the data reading loop
 var ut; //debug text update var
 const GRAVITY = 9.81;
 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
-var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
 var sensorfreq = 60;
 var stepvar = null;     //0 when not walking, 1 when walking
+
+//Sensors
 var accel_sensor = null;
 var orientation_sensor = null;
+
 var latitude;
 var longitude;
 var longitudeOffset;
@@ -85,11 +87,6 @@ var videoTexture = null;
 var sphereMaterial = null;
 var sphereMesh = null;
 
-//for systems with no sensors
-var nosensors = false;
-//For timekeeping used in switching video
-var time = null;
-
 
 //Sensor classes and low-pass filter
 class Pedometer {
@@ -102,7 +99,7 @@ class Pedometer {
         };
         sensor.onactivate = () => {
                 if (this.onactivate) this.onactivate();
-        }
+        };
         const start = () => sensor.start();
         Object.assign(this, { start });
         }
@@ -122,7 +119,7 @@ class AbsOriSensor {
         };
         sensor.onactivate = () => {
                 if (this.onactivate) this.onactivate();
-        }
+        };
         const start = () => sensor.start();
         Object.assign(this, { start });
         }
@@ -137,7 +134,7 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
                 this.y = this.y * this.bias + reading.y * (1 - this.bias);
                 this.z = this.z * this.bias + reading.z * (1 - this.bias);
         }
-};
+}
 
 //WINDOWS 10 HAS DIFFERENT CONVENTION: Yaw z, pitch x, roll y
 function toEulerianAngle(quat, out)
@@ -225,11 +222,8 @@ function startDemo() {  //need user input to play video, so here both the forwar
         videoF.pause();
         videoB.pause();
         document.getElementById("startbutton").remove();     //hide button
-        if(!nosensors)
-        {
-                reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-                ut = setInterval(updateText, 1000);
-        }
+        reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+        ut = setInterval(updateText, 1000);
 }
 
 //The custom element where the video will be rendered
@@ -280,9 +274,9 @@ customElements.define("video-view", class extends HTMLElement {
                 //Initialize sensors
                 accel_sensor = new Pedometer();
                 accel_sensor.onchange = () => {
-                }
+                };
                 accel_sensor.onactivate = () => {
-                }
+                };
                 accel_sensor.start();
                 orientation_sensor = new AbsOriSensor();
                 orientation_sensor.onchange = () => {
@@ -296,14 +290,15 @@ customElements.define("video-view", class extends HTMLElement {
                                 longitudeOffset = this.longitudeInitial;
                                 this.initialoriobtained = true;
                         }
-                }
+                };
                 orientation_sensor.onactivate = () => {
-                }
+                };
                 orientation_sensor.start();
                 }
                 catch(err) {
                         console.log(err.message);
-                        nosensors = true;
+                        console.log("Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable it in about:flags.");
+                        this.innerHTML = "Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable it in about:flags";
                 }
                 this.render();
         }
@@ -312,23 +307,15 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                if(nosensors)   //for testing
+                longitude = -this.yaw * 180 / Math.PI;       /*maybe should change and work instead in radians*/
+                //remove offset, scale to 0-360
+                longitude = longitude - this.longitudeInitial;
+                if(longitude < 0)
                 {
-                        longitude = 0;
-                        latitude = 0;
+                        longitude = longitude + 360;
                 }
-                else
-                {
-                        longitude = -this.yaw * 180 / Math.PI;       /*maybe should change and work instead in radians*/
-                        //remove offset, scale to 0-360
-                        longitude = longitude - this.longitudeInitial;
-                        if(longitude < 0)
-                        {
-                                longitude = longitude + 360;
-                        }
-                        latitude = this.roll * 180 / Math.PI - 90;
+                latitude = this.roll * 180 / Math.PI - 90;
 
-                }
                 //Below based on http://www.emanueleferonato.com/2014/12/10/html5-webgl-360-degrees-panorama-viewer-with-three-js/
                 // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
                 latitude = Math.max(-85, Math.min(85, latitude));
@@ -419,7 +406,7 @@ var CONTROL = (function () {
                if(!rewinding)
                 {
                         rw_div.innerHTML = "Not rewinding";
-                        time = videoF.currentTime;
+                        let time = videoF.currentTime;
                         videoF.pause();
                         video = videoB;
                         videoF.pause();
@@ -440,7 +427,7 @@ var CONTROL = (function () {
                 else if (rewinding)
                 {
                         rw_div.innerHTML = "Rewinding";
-                        time = videoB.currentTime;
+                        let time = videoB.currentTime;
                         videoB.pause();
                         video = videoF;
                         videoF.pause();
@@ -500,7 +487,7 @@ var ALGORITHM = (function () {
                 let seq_x = [];
                 let seq_y = [];
                 let seq_z = [];
-                for (var i in buffer)
+                for (let i=0; i<buffer.length; i++)
                 {
                         seq_x.push(buffer[i].x);        
                         seq_y.push(buffer[i].y);
@@ -530,9 +517,9 @@ var ALGORITHM = (function () {
                 if(mode === "seq")      //Calculate the magnitude sequence for 3 acceleration sequences
                 {
                         let magseq = [];
-                        for (var k in data)
+                        for (let k in data)
                         {
-                                for (var i in data[k])
+                                for (let i in data[k])
                                 {
                                         magseq[i] = Math.sqrt(data.x[i] * data.x[i] + data.y[i] * data.y[i] + data.z[i] * data.z[i]);
                                 }
@@ -590,7 +577,7 @@ var ALGORITHM = (function () {
             var x2 = [];
             var y2 = [];
           
-            for(var i=0; i<shortestArrayLength; i++) {
+            for(let i=0; i<shortestArrayLength; i++) {
                 xy.push(x[i] * y[i]);
                 x2.push(x[i] * x[i]);
                 y2.push(y[i] * y[i]);
@@ -602,7 +589,7 @@ var ALGORITHM = (function () {
             var sum_x2 = 0;
             var sum_y2 = 0;
           
-            for(var i=0; i< shortestArrayLength; i++) {
+            for(let i=0; i< shortestArrayLength; i++) {
                 sum_x += x[i];
                 sum_y += y[i];
                 sum_xy += xy[i];
@@ -623,7 +610,7 @@ var ALGORITHM = (function () {
         // smoothing: the strength of the smoothing filter; 1=no change, larger values smoothes more
         function smoothArray( values, smoothing ){
           var value = values[0]; // start with the first input
-          for (var i=1, len=values.length; i<len; ++i){
+          for (let i=1, len=values.length; i<len; ++i){
             var currentValue = values[i];
             value += (currentValue - value) / smoothing;
             values[i] = value;
@@ -648,8 +635,8 @@ var ALGORITHM = (function () {
                 let peaks = [];
                 let valleys = [];
                 let variance = 0.5 + standardDeviation(seq)/alpha;      //maybe should try to get rid of the constant 0,5 and make fully adaptive
-                let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
-                for (var i in seq)
+                let avg = seq.reduce(function(sum, a) { return sum + a; },0)/(seq.length||1);
+                for (let i in seq)
                 {
                         let index = parseInt(i);
                         let prev = seq[index-1];
@@ -719,7 +706,7 @@ var ALGORITHM = (function () {
                 result.peaks = peaks;
                 result.valleys = valleys;
                 return result;
-        };
+        }
 
         //The "public interfaces" are the stepDetection and saveSensorReading functions
         var stepDetection = function (seq)      //Returns 1 if there was a step in the given acceleration sequence, otherwise 0
@@ -737,25 +724,9 @@ var ALGORITHM = (function () {
                 let peaks = peaksvalleys.peaks;
                 let valleys = peaksvalleys.valleys;
                 //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
-                //remove peaks that don't meet condition
-                for (var i in peakdiff)
-                {
-                        if(peakdiff[i] < peaktimethreshold)
-                        {
-                                peaks[i] = null;
-                        }
-                }
-                //remove valleys that don't meet condition
-                for (var i in valleydiff)
-                {
-                        if(valleydiff[i] < valleytimethreshhold)
-                        {
-                                valleys[i] = null;
-                        }
-                }
                 //filter the non-valid peaks and valleys out
-                peaks = peaks.filter(function(n){ return n !== undefined });
-                valleys = valleys.filter(function(n){ return n !== undefined });
+                peaks = peaks.filter(function(n){ return n > peaktimethreshold;});
+                valleys = valleys.filter(function(n){ return n > valleytimethreshold;});
                 let stepdiff = [];
                 for (var ipeak in peaks)
                 {
@@ -777,7 +748,7 @@ var ALGORITHM = (function () {
                     return value - GRAVITY;
                 } );
                 stddev_accel = standardDeviation(magseqnog);
-                average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a },0)/(magseqnog.length||1);
+                average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a; },0)/(magseqnog.length||1);
                 stddevpct = stddev / min;
 
                 let real = magseqnog.slice();
@@ -786,8 +757,8 @@ var ALGORITHM = (function () {
                 real = real.map(x => x/real.length);      //normalize
                 imag = imag.map(x => x/imag.length);      //normalize
                 let fft = [];
-                for(var i=0; i< real.length; i++) {
-                fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
+                for(let i=0; i< real.length; i++) {
+                        fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
                 }
                 fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
                 fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
