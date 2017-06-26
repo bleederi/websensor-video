@@ -109,7 +109,6 @@ var alpha = 4;
 //Rendering vars (Three.JS)
 var camera = null;
 var videocanvasctx = null;
-var renderer = null;
 var scene = null;
 var sphere = null;
 var video = null;
@@ -190,9 +189,9 @@ customElements.define("video-view", class extends HTMLElement {
         videoB.crossOrigin = "anonymous";
 
         //THREE.js render stuff
-        renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(this.renderer.domElement);
 
         scene = new THREE.Scene();
 
@@ -277,7 +276,7 @@ customElements.define("video-view", class extends HTMLElement {
                 camera.lookAt(camera.target);
 
                 // Render loop
-                renderer.render(scene, camera);
+                this.renderer.render(scene, camera);
                 requestAnimationFrame(() => this.render());
         }
 
@@ -563,12 +562,6 @@ function slice(obj, start, end) {
     return sliced;
 }
 
-function removeDuplicates(arr) {
-    let s = new Set(arr);
-    let v = s.values();
-    return Array.from(v);
-}
-
 function magnitude(data, mode = "vector")      //Calculate the magnitude of a vector or alternatively a sequence
 {
         if(mode === "seq")      //Calculate the magnitude sequence for 3 acceleration sequences
@@ -672,7 +665,7 @@ function detectPeaksValleys(seq)
         let valleydiff = [];
         let peaks = [];
         let valleys = [];
-        let variance = 0.5 + standardDeviation(seq)/alpha;
+        let variance = 0.5 + standardDeviation(seq)/alpha;      //maybe should try to get rid of the constant 0,5 and make fully adaptive
         let avg = seq.reduce(function(sum, a) { return sum + a },0)/(seq.length||1);
         for (var i in seq)
         {
