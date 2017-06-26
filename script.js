@@ -278,7 +278,7 @@ customElements.define("video-view", class extends HTMLElement {
 
                 // Render loop
                 renderer.render(scene, camera);
-                requestAnimationFrame(() => render());
+                requestAnimationFrame(() => this.render());
         }
 
 });
