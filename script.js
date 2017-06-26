@@ -40,34 +40,30 @@ slider_stddev.onchange = () => {
 var slider_stepamt = document.getElementById("slider_stepamt");
 var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
 slider_stepamt.onchange = () => {
-        stepamt = slider_stepamt.value;
-        amtStepValues = stepamt*sensorfreq;     //recalculate
-        slider_stepamt_div.innerHTML = stepamt;
-        console.log("Step amount:", stepamt);
+        ALGORITHM.stepamt = slider_stepamt.value;
+        amtStepValues = ALGORITHM.stepamt*sensorfreq;     //recalculate
+        slider_stepamt_div.innerHTML = ALGORITHM.stepamt;
+        console.log("Step amount:", ALGORITHM.stepamt);
 };
 var slider_bias = document.getElementById("slider_bias");
 var slider_bias_div = document.getElementById("slider_bias_amount");
 slider_bias.onchange = () => {
-        bias = slider_bias.value;
-        slider_bias_div.innerHTML = bias;
-        console.log("Filter bias:", bias);
+        ALGORITHM.bias = slider_bias.value;
+        slider_bias_div.innerHTML = ALGORITHM.bias;
+        console.log("Filter bias:", ALGORITHM.bias);
 };
 
 var smoothing_value = document.getElementById("smoothing_value");
 var smoothing_value_div = document.getElementById("smoothing_amount");
 smoothing_value.onchange = () => {
-        smoothingvalue = smoothing_value.value;
-        smoothing_value_div.innerHTML = smoothingvalue;
-        console.log("Smoothing value:", smoothingvalue);
+        ALGORITHM.smoothingvalue = smoothing_value.value;
+        smoothing_value_div.innerHTML = ALGORITHM.smoothingvalue;
+        console.log("Smoothing value:", ALGORITHM.smoothingvalue);
 }
 var rewinding = false;
 var rw; //variable for controlling the rewind loop
 var reading;    //variable for controlling the data reading loop
 var ut; //debug text update var
-var accelerationData = [];        //sequence to store xyz accelerometer readings
-var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
-var accel = {x:null, y:null, z:null};
-var accelFiltered = {x:null, y:null, z:null};
 var gravity;
 var accelNoG;
 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
@@ -86,25 +82,6 @@ var longitudeInitial = null;
 var latitude;
 var longitude;
 var longitudeOffset;
-
-//Thresholds and other values for the algorithm
-var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
-var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
-var stepaverage = null;
-var peaktimethreshold = null;
-var valleytimethreshold = null;
-var discardedsamples = 0;
-var accdiffthreshold = 0.15;     //if acceleration changes less than this, ignore it(for removing noise)
-//In below arrays, first values for Windows tablet, second values for Nexus tablet
-var stddevthreshold = 2.8;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
-var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
-var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
-var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
-var average_accel_nog = null;
-var stddevpct = null;
-var stddev_accel = null;
-var fft_index = null;
-var alpha = 4;
 
 //Rendering vars (Three.JS)
 var camera = null;
@@ -497,6 +474,30 @@ var CONTROL = (function () {
 var ALGORITHM = (function () {
 	var algo = {};
 
+        var accelerationData = [];        //sequence to store xyz accelerometer readings
+        var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
+        var accel = {x:null, y:null, z:null};
+        var accelFiltered = {x:null, y:null, z:null};
+
+        //Thresholds and other values for the algorithm
+        var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
+        var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
+        var stepaverage = null;
+        var peaktimethreshold = null;
+        var valleytimethreshold = null;
+        var discardedsamples = 0;
+        var accdiffthreshold = 0.15;     //if acceleration changes less than this, ignore it(for removing noise)
+        //In below arrays, first values for Windows tablet, second values for Nexus tablet
+        var stddevthreshold = 2.8;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
+        var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
+        var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
+        var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
+        var average_accel_nog = null;
+        var stddevpct = null;
+        var stddev_accel = null;
+        var fft_index = null;
+        var alpha = 4;
+
         /* Below are functions for the WD algorithm and functions used in the algorithm */
 
         //Functions to handle data
@@ -850,6 +851,13 @@ var ALGORITHM = (function () {
         };
 
 	return {
+                stepamt: stepamt,
+                stddevthreshold: stddevthreshold,
+                bias: bias,
+                smoothingvalue: smoothingvalue,
+                stddevpct: stddevpct,
+                stddev_accel: stddev_accel,
+                fft_index: fft_index,
                 stepDetection: stepDetection,
                 saveSensorReading: saveSensorReading
         };
