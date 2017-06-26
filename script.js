@@ -1,6 +1,6 @@
 /*
  * Websensor video project
- * https://github.com/jessenie-intel/web-sensor-js-privacy
+ * https://github.com/jessenie-intel/websensor-video
  *
  * Copyright (c) 2017 Jesse Nieminen
  *
