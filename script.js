@@ -243,6 +243,7 @@ customElements.define("video-view", class extends HTMLElement {
                         console.log(err.message);
                         nosensors = true;
                 }
+                this.render();
         }
 
         render() {
