@@ -21,7 +21,6 @@
 'use strict';
 
 /* Global variables below */
-var videoDiv = document.getElementById("videoview");
 //Debug stuff(sliders, text)
 var walking_status_div = document.getElementById("walking_status");
 var stddev_div = document.getElementById("stddev");
@@ -60,32 +59,23 @@ smoothing_value.onchange = () => {
         smoothing_value_div.innerHTML = ALGORITHM.smoothingvalue;
         console.log("Smoothing value:", ALGORITHM.smoothingvalue);
 }
+
+var accel = {x:null, y:null, z:null};
 var rewinding = false;
-var rw; //variable for controlling the rewind loop
 var reading;    //variable for controlling the data reading loop
 var ut; //debug text update var
-var gravity;
-var accelNoG;
+const GRAVITY = 9.81;
 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
 var orientationMatInitial = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);          //variable for storing initial orientation matrix
-var prevaccel = {x:null, y:null, z:null};
-var diff = {x:null, y:null, z:null};
 var sensorfreq = 60;
 var stepvar = null;     //0 when not walking, 1 when walking
 var accel_sensor = null;
 var orientation_sensor = null;
-var initialoriobtained = false;
-var roll = 0;
-var pitch = 0;
-var yaw = 0;
-var longitudeInitial = null;
 var latitude;
 var longitude;
 var longitudeOffset;
 
 //Rendering vars (Three.JS)
-var camera = null;
-var videocanvasctx = null;
 var scene = null;
 var sphere = null;
 var video = null;
@@ -248,9 +238,12 @@ customElements.define("video-view", class extends HTMLElement {
         super();
 
         //Load two video elements, one forward and one backward
-
+        this.roll = null;
+        this.pitch = null; 
+        this.yaw = null;
+        this.initialoriobtained = false;
+        this.longitudeInitial = null;
         videoF = document.createElement("video");
-        videoF.id = "videof";
         videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
         videoF.crossOrigin = "anonymous";
 
@@ -265,8 +258,8 @@ customElements.define("video-view", class extends HTMLElement {
 
         scene = new THREE.Scene();
 
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.target = new THREE.Vector3(0, 0, 0);
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+        this.camera.target = new THREE.Vector3(0, 0, 0);
 
         sphere = new THREE.SphereGeometry(100, 100, 40);
         sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
@@ -293,15 +286,15 @@ customElements.define("video-view", class extends HTMLElement {
                 accel_sensor.start();
                 orientation_sensor = new AbsOriSensor();
                 orientation_sensor.onchange = () => {
-                        roll = orientation_sensor.roll;
-                        pitch = orientation_sensor.pitch;
-                        yaw = orientation_sensor.yaw;
-                        if(!initialoriobtained) //obtain initial longitude
+                        this.roll = orientation_sensor.roll;
+                        this.pitch = orientation_sensor.pitch;
+                        this.yaw = orientation_sensor.yaw;
+                        if(!this.initialoriobtained) //obtain initial longitude
                         {
                                 let yawInitial = orientation_sensor.yaw;
-                                longitudeInitial = -yawInitial * 180 / Math.PI;
-                                longitudeOffset = longitudeInitial;
-                                initialoriobtained = true;
+                                this.longitudeInitial = -yawInitial * 180 / Math.PI;
+                                longitudeOffset = this.longitudeInitial;
+                                this.initialoriobtained = true;
                         }
                 }
                 orientation_sensor.onactivate = () => {
@@ -326,27 +319,27 @@ customElements.define("video-view", class extends HTMLElement {
                 }
                 else
                 {
-                        longitude = -yaw * 180 / Math.PI;       /*maybe should change and work instead in radians*/
+                        longitude = -this.yaw * 180 / Math.PI;       /*maybe should change and work instead in radians*/
                         //remove offset, scale to 0-360
-                        longitude = longitude - longitudeInitial;
+                        longitude = longitude - this.longitudeInitial;
                         if(longitude < 0)
                         {
                                 longitude = longitude + 360;
                         }
-                        latitude = roll * 180 / Math.PI - 90;
+                        latitude = this.roll * 180 / Math.PI - 90;
 
                 }
                 //Below based on http://www.emanueleferonato.com/2014/12/10/html5-webgl-360-degrees-panorama-viewer-with-three-js/
                 // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
                 latitude = Math.max(-85, Math.min(85, latitude));
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
-                camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
-                camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
-                camera.lookAt(camera.target);
+                this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
+                this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
+                this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
+                this.camera.lookAt(this.camera.target);
 
                 // Render loop
-                this.renderer.render(scene, camera);
+                this.renderer.render(scene, this.camera);
                 requestAnimationFrame(() => this.render());
         }
 
@@ -476,9 +469,9 @@ var ALGORITHM = (function () {
 
         var accelerationData = [];        //sequence to store xyz accelerometer readings
         var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
-        var accel = {x:null, y:null, z:null};
         var accelFiltered = {x:null, y:null, z:null};
-
+        var prevaccel = {x:null, y:null, z:null};
+        var diff = {x:null, y:null, z:null};
         //Thresholds and other values for the algorithm
         var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
         var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
@@ -781,7 +774,7 @@ var ALGORITHM = (function () {
                 let min = Math.min( ...stepdiff );
                 let stddev = standardDeviation(stepdiff);
                 var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s2)
-                    return value - 9.81;
+                    return value - GRAVITY;
                 } );
                 stddev_accel = standardDeviation(magseqnog);
                 average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a },0)/(magseqnog.length||1);
