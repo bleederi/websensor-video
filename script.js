@@ -285,21 +285,21 @@ customElements.define("video-view", class extends HTMLElement {
 
 //Functions related to controlling video playback
 
-function playPause()
+function playPause()    //Called when video playback state(play/pause) needs to be checked
 {
-if(stepvar)
-{
-        walking_status_div.innerHTML = "Walking";
-        play();
-}
-else if (!stepvar)
-{
-        if(!video.paused)
+        if(stepvar)
         {
-                video.pause();
+                walking_status_div.innerHTML = "Walking";
+                play();
         }
-        walking_status_div.innerHTML = "Not walking";
-}
+        else if (!stepvar)
+        {
+                if(!video.paused)
+                {
+                        video.pause();
+                }
+                walking_status_div.innerHTML = "Not walking";
+        }
 }
 
 function play()
@@ -418,52 +418,52 @@ function startPlaybackB() {
 return videoB.play();
 }
 
-function startDemo() {  //need user input to play video
-var playPromiseF = videoF.play();
+function startDemo() {  //need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
+        var playPromiseF = videoF.play();
 
-// In browsers that don’t yet support this functionality,
-// playPromise won’t be defined.
-if (playPromiseF !== undefined) {
-  playPromiseF.then(function() {
-    // Automatic playback started!
-       //console.log("Playing");
-  }).catch(function(error) {
-        console.log("Promise failed", error.name);
-    // Automatic playback failed.
-    // Show a UI element to let the user manually start playback.
-  var playButton = document.querySelector('#play2');
-  // The user interaction requirement is met if
-  // playback is triggered via a click event.
-  playButton.addEventListener('click', startPlaybackF);
-  playButton.hidden = false;
-  });
-var playPromiseB = videoB.play();
+        // In browsers that don’t yet support this functionality,
+        // playPromise won’t be defined.
+        if (playPromiseF !== undefined) {
+          playPromiseF.then(function() {
+            // Automatic playback started!
+               //console.log("Playing");
+          }).catch(function(error) {
+                console.log("Promise failed", error.name);
+            // Automatic playback failed.
+            // Show a UI element to let the user manually start playback.
+          var playButton = document.querySelector('#play2');
+          // The user interaction requirement is met if
+          // playback is triggered via a click event.
+          playButton.addEventListener('click', startPlaybackF);
+          playButton.hidden = false;
+          });
+        var playPromiseB = videoB.play();
 
-// In browsers that don’t yet support this functionality,
-// playPromise won’t be defined.
-if (playPromiseB !== undefined) {
-  playPromiseB.then(function() {
-    // Automatic playback started!
-       //console.log("Playing");
-  }).catch(function(error) {
-        console.log("Promise failed", error.name);
-    // Automatic playback failed.
-    // Show a UI element to let the user manually start playback.
-  var playButton = document.querySelector('#play2');
-  // The user interaction requirement is met if
-  // playback is triggered via a click event.
-  playButton.addEventListener('click', startPlaybackB);
-  playButton.hidden = false;
-  });
-}}
-videoF.pause();
-videoB.pause();
-document.getElementById("startbutton").remove();     //hide button
-if(!nosensors)
-{
-        reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
-        ut = setInterval(updateText, 1000);
-}
+        // In browsers that don’t yet support this functionality,
+        // playPromise won’t be defined.
+        if (playPromiseB !== undefined) {
+          playPromiseB.then(function() {
+            // Automatic playback started!
+               //console.log("Playing");
+          }).catch(function(error) {
+                console.log("Promise failed", error.name);
+            // Automatic playback failed.
+            // Show a UI element to let the user manually start playback.
+          var playButton = document.querySelector('#play2');
+          // The user interaction requirement is met if
+          // playback is triggered via a click event.
+          playButton.addEventListener('click', startPlaybackB);
+          playButton.hidden = false;
+          });
+        }}
+        videoF.pause();
+        videoB.pause();
+        document.getElementById("startbutton").remove();     //hide button
+        if(!nosensors)
+        {
+                reading = setInterval(saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+                ut = setInterval(updateText, 1000);
+        }
 }
 function rewind() {
        if(!rewinding)
@@ -569,22 +569,24 @@ function removeDuplicates(arr) {
     return Array.from(v);
 }
 
-function magnitude(vector)      //Calculate the magnitude of a vector
+function magnitude(data, mode = "vector")      //Calculate the magnitude of a vector or alternatively a sequence
 {
-return Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
-}
-
-function magnitude2(seq)      //Calculate the magnitude sequence for 3 acceleration sequences
-{
-        let magseq = [];
-        for (var k in seq)
+        if(mode === "seq")      //Calculate the magnitude sequence for 3 acceleration sequences
         {
-                for (var i in seq[k])
+                let magseq = [];
+                for (var k in data)
                 {
-                        magseq[i] = Math.sqrt(seq.x[i] * seq.x[i] + seq.y[i] * seq.y[i] + seq.z[i] * seq.z[i]);
+                        for (var i in data[k])
+                        {
+                                magseq[i] = Math.sqrt(data.x[i] * data.x[i] + data.y[i] * data.y[i] + data.z[i] * data.z[i]);
+                        }
                 }
+                return magseq;
         }
-        return magseq;
+        else
+        {
+                return Math.sqrt(data.x * data.x + data.y * data.y + data.z * data.z);
+        }
 }
 
 /* Source: https://derickbailey.com/2014/09/21/calculating-standard-deviation-with-array-map-and-array-reduce-in-javascript/ */
@@ -661,7 +663,7 @@ function pcorr(x, y) {
     return answer;
 }
 
-//Functions for the WD algorithm and that the algorithm uses
+//Functions for the WD algorithm and functions used in the algorithm
 
 function detectPeaksValleys(seq)
 {
@@ -756,9 +758,9 @@ function smoothArray( values, smoothing ){
   }
 }
 
-function stepDetection(seq)      //Returns 1 if there was a step in the given sequence, otherwise 0
+function stepDetection(seq)      //Returns 1 if there was a step in the given acceleration sequence, otherwise 0
 {
-        let magseq = magnitude2(seq);
+        let magseq = magnitude(seq, "seq");     //calculate the magnitude sequence from the 3 distinct xyz sequences
         //Smoothen (filter noise)
         smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 8 seems to be a good value
         let peaksvalleys = null;
@@ -852,8 +854,6 @@ function clearVars()    //Clear vars every loop iteration
         valleytimethreshold = null;
 }
 
-
-//TODO: Split this function into parts
 function saveSensorReading()    //Function to save the sensor readings, check if we need to rewind and send the sensor readings to be analyzed for whether the user is walking or not
 {
         accel = {x:accel.x, y:accel.y, z:accel.z};
@@ -876,7 +876,7 @@ function saveSensorReading()    //Function to save the sensor readings, check if
         if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
         {
                 accelSeq = toCoordSeq(accelerationData);
-                var as = Object.assign({}, accelSeq);
+                var as = Object.assign({}, accelSeq);   //copy by value
                 stepvar = stepDetection(as);
                 playPause();
                 clearVars();
