@@ -96,7 +96,7 @@ var valleytimethreshold = null;
 var discardedsamples = 0;
 var accdiffthreshold = 0.15;     //if acceleration changes less than this, ignore it(for removing noise)
 //In below arrays, first values for Windows tablet, second values for Nexus tablet
-algo.stddevthreshold = 2.8;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
+var stddevthreshold = 2.8;      //0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
 var peakvalleyamtthreshold = [2, 6, 12];        //12 for Pixel.. need to filter better
 var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
 var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
