@@ -92,9 +92,7 @@ var sphereMesh = null;
 class Pedometer {
         constructor() {
         const sensor = new Accelerometer({ frequency: sensorfreq });
-        //gravity =  new LowPassFilterData(sensor, 0.8);        //Maybe should calculate gravity this way?
         sensor.onchange = () => {
-                accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                 if (this.onchange) this.onchange();
         };
         sensor.onactivate = () => {
@@ -274,6 +272,7 @@ customElements.define("video-view", class extends HTMLElement {
                 //Initialize sensors
                 accel_sensor = new Pedometer();
                 accel_sensor.onchange = () => {
+                        accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
                 };
                 accel_sensor.onactivate = () => {
                 };
