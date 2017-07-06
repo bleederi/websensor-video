@@ -272,7 +272,7 @@ customElements.define("video-view", class extends HTMLElement {
                 //Initialize sensors
                 accel_sensor = new Pedometer();
                 accel_sensor.onchange = () => {
-                        accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
+                        accel = {'x':accel_sensor.x, 'y':accel_sensor.y, 'z':accel_sensor.z};
                 };
                 accel_sensor.onactivate = () => {
                 };
