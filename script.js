@@ -93,9 +93,9 @@ class Pedometer {
         constructor() {
         const sensor = new Accelerometer({ frequency: sensorfreq });
         //gravity =  new LowPassFilterData(sensor, 0.8);        //Maybe should calculate gravity this way?
-        sensor.onchange = () => {
+        sensor.onreading = () => {
                 this.accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
-                if (this.onchange) this.onchange();
+                if (this.onreading) this.onreading();
         };
         sensor.onactivate = () => {
                 if (this.onactivate) this.onactivate();
@@ -109,13 +109,13 @@ class AbsOriSensor {
         const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
         const mat4 = new Float32Array(16);
         const euler = new Float32Array(3);
-        sensor.onchange = () => {
+        sensor.onreading = () => {
                 sensor.populateMatrix(mat4);
                 toEulerianAngle(sensor.quaternion, euler);      //From quaternion to Eulerian angles
                 this.roll = euler[0];
                 this.pitch = euler[1];
                 this.yaw = euler[2];
-                if (this.onchange) this.onchange();
+                if (this.onreading) this.onreading();
         };
         sensor.onactivate = () => {
                 if (this.onactivate) this.onactivate();
@@ -273,14 +273,14 @@ customElements.define("video-view", class extends HTMLElement {
                 try {
                 //Initialize sensors
                 accel_sensor = new Pedometer();
-                accel_sensor.onchange = () => {
+                accel_sensor.onreading = () => {
                         accel = accel_sensor.accel;
                 };
                 accel_sensor.onactivate = () => {
                 };
                 accel_sensor.start();
                 orientation_sensor = new AbsOriSensor();
-                orientation_sensor.onchange = () => {
+                orientation_sensor.onreading = () => {
                         this.roll = orientation_sensor.roll;
                         this.pitch = orientation_sensor.pitch;
                         this.yaw = orientation_sensor.yaw;
