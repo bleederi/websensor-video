@@ -43,6 +43,7 @@ limitations under the License.
                     }
 		</style>
                 <script src="three.min.js" async></script>
+                <script type="text/javascript" src="fft.js" async></script>        <!-- Contains FFT -->
 		
 	</head>
         <template id="video-view">
@@ -87,8 +88,7 @@ limitations under the License.
 </div>
                 <video-view id="videoview">
                 </video-view>
-                <script type="text/javascript" src="fft.js"></script>        <!-- Contains FFT -->
-                <script type="text/javascript" src="script.js"></script>        <!-- Contains the step detection algorithm -->
+                <script type="text/javascript" src="script.js" defer></script>        <!-- Contains the step detection algorithm -->
 	</body>
 </html>
 
