@@ -256,7 +256,7 @@ customElements.define("video-view", class extends HTMLElement {
         this.camera.target = new THREE.Vector3(0, 0, 0);
 
         sphere = new THREE.SphereGeometry(100, 100, 40);
-        sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+        sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the inside of the sphere is to be rendered
         video = videoF; //start with the forward video
         video.load();
         videoTexture = new THREE.Texture(video);
@@ -284,7 +284,7 @@ customElements.define("video-view", class extends HTMLElement {
                         this.roll = orientation_sensor.roll;
                         this.pitch = orientation_sensor.pitch;
                         this.yaw = orientation_sensor.yaw;
-                        if(!this.initialoriobtained) //obtain initial longitude
+                        if(!this.initialoriobtained) //obtain initial longitude - needed to make the initial camera orientation the same every time
                         {
                                 let yawInitial = orientation_sensor.yaw;
                                 this.longitudeInitial = -yawInitial * 180 / Math.PI;
@@ -497,13 +497,6 @@ var ALGORITHM = (function () {
                 var seq = {'x':seq_x, 'y':seq_y, 'z':seq_z};
                 return seq;
         }
-
-        /**
-         * Slices the object. Note that returns a new spliced object,
-         * e.g. do not modifies original object. Also note that that sliced elements
-         * are sorted alphabetically by object property name.
-         * Credit to https://stackoverflow.com/a/20682709
-         */
         function slice(obj, start, end) {
             var sliced = {};
             for (var k in obj) {
@@ -790,7 +783,7 @@ var ALGORITHM = (function () {
                         prevaccel = accel;
                         discardedsamples = discardedsamples - 3;
                 }
-                else
+                else    //The change in acceleration was too small, so the device might be stationary
                 {
                         discardedsamples = discardedsamples + 1;
                 }
