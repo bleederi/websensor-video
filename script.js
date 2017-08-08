@@ -77,7 +77,6 @@ class Pedometer {
                 this.accel_ = {'x':this.sensor_.x, 'y':this.sensor_.y, 'z':this.sensor_.z};
                 if (this.onreading_) this.onreading_();
         };
-        }
         get accel() {
                 return this.accel_;
         }
