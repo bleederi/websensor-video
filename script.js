@@ -71,22 +71,26 @@ var sphereMesh = null;
 //Sensor classes and low-pass filter
 class Pedometer {
         constructor() {
-        const sensor = new Accelerometer({ frequency: sensorfreq });
-        //gravity =  new LowPassFilterData(sensor, 0.8);        //Maybe should calculate gravity this way?
-        sensor.onreading = () => {
-                this.accel = {'x':sensor.x, 'y':sensor.y, 'z':sensor.z};
-                if (this.onreading) this.onreading();
+        this.sensor_ = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+        this.accel_ = 0;
+        this.sensor_.onreading = () => {
+                this.accel_ = {'x':this.sensor_.x, 'y':this.sensor_.y, 'z':this.sensor_.z};
+                if (this.onreading_) this.onreading_();
         };
-        sensor.onactivate = () => {
-                if (this.onactivate) this.onactivate();
-        };
-        const start = () => sensor.start();
-        Object.assign(this, { start });
+        }
+        set onactivate(func) {
+                this.sensor_.onactivate_ = func;
+        }
+        set onerror(err) {
+                this.sensor_.onerror_ = err;
+        }
+        set onreading (func) {
+                this.onreading_ = func;  
         }
 }
 class AbsOriSensor {
         constructor() {
-        this.sensor_ = new AbsoluteOrientationSensor({ frequency: 60 });
+        this.sensor_ = new AbsoluteOrientationSensor({ frequency: sensorfreq });
         this.mat4_ = new Float32Array(16);
         this.roll_ = 0;
         this.pitch_ = 0;
