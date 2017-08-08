@@ -78,6 +78,9 @@ class Pedometer {
                 if (this.onreading_) this.onreading_();
         };
         }
+        get accel() {
+                return this.accel_;
+        }
         set onactivate(func) {
                 this.sensor_.onactivate_ = func;
         }
@@ -268,8 +271,6 @@ customElements.define("video-view", class extends HTMLElement {
                 accel_sensor.onreading = () => {
                         accel = accel_sensor.accel;
                 };
-                accel_sensor.onactivate = () => {
-                };
                 accel_sensor.start();
                 orientation_sensor = new AbsOriSensor();
                 orientation_sensor.onreading = () => {
@@ -283,8 +284,6 @@ customElements.define("video-view", class extends HTMLElement {
                                 longitudeOffset = this.longitudeInitial;
                                 this.initialoriobtained = true;
                         }
-                };
-                orientation_sensor.onactivate = () => {
                 };
                 orientation_sensor.start();
                 }
