@@ -308,8 +308,8 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                let longitude = -yaw;
-                let latitude = roll - Math.PI/2;
+                let longitude = -this.yaw;
+                let latitude = this.roll - Math.PI/2;
                 //remove offset, scale to 0-360
                 longitude = longitude - this.longitudeInitial;
                 if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
