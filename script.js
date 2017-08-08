@@ -1,23 +1,3 @@
-/*
- * Websensor video project
- * https://github.com/jessenie-intel/websensor-video
- *
- * Copyright (c) 2017 Jesse Nieminen
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
-*/
-
 'use strict';
 
 /* Global variables below */
@@ -308,14 +288,14 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                let longitude = -this.yaw;
+                longitude = -this.yaw;
                 //remove offset, scale to 0-360
                 longitude = longitude - this.longitudeInitial;
                 if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
                         longitude = longitude + 2*Math.PI;
                 }
-                let latitude = this.roll - Math.PI/2;
+                latitude = this.roll - Math.PI/2;
                 // limiting latitude from -85 degrees to 85 degrees (cannot point to the sky or under your feet)
                 latitude = Math.max(-85/180 * Math.PI, Math.min(85/180 * Math.PI, latitude));
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
