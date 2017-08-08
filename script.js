@@ -231,12 +231,12 @@ customElements.define("video-view", class extends HTMLElement {
         constructor() {
         super();
 
-        //Load two video elements, one forward and one backward
         this.roll = null;
         this.pitch = null; 
         this.yaw = null;
         this.initialoriobtained = false;
         this.longitudeInitial = null;
+        //Two video elements, one forward and one backward, switching between them when the user changes walking direction
         videoF = document.createElement("video");
         videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
         videoF.crossOrigin = "anonymous";
@@ -287,7 +287,7 @@ customElements.define("video-view", class extends HTMLElement {
                         if(!this.initialoriobtained) //obtain initial longitude
                         {
                                 let yawInitial = orientation_sensor.yaw;
-                                this.longitudeInitial = -yawInitial * 180 / Math.PI;
+                                this.longitudeInitial = -yawInitial;
                                 longitudeOffset = this.longitudeInitial;
                                 this.initialoriobtained = true;
                         }
@@ -308,22 +308,20 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                longitude = -this.yaw * 180 / Math.PI;       /*maybe should change and work instead in radians*/
+                let longitude = -yaw;
+                let latitude = roll - Math.PI/2;
                 //remove offset, scale to 0-360
                 longitude = longitude - this.longitudeInitial;
-                if(longitude < 0)
+                if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
-                        longitude = longitude + 360;
+                        longitude = longitude + 2*Math.PI;
                 }
-                latitude = this.roll * 180 / Math.PI - 90;
-
-                //Below based on http://www.emanueleferonato.com/2014/12/10/html5-webgl-360-degrees-panorama-viewer-with-three-js/
-                // limiting latitude from -85 to 85 (cannot point to the sky or under your feet)
-                latitude = Math.max(-85, Math.min(85, latitude));
+                // limiting latitude from -85 degrees to 85 degrees (cannot point to the sky or under your feet)
+                latitude = Math.max(-85/180 * Math.PI, Math.min(85/180 * Math.PI, latitude));
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                this.camera.target.x = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.cos(THREE.Math.degToRad(longitude));
-                this.camera.target.y = 500 * Math.cos(THREE.Math.degToRad(90 - latitude));
-                this.camera.target.z = 500 * Math.sin(THREE.Math.degToRad(90 - latitude)) * Math.sin(THREE.Math.degToRad(longitude));
+                this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
+                this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
+                this.camera.target.z = 500 * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
                 this.camera.lookAt(this.camera.target);
 
                 // Render loop
