@@ -309,13 +309,13 @@ customElements.define("video-view", class extends HTMLElement {
                         videoTexture.needsUpdate = true;
                 }
                 let longitude = -this.yaw;
-                let latitude = this.roll - Math.PI/2;
                 //remove offset, scale to 0-360
                 longitude = longitude - this.longitudeInitial;
                 if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
                         longitude = longitude + 2*Math.PI;
                 }
+                let latitude = this.roll - Math.PI/2;
                 // limiting latitude from -85 degrees to 85 degrees (cannot point to the sky or under your feet)
                 latitude = Math.max(-85/180 * Math.PI, Math.min(85/180 * Math.PI, latitude));
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
@@ -786,7 +786,7 @@ var ALGORITHM = (function () {
                         discardedsamples = discardedsamples + 1;
                 }
                 //When a rewind is needed
-                if((Math.abs(longitude - 180) < 20 && rewinding == false) || ((longitude < 10 || longitude > 350 ) && rewinding == true))
+                if((Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true))
                 {
                         CONTROL.rewind();
                 }
