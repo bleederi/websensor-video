@@ -71,7 +71,7 @@ var sphereMesh = null;
 //Sensor classes and low-pass filter
 class Pedometer {
         constructor() {
-        this.sensor_ = new AbsoluteOrientationSensor({ frequency: sensorfreq });
+        this.sensor_ = new Accelerometer({ frequency: sensorfreq });
         this.accel_ = 0;
         this.sensor_.onreading = () => {
                 this.accel_ = {'x':this.sensor_.x, 'y':this.sensor_.y, 'z':this.sensor_.z};
