@@ -77,6 +77,9 @@ class Pedometer {
                 this.accel_ = {'x':this.sensor_.x, 'y':this.sensor_.y, 'z':this.sensor_.z};
                 if (this.onreading_) this.onreading_();
         };
+        }
+        start() { this.sensor_.start(); }
+        stop() { this.sensor_.stop(); }
         get accel() {
                 return this.accel_;
         }
@@ -90,6 +93,7 @@ class Pedometer {
                 this.onreading_ = func;  
         }
 }
+
 class AbsOriSensor {
         constructor() {
         this.sensor_ = new AbsoluteOrientationSensor({ frequency: sensorfreq });
