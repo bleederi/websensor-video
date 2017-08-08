@@ -86,22 +86,51 @@ class Pedometer {
 }
 class AbsOriSensor {
         constructor() {
-        const sensor = new AbsoluteOrientationSensor({ frequency: sensorfreq });
-        const mat4 = new Float32Array(16);
-        const euler = new Float32Array(3);
-        sensor.onreading = () => {
-                sensor.populateMatrix(mat4);
-                toEulerianAngle(sensor.quaternion, euler);      //From quaternion to Eulerian angles
-                this.roll = euler[0];
-                this.pitch = euler[1];
-                this.yaw = euler[2];
-                if (this.onreading) this.onreading();
+        this.sensor_ = new AbsoluteOrientationSensor({ frequency: 60 });
+        this.mat4_ = new Float32Array(16);
+        this.roll_ = 0;
+        this.pitch_ = 0;
+        this.yaw_ = 0;
+        this.sensor_.onreading = () => {
+                this.sensor_.populateMatrix(this.mat4_);
+                let quat = this.sensor_.quaternion;
+                //Convert to Euler angles
+                const ysqr = quat[1] ** 2;
+                // Roll (x-axis rotation).
+                const t0 = 2 * (quat[3] * quat[0] + quat[1] * quat[2]);
+                const t1 = 1 - 2 * (ysqr + quat[0] ** 2);
+                this.roll_ = Math.atan2(t0, t1);
+                // Pitch (y-axis rotation).
+                let t2 = 2 * (quat[3] * quat[1] - quat[2] * quat[0]);
+                t2 = t2 > 1 ? 1 : t2;
+                t2 = t2 < -1 ? -1 : t2;
+                this.pitch_ = Math.asin(t2);
+                // Yaw (z-axis rotation).
+                const t3 = 2 * (quat[3] * quat[2] + quat[0] * quat[1]);
+                const t4 = 1 - 2 * (ysqr + quat[2] ** 2);
+                this.yaw_ = Math.atan2(t3, t4);
+                if (this.onreading_) this.onreading_();
         };
-        sensor.onactivate = () => {
-                if (this.onactivate) this.onactivate();
-        };
-        const start = () => sensor.start();
-        Object.assign(this, { start });
+        }
+        start() { this.sensor_.start(); }
+        stop() { this.sensor_.stop(); }
+        get roll() {
+                return this.roll_;
+        }
+        get pitch() {
+                return this.pitch_;
+        } 
+        get yaw() {
+                return this.yaw_;
+        }
+        set onactivate(func) {
+                this.sensor_.onactivate_ = func;
+        }
+        set onerror(err) {
+                this.sensor_.onerror_ = err;
+        }
+        set onreading (func) {
+                this.onreading_ = func;  
         }
 }
 class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
@@ -114,27 +143,6 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
                 this.y = this.y * this.bias + reading.y * (1 - this.bias);
                 this.z = this.z * this.bias + reading.z * (1 - this.bias);
         }
-}
-
-//WINDOWS 10 HAS DIFFERENT CONVENTION: Yaw z, pitch x, roll y
-function toEulerianAngle(quat, out)
-{
-        const ysqr = quat[1] ** 2;
-
-        // Roll (x-axis rotation).
-        const t0 = 2 * (quat[3] * quat[0] + quat[1] * quat[2]);
-        const t1 = 1 - 2 * (ysqr + quat[0] ** 2);
-        out[0] = Math.atan2(t0, t1);
-        // Pitch (y-axis rotation).
-        let t2 = 2 * (quat[3] * quat[1] - quat[2] * quat[0]);
-        t2 = t2 > 1 ? 1 : t2;
-        t2 = t2 < -1 ? -1 : t2;
-        out[1] = Math.asin(t2);
-        // Yaw (z-axis rotation).
-        const t3 = 2 * (quat[3] * quat[2] + quat[0] * quat[1]);
-        const t4 = 1 - 2 * (ysqr + quat[2] ** 2);
-        out[2] = Math.atan2(t3, t4);
-        return out;
 }
 
 //Functions for the debug text and sliders
