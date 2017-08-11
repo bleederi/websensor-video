@@ -228,9 +228,6 @@ customElements.define("video-view", class extends HTMLElement {
         constructor() {
         super();
 
-        this.roll = null;
-        this.pitch = null; 
-        this.yaw = null;
         this.initialoriobtained = false;
         this.longitudeInitial = null;
         //Two video elements, one forward and one backward, switching between them when the user changes walking direction
@@ -309,9 +306,9 @@ customElements.define("video-view", class extends HTMLElement {
 
                 } 
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-                this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
-                this.camera.target.z = 500 * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+                this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitudeRad) * Math.cos(longitudeRad);
+                this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitudeRad);
+                this.camera.target.z = 500 * Math.sin(Math.PI/2 - latitudeRad) * Math.sin(longitudeRad);
                 this.camera.lookAt(this.camera.target);
 
                 // Render loop
