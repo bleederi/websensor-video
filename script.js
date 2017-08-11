@@ -129,7 +129,7 @@ class OriSensor {
                         this.longitudeInitial_ = -this.z_;
                         if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
                         {
-                                this.longitudeInitial_ = this.longitudeInitial_ - Math.PI/2;     //offset fix
+                                this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;     //offset fix
                         }
                         longitudeOffset = this.longitudeInitial_;
                         this.initialoriobtained_ = true;
