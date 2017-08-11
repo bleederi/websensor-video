@@ -272,6 +272,17 @@ customElements.define("video-view", class extends HTMLElement {
         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
         sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
         scene.add(sphereMesh);
+
+        window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
+
+        function onWindowResize() {
+          this.camera.aspect = window.innerWidth / window.innerHeight;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize( window.innerWidth , window.innerHeight);
+        }
+        render();
+
+        }
         }
 
         connectedCallback() {
@@ -298,7 +309,14 @@ customElements.define("video-view", class extends HTMLElement {
                         videoTexture.needsUpdate = true;
                 }
                 //remove offset
-                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
+                if(screen.orientation.angle === 0)
+                {
+                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
+                }
+                else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
+                {
+
+                }
                 if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
                         longitude = longitude + 2*Math.PI;
