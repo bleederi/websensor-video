@@ -331,9 +331,9 @@ function onWindowResize() {
                         latitude = orientation_sensor.y - Math.PI/2;                                                
 
                 } 
-                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitudeRad) * Math.cos(longitudeRad);
-                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitudeRad);
-                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitudeRad) * Math.sin(longitudeRad);
+                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
+                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
+                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
                 camera.lookAt(camera.target);
 
                 // Render loop
