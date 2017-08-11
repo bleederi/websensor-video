@@ -315,7 +315,7 @@ function onWindowResize() {
                 }
                 else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
                 {
-
+                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
                 }
                 if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
@@ -330,10 +330,9 @@ function onWindowResize() {
                         latitude = orientation_sensor.y - Math.PI/2;                                                
 
                 } 
-                // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-                camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
-                camera.target.z = 500 * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitudeRad) * Math.cos(longitudeRad);
+                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitudeRad);
+                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitudeRad) * Math.sin(longitudeRad);
                 camera.lookAt(camera.target);
 
                 // Render loop
