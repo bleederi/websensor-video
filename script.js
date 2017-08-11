@@ -338,9 +338,14 @@ function onWindowResize() {
                 {
                         latitude = orientation_sensor.x - Math.PI/2;
                 }
-                else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
+                else if(screen.orientation.angle === 90)
                 {
                         latitude = -orientation_sensor.y - Math.PI/2;                                                
+
+                } 
+                else if(screen.orientation.angle === 270)
+                {
+                        latitude = -orientation_sensor.y - 3*Math.PI/2;                                                
 
                 } 
                 camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
