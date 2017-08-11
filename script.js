@@ -66,6 +66,8 @@ var videoB = null;
 var videoTexture = null;
 var sphereMaterial = null;
 var sphereMesh = null;
+var camera = null;
+var renderer = null;
 
 
 //Sensor classes and low-pass filter
@@ -251,14 +253,14 @@ customElements.define("video-view", class extends HTMLElement {
         videoB.crossOrigin = "anonymous";
 
         //THREE.js render stuff
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
         scene = new THREE.Scene();
 
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-        this.camera.target = new THREE.Vector3(0, 0, 0);
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.target = new THREE.Vector3(0, 0, 0);
 
         sphere = new THREE.SphereGeometry(100, 100, 40);
         sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the inside of the sphere is to be rendered
@@ -276,9 +278,9 @@ customElements.define("video-view", class extends HTMLElement {
 window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
 
 function onWindowResize() {
-  this.camera.aspect = window.innerWidth / window.innerHeight;
-  this.camera.updateProjectionMatrix();
-  this.renderer.setSize( window.innerWidth , window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth , window.innerHeight);
 }
 
         }
@@ -329,13 +331,13 @@ function onWindowResize() {
 
                 } 
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-                this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
-                this.camera.target.z = 500 * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
-                this.camera.lookAt(this.camera.target);
+                camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
+                camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
+                camera.target.z = 500 * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+                camera.lookAt(camera.target);
 
                 // Render loop
-                this.renderer.render(scene, this.camera);
+                renderer.render(scene, camera);
                 requestAnimationFrame(() => this.render());
         }
 
