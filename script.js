@@ -272,7 +272,7 @@ customElements.define("video-view", class extends HTMLElement {
                 };
                 accel_sensor.start();
                 orientation_sensor = new OriSensor();
-                orientation_sensor.onreading = () => {
+               /* orientation_sensor.onreading = () => {
                         if(!this.initialoriobtained) //obtain initial longitude - needed to make the initial camera orientation the same every time
                         {
                                 let yawInitial = orientation_sensor.z;
@@ -280,7 +280,7 @@ customElements.define("video-view", class extends HTMLElement {
                                 longitudeOffset = this.longitudeInitial;
                                 this.initialoriobtained = true;
                         }
-                };
+                };*/
                 orientation_sensor.start();
                 }
                 catch(err) {
