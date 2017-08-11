@@ -55,7 +55,6 @@ var orientation_sensor = null;
 
 var latitude;
 var longitude;
-var longitudeOffset;
 
 //Rendering vars (Three.JS)
 var scene = null;
@@ -131,11 +130,6 @@ class OriSensor {
                         {
                                 this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;     //offset fix
                         }
-                        else if(screen.orientation.angle === 270)
-                        {
-                           //     this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;     //offset fix
-                        }
-                        longitudeOffset = this.longitudeInitial_;
                         this.initialoriobtained_ = true;
                 }
                 if (this.onreading_) this.onreading_();
@@ -317,7 +311,7 @@ function onWindowResize() {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                //When the device orientation changes, that needs to be taken into account when reading the sensor values
+                //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets
                 if(screen.orientation.angle === 0)
                 {
                         longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
