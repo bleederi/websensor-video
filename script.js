@@ -101,6 +101,8 @@ class OriSensor {
         this.x_ = 0;
         this.y_ = 0;
         this.z_ = 0;
+        this.longitudeInitial_ = 0;
+        this.initialoriobtained_ = false;
         this.sensor_.onreading = () => {
                 let quat = this.sensor_.quaternion;
                 let quaternion = new THREE.Quaternion();        //Conversion to Euler angles done in THREE.js so we have to create a THREE.js object for holding the quaternion to convert from
@@ -118,6 +120,13 @@ class OriSensor {
                 this.x_ = euler.x;
                 this.y_ = euler.y;
                 this.z_ = euler.z;
+                if(!this.initialoriobtained_) //obtain initial longitude - needed to make the initial camera orientation the same every time
+                {
+                          //TODO: Fix up this chunk of code
+                        this.longitudeInitial_ = -this.sensor_.z;
+                        longitudeOffset = this.longitudeInitial_;
+                        this.initialoriobtained_ = true;
+                }
                 if (this.onreading_) this.onreading_();
         };
         }
@@ -131,6 +140,9 @@ class OriSensor {
         } 
         get z() {
                 return this.z_;
+        }
+        get longitudeInitial() {
+                return this.longitudeInitial_;
         }
         set onactivate(func) {
                 this.sensor_.onactivate_ = func;
@@ -229,7 +241,6 @@ customElements.define("video-view", class extends HTMLElement {
         super();
 
         this.initialoriobtained = false;
-        this.longitudeInitial = null;
         //Two video elements, one forward and one backward, switching between them when the user changes walking direction
         videoF = document.createElement("video");
         videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
@@ -272,15 +283,6 @@ customElements.define("video-view", class extends HTMLElement {
                 };
                 accel_sensor.start();
                 orientation_sensor = new OriSensor();
-               /* orientation_sensor.onreading = () => {
-                        if(!this.initialoriobtained) //obtain initial longitude - needed to make the initial camera orientation the same every time
-                        {
-                                let yawInitial = orientation_sensor.z;
-                                this.longitudeInitial = -yawInitial;
-                                longitudeOffset = this.longitudeInitial;
-                                this.initialoriobtained = true;
-                        }
-                };*/
                 orientation_sensor.start();
                 }
                 catch(err) {
@@ -295,20 +297,25 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                var longitudeRad = -orientation_sensor.z;
+                //remove offset
+                longitude = longitude - orientation_sensor.longitudeInitial;
+                if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
+                {
+                        longitude = longitude + 2*Math.PI;
+}
                 if(screen.orientation.angle === 0)
                 {
-                        var latitudeRad = orientation_sensor.x - Math.PI/2;
+                        latitude = orientation_sensor.x - Math.PI/2;
                 }
                 else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
                 {
-                        var latitudeRad = orientation_sensor.y - Math.PI/2;                                                
+                        latitude = orientation_sensor.y - Math.PI/2;                                                
 
                 } 
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
-                this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitudeRad) * Math.cos(longitudeRad);
-                this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitudeRad);
-                this.camera.target.z = 500 * Math.sin(Math.PI/2 - latitudeRad) * Math.sin(longitudeRad);
+                this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
+                this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
+                this.camera.target.z = 500 * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
                 this.camera.lookAt(this.camera.target);
 
                 // Render loop
