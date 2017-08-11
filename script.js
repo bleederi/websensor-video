@@ -129,7 +129,7 @@ class OriSensor {
                         this.longitudeInitial_ = -this.z_;
                         if(screen.orientation.angle === 90)
                         {
-                         //       this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;     //offset fix
+                                this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;     //offset fix
                         }
                         else if(screen.orientation.angle === 270)
                         {
@@ -324,7 +324,7 @@ function onWindowResize() {
                 }
                 else if(screen.orientation.angle === 90)
                 {
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI;
+                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
                 }
                 else if(screen.orientation.angle === 270)
                 {
