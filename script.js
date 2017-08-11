@@ -94,10 +94,10 @@ class Pedometer {
         }
 }
 
-//This is a sensor that uses RelativeOrientationSensor and converts the quaternion to Euler angles
+//This is a sensor that uses AbsoluteOrientationSensor and converts the quaternion to Euler angles
 class OriSensor {
         constructor() {
-        this.sensor_ = new RelativeOrientationSensor({ frequency: 60 });
+        this.sensor_ = new AbsoluteOrientationSensor({ frequency: 60 });
         this.x_ = 0;
         this.y_ = 0;
         this.z_ = 0;
