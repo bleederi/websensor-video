@@ -317,7 +317,7 @@ function onWindowResize() {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                //remove offset
+                //When the device orientation changes, that needs to be taken account when reading the sensor values
                 if(screen.orientation.angle === 0)
                 {
                         longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
