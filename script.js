@@ -123,7 +123,7 @@ class OriSensor {
                 if(!this.initialoriobtained_) //obtain initial longitude - needed to make the initial camera orientation the same every time
                 {
                           //TODO: Fix up this chunk of code
-                        this.longitudeInitial_ = -this.sensor_.z;
+                        this.longitudeInitial_ = -this.z_;
                         longitudeOffset = this.longitudeInitial_;
                         this.initialoriobtained_ = true;
                 }
