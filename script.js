@@ -67,6 +67,7 @@ var videoTexture = null;
 var sphereMaterial = null;
 var sphereMesh = null;
 var camera = null;
+var cameraConstant = 200;
 var renderer = null;
 
 
@@ -258,8 +259,8 @@ customElements.define("video-view", class extends HTMLElement {
         document.body.appendChild(renderer.domElement);
 
         scene = new THREE.Scene();
-
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+        cameraConstant = 200;
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, cameraConstant);
         camera.target = new THREE.Vector3(0, 0, 0);
 
         sphere = new THREE.SphereGeometry(100, 100, 40);
