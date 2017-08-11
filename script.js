@@ -318,7 +318,7 @@ function onWindowResize() {
                 {
                         longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + 3*Math.PI/2;
                 }
-                if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
+                if(longitude < 0 && screen.orientation.angle === 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
                         longitude = longitude + 2*Math.PI;
 }
