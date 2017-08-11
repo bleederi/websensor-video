@@ -94,44 +94,43 @@ class Pedometer {
         }
 }
 
-class AbsOriSensor {
+//This is a sensor that uses RelativeOrientationSensor and converts the quaternion to Euler angles
+class OriSensor {
         constructor() {
-        this.sensor_ = new AbsoluteOrientationSensor({ frequency: sensorfreq });
-        this.mat4_ = new Float32Array(16);
-        this.roll_ = 0;
-        this.pitch_ = 0;
-        this.yaw_ = 0;
+        this.sensor_ = new RelativeOrientationSensor({ frequency: 60 });
+        this.x_ = 0;
+        this.y_ = 0;
+        this.z_ = 0;
         this.sensor_.onreading = () => {
-                this.sensor_.populateMatrix(this.mat4_);
                 let quat = this.sensor_.quaternion;
-                //Convert to Euler angles
-                const ysqr = quat[1] ** 2;
-                // Roll (x-axis rotation).
-                const t0 = 2 * (quat[3] * quat[0] + quat[1] * quat[2]);
-                const t1 = 1 - 2 * (ysqr + quat[0] ** 2);
-                this.roll_ = Math.atan2(t0, t1);
-                // Pitch (y-axis rotation).
-                let t2 = 2 * (quat[3] * quat[1] - quat[2] * quat[0]);
-                t2 = t2 > 1 ? 1 : t2;
-                t2 = t2 < -1 ? -1 : t2;
-                this.pitch_ = Math.asin(t2);
-                // Yaw (z-axis rotation).
-                const t3 = 2 * (quat[3] * quat[2] + quat[0] * quat[1]);
-                const t4 = 1 - 2 * (ysqr + quat[2] ** 2);
-                this.yaw_ = Math.atan2(t3, t4);
+                let quaternion = new THREE.Quaternion();        //Conversion to Euler angles done in THREE.js so we have to create a THREE.js object for holding the quaternion to convert from
+                let euler = new THREE.Euler( 0, 0, 0);  //Will hold the Euler angles corresponding to the quaternion
+                quaternion.set(quat[0], quat[1], quat[2], quat[3]);     //x,y,z,w
+                //Coordinate system must be adapted depending on orientation
+                if(screen.orientation.angle === 0)      //portrait mode
+                {
+                euler.setFromQuaternion(quaternion, 'ZYX');     //ZYX works in portrait, ZXY in landscape
+                }
+                else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)        //landscape mode
+                {
+                euler.setFromQuaternion(quaternion, 'ZXY');     //ZYX works in portrait, ZXY in landscape
+                }
+                this.x_ = euler.x;
+                this.y_ = euler.y;
+                this.z_ = euler.z;
                 if (this.onreading_) this.onreading_();
         };
         }
         start() { this.sensor_.start(); }
         stop() { this.sensor_.stop(); }
-        get roll() {
-                return this.roll_;
+        get x() {
+                return this.x_;
         }
-        get pitch() {
-                return this.pitch_;
+        get y() {
+                return this.y_;
         } 
-        get yaw() {
-                return this.yaw_;
+        get z() {
+                return this.z_;
         }
         set onactivate(func) {
                 this.sensor_.onactivate_ = func;
@@ -275,14 +274,11 @@ customElements.define("video-view", class extends HTMLElement {
                         accel = accel_sensor.accel;
                 };
                 accel_sensor.start();
-                orientation_sensor = new AbsOriSensor();
+                orientation_sensor = new OriSensor();
                 orientation_sensor.onreading = () => {
-                        this.roll = orientation_sensor.roll;
-                        this.pitch = orientation_sensor.pitch;
-                        this.yaw = orientation_sensor.yaw;
                         if(!this.initialoriobtained) //obtain initial longitude - needed to make the initial camera orientation the same every time
                         {
-                                let yawInitial = orientation_sensor.yaw;
+                                let yawInitial = orientation_sensor.z;
                                 this.longitudeInitial = -yawInitial;
                                 longitudeOffset = this.longitudeInitial;
                                 this.initialoriobtained = true;
@@ -302,16 +298,16 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                longitude = -this.yaw;
-                //remove offset, scale to 0-360
-                longitude = longitude - this.longitudeInitial;
-                if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
+                var longitudeRad = -orientation_sensor.z;
+                if(screen.orientation.angle === 0)
                 {
-                        longitude = longitude + 2*Math.PI;
+                        var latitudeRad = orientation_sensor.x - Math.PI/2;
                 }
-                latitude = this.roll - Math.PI/2;
-                // limiting latitude from -85 degrees to 85 degrees (cannot point to the sky or under your feet)
-                latitude = Math.max(-85/180 * Math.PI, Math.min(85/180 * Math.PI, latitude));
+                else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
+                {
+                        var latitudeRad = orientation_sensor.y - Math.PI/2;                                                
+
+                } 
                 // moving the camera according to current latitude (vertical movement) and longitude (horizontal movement)
                 this.camera.target.x = 500 * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
                 this.camera.target.y = 500 * Math.cos(Math.PI/2 - latitude);
