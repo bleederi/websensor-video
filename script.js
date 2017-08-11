@@ -298,7 +298,7 @@ customElements.define("video-view", class extends HTMLElement {
                         videoTexture.needsUpdate = true;
                 }
                 //remove offset
-                longitude = longitude - orientation_sensor.longitudeInitial;
+                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
                 if(longitude < 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
                         longitude = longitude + 2*Math.PI;
