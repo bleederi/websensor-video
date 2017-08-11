@@ -273,16 +273,14 @@ customElements.define("video-view", class extends HTMLElement {
         sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
         scene.add(sphereMesh);
 
-        window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
+window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
 
-        function onWindowResize() {
-          this.camera.aspect = window.innerWidth / window.innerHeight;
-          this.camera.updateProjectionMatrix();
-          this.renderer.setSize( window.innerWidth , window.innerHeight);
-        }
-        render();
+function onWindowResize() {
+  this.camera.aspect = window.innerWidth / window.innerHeight;
+  this.camera.updateProjectionMatrix();
+  this.renderer.setSize( window.innerWidth , window.innerHeight);
+}
 
-        }
         }
 
         connectedCallback() {
