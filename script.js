@@ -316,12 +316,12 @@ function onWindowResize() {
                 }
                 if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
                 {
-                        longitude = -orientation_sensor.z -orientation_sensor.longitudeInitial - Math.PI/2;
+                        longitude = -orientation_sensor.z -orientation_sensor.longitudeInitial + Math.PI/2;
                 }
                 /*if(longitude < 0)       //When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere
                 {
                         longitude = longitude + 2*Math.PI;
-}*/
+                }*/
                 if(screen.orientation.angle === 0)
                 {
                         latitude = orientation_sensor.x - Math.PI/2;
