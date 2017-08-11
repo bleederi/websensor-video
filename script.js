@@ -316,7 +316,7 @@ function onWindowResize() {
                 }
                 if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
                 {
-                        longitude = -Math.abs(orientation_sensor.z) - orientation_sensor.longitudeInitial;
+                        longitude = -orientation_sensor.z) -orientation_sensor.longitudeInitial - Math.PI/2;
                 }
                 if(longitude < 0 && screen.orientation.angle === 0)       /*When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere*/
                 {
@@ -328,7 +328,7 @@ function onWindowResize() {
                 }
                 else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)
                 {
-                        latitude = orientation_sensor.y - Math.PI/2;                                                
+                        latitude = -orientation_sensor.y - Math.PI/2;                                                
 
                 } 
                 camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
