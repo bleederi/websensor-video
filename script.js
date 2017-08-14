@@ -194,48 +194,13 @@ function updateText()   //For updating debug text
         fftindex_div.innerHTML = ALGORITHM.fft_index;
 }
 
-function startDemo() {  //need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
-        var playPromiseF = videoF.play();
-
-        // In browsers that don’t yet support this functionality,
-        // playPromise won’t be defined.
-        if (playPromiseF !== undefined) {
-          playPromiseF.then(function() {
-            // Automatic playback started!
-               //console.log("Playing");
-          }).catch(function(error) {
-                console.log("Promise failed", error.name);
-            // Automatic playback failed.
-            // Show a UI element to let the user manually start playback.
-          var playButton = document.querySelector('#play2');
-          // The user interaction requirement is met if
-          // playback is triggered via a click event.
-          playButton.addEventListener('click', videoF.play());
-          playButton.hidden = false;
-          });
-        var playPromiseB = videoB.play();
-
-        // In browsers that don’t yet support this functionality,
-        // playPromise won’t be defined.
-        if (playPromiseB !== undefined) {
-          playPromiseB.then(function() {
-            // Automatic playback started!
-               //console.log("Playing");
-          }).catch(function(error) {
-                console.log("Promise failed", error.name);
-            // Automatic playback failed.
-            // Show a UI element to let the user manually start playback.
-          var playButton = document.querySelector('#play2');
-          // The user interaction requirement is met if
-          // playback is triggered via a click event.
-          playButton.addEventListener('click', videoB.play());
-          playButton.hidden = false;
-          });
-        }}
+function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
+        videoF.play();
+        videoB.play();
         videoF.pause();
         videoB.pause();
-        document.getElementById("startbutton").remove();     //hide button
-        reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //start saving data from sensors in loop
+        document.getElementById("startbutton").remove();     //Hide button
+        reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
         ut = setInterval(updateText, 1000);
 }
 
@@ -344,7 +309,7 @@ function onWindowResize() {
 var CONTROL = (function () {
 	var ctrl = {};
 
-        //Functions related to controlling video playback
+        //Functions related to controlling video playback - uses promises so might not work in all browsers
         function play()
         {
                 rewinding ? videoB.play() : videoF.play();
