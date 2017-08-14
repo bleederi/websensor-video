@@ -636,8 +636,8 @@ var ALGORITHM = (function () {
 
         function calculateFFT(seq)      //Calculate the FFT of a sequence, uses FFT.js
         {
-                let real = magseqnog.slice();
-                let imag = Array.apply(null, Array(magseqnog.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
+                let real = seq.slice();
+                let imag = Array.apply(null, Array(seq.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
                 transform(real, imag);  //not normalized, from FFT.js
                 real = real.map(x => x/real.length);      //normalize
                 imag = imag.map(x => x/imag.length);      //normalize
