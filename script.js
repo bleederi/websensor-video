@@ -347,7 +347,8 @@ var CONTROL = (function () {
         //Functions related to controlling video playback
         function play()
         {
-                if(!rewinding)
+                rewinding ? videoB.play() : videoF.play();
+                /*if(!rewinding)
                 {
                         var playPromiseF = videoF.play();
 
@@ -390,7 +391,7 @@ var CONTROL = (function () {
                           playButton.hidden = false;
                           });
                         }
-                }         
+                }   */      
         }
 
 	ctrl.playPause = function () 
