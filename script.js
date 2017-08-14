@@ -124,7 +124,6 @@ class OriSensor {
                 this.z_ = euler.z;
                 if(!this.initialoriobtained_) //obtain initial longitude - needed to make the initial camera orientation the same every time
                 {
-                          //TODO: Fix up this chunk of code
                         this.longitudeInitial_ = -this.z_;
                         if(screen.orientation.angle === 90)
                         {
@@ -307,47 +306,36 @@ function onWindowResize() {
                 this.render();
         }
 
+        //Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
         render() {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ){
                         videoTexture.needsUpdate = true;
                 }
-                //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets
-                if(screen.orientation.angle === 0)
-                {
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
-                }
-                else if(screen.orientation.angle === 90)
-                {
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
-                }
-                else if(screen.orientation.angle === 270)
-                {
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
+                //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
+                switch(screen.orientation.angle) {
+                        default:
+                        case 0:
+                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
+                                latitude = orientation_sensor.x - Math.PI/2;
+                                break;
+                        case 90:
+                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
+                                latitude = -orientation_sensor.y - Math.PI/2;
+                                break;
+                        case 270:
+                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
+                                latitude = orientation_sensor.y - Math.PI/2;
+                                break;
                 }
                 if(longitude < 0)       //When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
                 {
                         longitude = longitude + 2*Math.PI;
                 }
-                if(screen.orientation.angle === 0)
-                {
-                        latitude = orientation_sensor.x - Math.PI/2;
-                }
-                else if(screen.orientation.angle === 90)
-                {
-                        latitude = -orientation_sensor.y - Math.PI/2;                                                
-
-                } 
-                else if(screen.orientation.angle === 270)
-                {
-                        latitude = orientation_sensor.y - Math.PI/2;                                                
-
-                } 
                 camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
                 camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
                 camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
                 camera.lookAt(camera.target);
 
-                // Render loop
                 renderer.render(scene, camera);
                 requestAnimationFrame(() => this.render());
         }
