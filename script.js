@@ -71,6 +71,8 @@ var renderer = null;
 
 
 //Sensor classes and low-pass filter
+
+//This is a sensor that uses Accelerometer and returns the acceleration along the three axes
 class Pedometer {
         constructor() {
         this.sensor_ = new Accelerometer({ frequency: sensorfreq });
@@ -99,7 +101,7 @@ class Pedometer {
 //This is a sensor that uses RelativeOrientationSensor and converts the quaternion to Euler angles
 class OriSensor {
         constructor() {
-        this.sensor_ = new RelativeOrientationSensor({ frequency: 60 });
+        this.sensor_ = new RelativeOrientationSensor({ frequency: sensorfreq });
         this.x_ = 0;
         this.y_ = 0;
         this.z_ = 0;
@@ -310,7 +312,7 @@ var CONTROL = (function () {
 	var ctrl = {};
 
         //Functions related to controlling video playback - uses promises so might not work in all browsers
-        function play()
+        function play() //redundant to put a one-liner in its own function?
         {
                 rewinding ? videoB.play() : videoF.play();    
         }
@@ -531,7 +533,7 @@ var ALGORITHM = (function () {
         }
         //http://phrogz.net/js/framerate-independent-low-pass-filter.html
         // values:    an array of numbers that will be modified in place
-        // smoothing: the strength of the smoothing filter; 1=no change, larger values smoothes more
+        // smoothing: the strength of the smoothing filter; 1=no change, larger values smoothens more
         function smoothArray( values, smoothing ){
           var value = values[0]; // start with the first input
           for (let i=1, len=values.length; i<len; ++i){
@@ -632,16 +634,37 @@ var ALGORITHM = (function () {
                 return result;
         }
 
+        function calculateFFT(seq)      //Calculate the FFT of a sequence, uses FFT.js
+        {
+                let real = magseqnog.slice();
+                let imag = Array.apply(null, Array(magseqnog.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
+                transform(real, imag);  //not normalized, from FFT.js
+                real = real.map(x => x/real.length);      //normalize
+                imag = imag.map(x => x/imag.length);      //normalize
+                let fft = [];
+                for(let i=0; i< real.length; i++) {
+                        fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
+                }
+                fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
+                return fft;
+        }
+
+        function highFreq(fft)
+        {
+                return fft_index > 4;
+        }
+
         //The "public interfaces" are the stepDetection and saveSensorReading functions
+        //Algorithm modified from http://www.mdpi.com/1424-8220/15/10/27230
         var stepDetection = function (seq)      //Returns 1 if there was a step in the given acceleration sequence, otherwise 0
         {
-                let magseq = magnitude(seq, "seq");     //calculate the magnitude sequence from the 3 distinct xyz sequences
+                let magseq = magnitude(seq, "seq");     //calculate the combined magnitude sequence from the 3 distinct xyz sequences
                 //Smoothen (filter noise)
-                smoothArray(magseq, smoothingvalue);        //smooths "in-place" - 8 seems to be a good value
+                smoothArray(magseq, smoothingvalue);        //smoothens "in-place" - 8 seems to be a good value
                 let peaksvalleys = null;
                 let peakdiff = [];
                 let valleydiff = [];
-                for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample
+                for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample - mimics real-time behavior
                 {
                         peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
                 }
@@ -666,27 +689,18 @@ var ALGORITHM = (function () {
                                 }
                         }
                 }
-                let min = Math.min( ...stepdiff );
+                let minDiff = Math.min( ...stepdiff );
                 let stddev = standardDeviation(stepdiff);
-                var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s2)
+                var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s^2) - probably could use filtering instead to do this
                     return value - GRAVITY;
                 } );
                 stddev_accel = standardDeviation(magseqnog);
-                average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a; },0)/(magseqnog.length||1);
-                stddevpct = stddev / min;
+                average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a; },0)/(magseqnog.length||1);     //Calculate average acceleration
+                stddevpct = stddev / minDiff;
 
-                let real = magseqnog.slice();
-                let imag = Array.apply(null, Array(magseqnog.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
-                transform(real, imag);  //not normalized, from FFT.js
-                real = real.map(x => x/real.length);      //normalize
-                imag = imag.map(x => x/imag.length);      //normalize
-                let fft = [];
-                for(let i=0; i< real.length; i++) {
-                        fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
-                }
-                fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
+                let fft = calculateFFT(magseqnog);
                 fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
-                if(fft_index > 4)    //definitely walking
+                if(highFreq(fft))    //definitely walking
                 {
                         return true;
                 }
@@ -730,7 +744,7 @@ var ALGORITHM = (function () {
                         CONTROL.playPause();
                         clearVars();
                 }
-                if(discardedsamples >= amtStepValues/5)     //device most likely stationary
+                if(discardedsamples >= amtStepValues/5)     //Enough small acceleration changes have accumulated, so the device is most likely stationary
                 {
                         stepvar = 0;
                         CONTROL.playPause();
