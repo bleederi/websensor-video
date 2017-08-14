@@ -47,7 +47,7 @@ var ut; //debug text update var
 const GRAVITY = 9.81;
 var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
 var sensorfreq = 60;
-var stepvar = null;     //0 when not walking, 1 when walking
+var stepvar = 0;     //0 when not walking, 1 when walking
 
 //Sensors
 var accel_sensor = null;
@@ -201,7 +201,7 @@ function startDemo() {  //Need user input to play video, so here both the forwar
         videoB.pause();
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
-        ut = setInterval(updateText, 1000);
+        //ut = setInterval(updateText, 1000);     //debug text
 }
 
 //The custom element where the video will be rendered
@@ -229,7 +229,7 @@ customElements.define("video-view", class extends HTMLElement {
         sphere = new THREE.SphereGeometry(100, 100, 40);
         sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
 
-        video = videoF; //start with the forward video
+        video = videoF; //Start with the forward video
         video.load();
         videoTexture = new THREE.Texture(video);
         videoTexture.minFilter = THREE.LinearFilter;
@@ -240,13 +240,13 @@ customElements.define("video-view", class extends HTMLElement {
         sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
         scene.add(sphereMesh);
 
-window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
+        window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
 
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize( window.innerWidth , window.innerHeight);
-}
+        function onWindowResize() {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize( window.innerWidth , window.innerHeight);
+        }
 
         }
 
@@ -312,58 +312,14 @@ var CONTROL = (function () {
         //Functions related to controlling video playback - uses promises so might not work in all browsers
         function play()
         {
-                rewinding ? videoB.play() : videoF.play();
-                /*if(!rewinding)
-                {
-                        var playPromiseF = videoF.play();
-
-                        // In browsers that don’t yet support this functionality,
-                        // playPromise won’t be defined.
-                        if (playPromiseF !== undefined) {
-                          playPromiseF.then(function() {
-                            // Automatic playback started!
-                                //console.log("Playing");
-                          }).catch(function(error) {
-                                console.log("Promise failed", error.name);
-                            // Automatic playback failed.
-                            // Show a UI element to let the user manually start playback.
-                          var playButton = document.querySelector('#play2');
-                          // The user interaction requirement is met if
-                          // playback is triggered via a click event.
-                          playButton.addEventListener('click', videoF.play());
-                          playButton.hidden = false;
-                          });
-                        }
-                }
-                else if(rewinding)
-                {
-                        var playPromiseB = videoB.play();
-
-                        // In browsers that don’t yet support this functionality,
-                        // playPromise won’t be defined.
-                        if (playPromiseB !== undefined) {
-                          playPromiseB.then(function() {
-                            // Automatic playback started!
-                                //console.log("Playing");
-                          }).catch(function(error) {
-                                console.log("Promise failed", error.name);
-                            // Automatic playback failed.
-                            // Show a UI element to let the user manually start playback.
-                          var playButton = document.querySelector('#play2');
-                          // The user interaction requirement is met if
-                          // playback is triggered via a click event.
-                          playButton.addEventListener('click', videoB.play());
-                          playButton.hidden = false;
-                          });
-                        }
-                }   */      
+                rewinding ? videoB.play() : videoF.play();    
         }
 
 	ctrl.playPause = function () 
         {
                 if(stepvar)
                 {
-                        walking_status_div.innerHTML = "Walking";
+                        walking_status_div.innerHTML = "Walking";       //debug
                         play();
                 }
                 else if (!stepvar)
@@ -372,14 +328,15 @@ var CONTROL = (function () {
                         {
                                 video.pause();
                         }
-                        walking_status_div.innerHTML = "Not walking";
+                        walking_status_div.innerHTML = "Not walking";   //debug
                 }
         };
 
         ctrl.rewind = function () {     //Called when the video needs to be rewound (F to B or B to F)
+                //TODO: fix up this function
                if(!rewinding)
                 {
-                        rw_div.innerHTML = "Not rewinding";
+                        rw_div.innerHTML = "Not rewinding";     //debug
                         let time = videoF.currentTime;
                         videoF.pause();
                         video = videoB;
@@ -396,8 +353,7 @@ var CONTROL = (function () {
                         sphereMaterial.needsUpdate = true;
                         scene.add(sphereMesh);
                         rewinding = true;
-                        return 0;
-                        }
+                }
                 else if (rewinding)
                 {
                         rw_div.innerHTML = "Rewinding";
@@ -417,7 +373,6 @@ var CONTROL = (function () {
                         sphereMaterial.needsUpdate = true;
                         scene.add(sphereMesh);
                         rewinding = false;
-                        return 0;
                 }
         };
 	return ctrl;
