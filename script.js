@@ -290,7 +290,7 @@ customElements.define("video-view", class extends HTMLElement {
                                 latitude = orientation_sensor.y - Math.PI/2;
                                 break;
                 }
-                if(longitude < 0)       //When rewinding video, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
+                if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
                 {
                         longitude = longitude + 2*Math.PI;
                 }
@@ -332,7 +332,7 @@ var CONTROL = (function () {
                 }
         };
 
-        ctrl.rewind = function () {     //Called when the video needs to be rewound (F to B or B to F)
+        ctrl.changeDirection = function () {     //Called when the video needs to be rewound (F to B or B to F)
                 //TODO: fix up this function
                if(!rewinding)
                 {
@@ -356,7 +356,7 @@ var CONTROL = (function () {
                 }
                 else if (rewinding)
                 {
-                        rw_div.innerHTML = "Rewinding";
+                        rw_div.innerHTML = "Rewinding"; //debug
                         let time = videoB.currentTime;
                         videoB.pause();
                         video = videoF;
@@ -701,7 +701,7 @@ var ALGORITHM = (function () {
                 }
         };
 
-        var saveSensorReading = function()    //Function to save the sensor readings, check if we need to rewind and send the sensor readings to be analyzed for whether the user is walking or not
+        var saveSensorReading = function()    //Function to save the sensor readings, check if we need to switch video playback direction and send the sensor readings to be analyzed for whether the user is walking or not
         {
                 accel = accel_sensor.accel;
                 accelFiltered = new LowPassFilterData(accel, bias);
@@ -715,10 +715,10 @@ var ALGORITHM = (function () {
                 {
                         discardedsamples = discardedsamples + 1;
                 }
-                //When a rewind is needed
+                //When the user turns around, video direction needs to be changed
                 if((Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true))
                 {
-                        CONTROL.rewind();
+                        CONTROL.changeDirection();
                 }
                 if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
                 {
