@@ -332,7 +332,7 @@ var CONTROL = (function () {
                 }
         };
 
-        ctrl.changeDirection = function () {     //Called when the video needs to be rewound (F to B or B to F)
+        ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
                 //TODO: fix up this function
                if(!rewinding)
                 {
@@ -340,18 +340,19 @@ var CONTROL = (function () {
                         let time = videoF.currentTime;
                         videoF.pause();
                         video = videoB;
-                        videoF.pause();
+                        //videoF.pause();
                         videoB.currentTime = videoB.duration - time;
                         videoTexture = new THREE.Texture(videoB);
                         videoTexture.minFilter = THREE.LinearFilter;
                         videoTexture.magFilter = THREE.LinearFilter;
                         videoTexture.format = THREE.RGBFormat;
                         videoTexture.needsUpdate = true;
-                        scene.remove(sphereMesh);
+                        //scene.remove(sphereMesh);
                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-                        sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+                        //sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+                        sphereMesh.material = sphereMaterial;
                         sphereMaterial.needsUpdate = true;
-                        scene.add(sphereMesh);
+                        //scene.add(sphereMesh);
                         rewinding = true;
                 }
                 else if (rewinding)
@@ -360,18 +361,19 @@ var CONTROL = (function () {
                         let time = videoB.currentTime;
                         videoB.pause();
                         video = videoF;
-                        videoF.pause();
+                        //videoF.pause();
                         videoF.currentTime = videoF.duration - time;
                         videoTexture = new THREE.Texture(videoF);
                         videoTexture.minFilter = THREE.LinearFilter;
                         videoTexture.magFilter = THREE.LinearFilter;
                         videoTexture.format = THREE.RGBFormat;
                         videoTexture.needsUpdate = true;
-                        scene.remove(sphereMesh);
+                        //scene.remove(sphereMesh);
                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-                        sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+                        //sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+                        sphereMesh.material = sphereMaterial;
                         sphereMaterial.needsUpdate = true;
-                        scene.add(sphereMesh);
+                        //scene.add(sphereMesh);
                         rewinding = false;
                 }
         };
@@ -409,9 +411,9 @@ var ALGORITHM = (function () {
 
         /* Below are functions for the WD algorithm and functions used in the algorithm */
 
-        //Functions to handle data
-        //Javascript function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
-        function toCoordSeq(buffer)
+        //Functions to process data
+
+        function toCoordSeq(buffer)     //Function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
         {
                 let seq_x = [];
                 let seq_y = [];
