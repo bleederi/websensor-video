@@ -244,8 +244,7 @@ customElements.define("video-view", class extends HTMLElement {
         constructor() {
         super();
 
-        this.initialoriobtained = false;
-        //Two video elements, one forward and one backward, switching between them when the user changes walking direction
+        //Set up two video elements, one forward and one backward, switching between them when the user changes walking direction
         videoF = document.createElement("video");
         videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/forward2.mp4";
         videoF.crossOrigin = "anonymous";
@@ -254,18 +253,17 @@ customElements.define("video-view", class extends HTMLElement {
         videoB.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/backward2.mp4";
         videoB.crossOrigin = "anonymous";
 
-        //THREE.js render stuff
+        //THREE.js scene setup
         renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
-
         scene = new THREE.Scene();
         cameraConstant = 200;
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, cameraConstant);
         camera.target = new THREE.Vector3(0, 0, 0);
-
         sphere = new THREE.SphereGeometry(100, 100, 40);
-        sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the inside of the sphere is to be rendered
+        sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
+
         video = videoF; //start with the forward video
         video.load();
         videoTexture = new THREE.Texture(video);
@@ -784,7 +782,7 @@ var ALGORITHM = (function () {
 
         var saveSensorReading = function()    //Function to save the sensor readings, check if we need to rewind and send the sensor readings to be analyzed for whether the user is walking or not
         {
-                accel = {x:accel.x, y:accel.y, z:accel.z};
+                accel = accel_sensor.accel;
                 accelFiltered = new LowPassFilterData(accel, bias);
                 if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)
                 {
