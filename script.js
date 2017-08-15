@@ -540,6 +540,10 @@ var ALGORITHM = (function () {
                 valleytimethreshold = null;
         }
 
+        function isPeak(prev, curr, next, stepaverage, avg, variance)
+        {
+                return curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance);
+        }
         function detectPeaksValleys(seq)
         {
                 let result = {"peaks":null, "valleys":null};
@@ -560,7 +564,7 @@ var ALGORITHM = (function () {
                         let lastpeaktime = null;
                         let lastvalleytime = null;
 
-                        if(curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance))  //peak
+                        if(isPeak(prev, curr, next, stepaverage, avg, variance))  //peak
                         {
                                 //update time average regardless of peak accepted or not
                                 if(peaks.length >= 2)
@@ -621,7 +625,7 @@ var ALGORITHM = (function () {
                 return result;
         }
 
-        function calculateFFT(seq)      //Calculate the FFT of a sequence, uses FFT.js
+        function calculateFFT(seq)      //Calculates the FFT of a sequence, uses FFT.js
         {
                 let real = seq.slice();
                 let imag = Array.apply(null, Array(seq.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
@@ -641,12 +645,12 @@ var ALGORITHM = (function () {
                 return fft_index > 4;
         }
 
-        function validAccel(prevaccel, accel, accelFiltered)    //Function to determine if the acceleration value that was read was a valid one instead of noise
+        function validAccel(prevaccel, accel, accelFiltered)    //Determines if the acceleration value that was read was a valid one (device movement) instead of noise
         {
                 return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
         }
 
-        function needToChangeDir()
+        function needToChangeDir()      //
         {
                 return Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true;
         }
