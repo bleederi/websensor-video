@@ -240,6 +240,7 @@ customElements.define("video-view", class extends HTMLElement {
         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
         sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
         scene.add(sphereMesh);
+        sphereMesh.rotateX(Math.PI);
 
         window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
 
@@ -655,7 +656,7 @@ var ALGORITHM = (function () {
                 return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
         }
 
-        function needToChangeDir()      //
+        function needToChangeDir()      //Tells if the walking direction has changed
         {
                 return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
         }
@@ -667,6 +668,7 @@ var ALGORITHM = (function () {
                 let magseq = magnitude(seq, "seq");     //calculate the combined magnitude sequence from the 3 distinct xyz sequences
                 //Smoothen (filter noise)
                 smoothArray(magseq, smoothingvalue);        //smoothens "in-place" - 8 seems to be a good value
+
                 let peaksvalleys = null;
                 let peakdiff = [];
                 let valleydiff = [];
