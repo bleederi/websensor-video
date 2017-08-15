@@ -735,7 +735,7 @@ var ALGORITHM = (function () {
                 }
                 else    //The change in acceleration was too small (possibly noise), so the device might be stationary
                 {
-                        discardedsamples = discardedsamples + 1;
+                        discardedsamples = discardedsamples + 2;
                 }
                 //When the user turns around, video direction needs to be changed
                 if(needToChangeDir())
