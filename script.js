@@ -319,7 +319,7 @@ var CONTROL = (function () {
 
 	ctrl.playPause = function () //redundancy?
         {
-                stepvar ? play() : (video.paused ? : video.pause());
+                stepvar ? play() : video.pause();
                 /*if(stepvar)
                 {
                         walking_status_div.innerHTML = "Walking";       //debug
