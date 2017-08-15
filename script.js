@@ -317,9 +317,10 @@ var CONTROL = (function () {
                 rewinding ? videoB.play() : videoF.play();    
         }
 
-	ctrl.playPause = function () 
+	ctrl.playPause = function () //redundancy?
         {
-                if(stepvar)
+                stepvar ? play() : (video.paused ? : video.pause());
+                /*if(stepvar)
                 {
                         walking_status_div.innerHTML = "Walking";       //debug
                         play();
@@ -331,7 +332,7 @@ var CONTROL = (function () {
                                 video.pause();
                         }
                         walking_status_div.innerHTML = "Not walking";   //debug
-                }
+                }*/
         };
 
         ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
@@ -342,19 +343,15 @@ var CONTROL = (function () {
                         let time = videoF.currentTime;
                         videoF.pause();
                         video = videoB;
-                        //videoF.pause();
                         videoB.currentTime = videoB.duration - time;
                         videoTexture = new THREE.Texture(videoB);
                         videoTexture.minFilter = THREE.LinearFilter;
                         videoTexture.magFilter = THREE.LinearFilter;
                         videoTexture.format = THREE.RGBFormat;
                         videoTexture.needsUpdate = true;
-                        //scene.remove(sphereMesh);
                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-                        //sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
                         sphereMesh.material = sphereMaterial;
                         sphereMaterial.needsUpdate = true;
-                        //scene.add(sphereMesh);
                         rewinding = true;
                 }
                 else if (rewinding)
@@ -363,19 +360,15 @@ var CONTROL = (function () {
                         let time = videoB.currentTime;
                         videoB.pause();
                         video = videoF;
-                        //videoF.pause();
                         videoF.currentTime = videoF.duration - time;
                         videoTexture = new THREE.Texture(videoF);
                         videoTexture.minFilter = THREE.LinearFilter;
                         videoTexture.magFilter = THREE.LinearFilter;
                         videoTexture.format = THREE.RGBFormat;
                         videoTexture.needsUpdate = true;
-                        //scene.remove(sphereMesh);
                         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-                        //sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
                         sphereMesh.material = sphereMaterial;
                         sphereMaterial.needsUpdate = true;
-                        //scene.add(sphereMesh);
                         rewinding = false;
                 }
         };
@@ -655,7 +648,7 @@ var ALGORITHM = (function () {
         }
 
         //The "public interfaces" are the stepDetection and saveSensorReading functions
-        //Algorithm modified from http://www.mdpi.com/1424-8220/15/10/27230
+        //Algorithm modified from paper http://www.mdpi.com/1424-8220/15/10/27230
         var stepDetection = function (seq)      //Returns 1 if there was a step in the given acceleration sequence, otherwise 0
         {
                 let magseq = magnitude(seq, "seq");     //calculate the combined magnitude sequence from the 3 distinct xyz sequences
@@ -700,7 +693,7 @@ var ALGORITHM = (function () {
 
                 let fft = calculateFFT(magseqnog);
                 fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
-                if(highFreq(fft))    //definitely walking
+                if(highFreq(fft))    //definitely walking - low-frequency "shakes" most likely mean the user is moving the device to look around and not walking
                 {
                         return true;
                 }
