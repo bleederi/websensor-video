@@ -240,7 +240,7 @@ customElements.define("video-view", class extends HTMLElement {
         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
         sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
         scene.add(sphereMesh);
-        sphereMesh.rotateY(Math.PI);
+        sphereMesh.rotateY(Math.PI-0.2);
 
         window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
 
