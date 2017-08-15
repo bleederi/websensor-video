@@ -203,7 +203,6 @@ function startDemo() {  //Need user input to play video, so here both the forwar
         videoB.pause();
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
-        //ut = setInterval(updateText, 1000);     //debug text
 }
 
 //The custom element where the video will be rendered
@@ -273,7 +272,7 @@ customElements.define("video-view", class extends HTMLElement {
 
         //Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
         render() {
-                if( video.readyState === video.HAVE_ENOUGH_DATA ){
+                if( video.readyState === video.HAVE_ENOUGH_DATA ) {
                         videoTexture.needsUpdate = true;
                 }
                 //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
@@ -319,27 +318,23 @@ var CONTROL = (function () {
 
 	ctrl.playPause = function () //redundancy?
         {
-                stepvar ? play() : video.pause();
-                /*if(stepvar)
+                if(stepvar)
                 {
-                        walking_status_div.innerHTML = "Walking";       //debug
                         play();
                 }
-                else if (!stepvar)
+                else
                 {
                         if(!video.paused)
                         {
                                 video.pause();
                         }
-                        walking_status_div.innerHTML = "Not walking";   //debug
-                }*/
+                }
         };
 
         ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
                 //TODO: fix up this function
-               if(!rewinding)
+               if(!rewinding)   //Forward
                 {
-                        rw_div.innerHTML = "Not rewinding";     //debug
                         let time = videoF.currentTime;
                         videoF.pause();
                         video = videoB;
@@ -354,9 +349,8 @@ var CONTROL = (function () {
                         sphereMaterial.needsUpdate = true;
                         rewinding = true;
                 }
-                else if (rewinding)
+                else    //Backward
                 {
-                        rw_div.innerHTML = "Rewinding"; //debug
                         let time = videoB.currentTime;
                         videoB.pause();
                         video = videoF;
@@ -647,6 +641,16 @@ var ALGORITHM = (function () {
                 return fft_index > 4;
         }
 
+        function validAccel(prevaccel, accel, accelFiltered)    //Function to determine if the acceleration value that was read was a valid one instead of noise
+        {
+                return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
+        }
+
+        function needToChangeDir()
+        {
+                return Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true;
+        }
+
         //The "public interfaces" are the stepDetection and saveSensorReading functions
         //Algorithm modified from paper http://www.mdpi.com/1424-8220/15/10/27230
         var stepDetection = function (seq)      //Returns 1 if there was a step in the given acceleration sequence, otherwise 0
@@ -714,18 +718,18 @@ var ALGORITHM = (function () {
         {
                 accel = accel_sensor.accel;
                 accelFiltered = new LowPassFilterData(accel, bias);
-                if(magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold)
+                if(validAccel(prevaccel, accel, accelFiltered))
                 {
                         accelerationData.push(accelFiltered);
                         prevaccel = accel;
                         discardedsamples = discardedsamples - 3;
                 }
-                else    //The change in acceleration was too small, so the device might be stationary
+                else    //The change in acceleration was too small (possibly noise), so the device might be stationary
                 {
                         discardedsamples = discardedsamples + 1;
                 }
                 //When the user turns around, video direction needs to be changed
-                if((Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true))
+                if(needToChangeDir())
                 {
                         CONTROL.changeDirection();
                 }
