@@ -750,7 +750,7 @@ var ALGORITHM = (function () {
                         CONTROL.playPause();
                         clearVars();
                 }
-                if(discardedsamples >= amtStepValues/5)     //Enough small acceleration changes have accumulated, so the device is most likely stationary
+                if(discardedsamples >= amtStepValues/8)     //Enough small acceleration changes have accumulated, so the device is most likely stationary
                 {
                         stepvar = 0;
                         CONTROL.playPause();
