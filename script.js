@@ -540,9 +540,14 @@ var ALGORITHM = (function () {
                 valleytimethreshold = null;
         }
 
-        function isPeak(prev, curr, next, stepaverage, avg, variance)
+        function isPeak(prev, curr, next, stepaverage, avg, variance)   //Tells if curr is a peak or not
         {
                 return curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance);
+        }
+
+        function isValley(prev, curr, next, stepaverage, avg, variance) //Tells if curr is a valley or not
+        {
+        return curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance);
         }
         function detectPeaksValleys(seq)
         {
@@ -551,7 +556,7 @@ var ALGORITHM = (function () {
                 let valleydiff = [];
                 let peaks = [];
                 let valleys = [];
-                let variance = 0.5 + standardDeviation(seq)/alpha;      //maybe should try to get rid of the constant 0,5 and make fully adaptive
+                let variance = 0.5 + standardDeviation(seq)/alpha;      //TODO: try to get rid of the constant 0,5 and make fully adaptive
                 let avg = seq.reduce(function(sum, a) { return sum + a; },0)/(seq.length||1);
                 for (let i in seq)
                 {
@@ -589,7 +594,7 @@ var ALGORITHM = (function () {
                                 lastpeakmag = curr;
                                 lastpeaktime = index;
                         }
-                        else if(curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance))     //valley
+                        else if(isValley(prev, curr, next, stepaverage, avg, variance))     //valley
                                 {
                                 //update time average regardless of valley accepted or not
                                 if(valleys.length >= 2)
@@ -652,7 +657,7 @@ var ALGORITHM = (function () {
 
         function needToChangeDir()      //
         {
-                return Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true;
+                return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
         }
 
         //The "public interfaces" are the stepDetection and saveSensorReading functions
@@ -701,7 +706,7 @@ var ALGORITHM = (function () {
 
                 let fft = calculateFFT(magseqnog);
                 fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
-                if(highFreq(fft))    //definitely walking - low-frequency "shakes" most likely mean the user is moving the device to look around and not walking
+                if(highFreq(fft))    //definitely walking - low-frequency changes in movement most likely mean the user is moving the device to look around and not walking
                 {
                         return true;
                 }
