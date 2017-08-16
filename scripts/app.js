@@ -289,7 +289,7 @@ customElements.define("video-view", class extends HTMLElement {
                         videoTexture.needsUpdate = true;
                 }
                 //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
-                switch(screen.orientation.angle) {
+          /*      switch(screen.orientation.angle) {
                         default:
                         case 0:
                                 longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
@@ -311,7 +311,7 @@ customElements.define("video-view", class extends HTMLElement {
                 camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
                 camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
                 camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
-                camera.lookAt(camera.target);
+                camera.lookAt(camera.target);*/
 
                 renderer.render(scene, camera);
                 requestAnimationFrame(() => this.render());
