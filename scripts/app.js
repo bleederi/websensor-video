@@ -69,6 +69,18 @@ var camera = null;
 var cameraConstant = 200;
 var renderer = null;
 
+//Service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+  navigator.serviceWorker.register('sw.js').then(function(registration) {
+      // Registration was successful
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }, function(err) {
+      // registration failed :(
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
 
 //Sensor classes and low-pass filter
 
@@ -203,19 +215,6 @@ function startDemo() {  //Need user input to play video, so here both the forwar
         videoB.pause();
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
-
-        //Service worker registration
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', function() {
-          navigator.serviceWorker.register('sw.js').then(function(registration) {
-              // Registration was successful
-              console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            }, function(err) {
-              // registration failed :(
-              console.log('ServiceWorker registration failed: ', err);
-            });
-          });
-        }
 }
 
 //The custom element where the video will be rendered
