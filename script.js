@@ -548,7 +548,30 @@ var ALGORITHM = (function () {
 
         function isValley(prev, curr, next, stepaverage, avg, variance) //Tells if curr is a valley or not
         {
-        return curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance);
+                return curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance);
+        }
+
+        function updateTimeAverage(index, lasttime, timediff, timethreshold, data)  //Update the running time average (timethreshold) of either peak or valley data
+        {
+                                //update time average regardless of valley accepted or not
+                                if(data.length >= 2)
+                                {
+                                        timediff.push(index - lasttime);
+                                        let diff_selected = timediff;    //select recent M valleys
+                                        let sum = diff_selected.reduce((previous, current) => current += previous); //sum over the array
+                                        timethreshold = sum/timediff.length;      //average of valley diffs
+                                }
+                                else
+                                {
+                                        if(lasttime > 0 && index > lasttime)
+                                        {
+                                                timediff.push(index - lasttime);
+                                        }
+                                        else
+                                        {
+                                                timediff.push(index);
+                                        }
+                                }
         }
         function detectPeaksValleys(seq)
         {
@@ -572,53 +595,17 @@ var ALGORITHM = (function () {
 
                         if(isPeak(prev, curr, next, stepaverage, avg, variance))  //peak
                         {
-                                //update time average regardless of peak accepted or not
-                                if(peaks.length >= 2)
-                                {
-                                        peakdiff.push(index - lastpeaktime);
-                                        let peakdiff_selected = peakdiff;  //select recent M peaks
-                                        let sum = peakdiff_selected.reduce((previous, current) => current += previous); //sum over the array
-                                        peaktimethreshold = sum/peakdiff.length;      //average of peak diffs
-                                }
-                                else
-                                {
-                                        if(lastpeaktime > 0 && index > lastpeaktime)
-                                        {
-                                                peakdiff.push(index - lastpeaktime);
-                                        }
-                                        else
-                                        {
-                                                peakdiff.push(index);
-                                        }
-                                }
-                                peaks.push(index);
+                                updateTimeAverage(index, lastpeaktime, peakdiff, peaktimethreshold, peaks);
                                 lastpeakmag = curr;
                                 lastpeaktime = index;
+                                peaks.push(index);
                         }
                         else if(isValley(prev, curr, next, stepaverage, avg, variance))     //valley
-                                {
-                                //update time average regardless of valley accepted or not
-                                if(valleys.length >= 2)
-                                {
-                                        valleydiff.push(index - lastvalleytime);
-                                        let valleydiff_selected = valleydiff;    //select recent M valleys
-                                        let sum = valleydiff_selected.reduce((previous, current) => current += previous); //sum over the array
-                                        valleytimethreshold = sum/valleydiff.length;      //average of valley diffs
-                                }
-                                else
-                                {
-                                        if(lastvalleytime > 0 && index > lastvalleytime)
-                                        {
-                                                valleydiff.push(index - lastvalleytime);
-                                        }
-                                        else
-                                        {
-                                                valleydiff.push(index);
-                                        }
-                                }
-                                valleys.push(index);
+                        {
+                                updateTimeAverage(index, lastvalleytime, valleydiff, valleytimethreshold, valleys);
                                 lastvalleymag = curr;
                                 lastvalleytime = index;
+                                valleys.push(index);
                         }
                         //update step average
                         if(lastpeakmag && lastvalleymag)
