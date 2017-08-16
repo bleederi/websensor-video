@@ -35,7 +35,7 @@ this.addEventListener('fetch', function(event) {
         });
         return response;
       }).catch(function () {
-        return caches.match('resources/beach_dinner.jpg');
+        return caches.match('resources/forward2.mp4');
       });
     }
   }));
