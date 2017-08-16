@@ -18,7 +18,7 @@ self.addEventListener('install', function(event) {
 
 this.addEventListener('fetch', function(event) {
 //Retrieval from cache
- /* event.respondWith(caches.match(event.request).then(function(response) {
+  event.respondWith(caches.match(event.request).then(function(response) {
     // caches.match() always resolves
     // but in case of success response will have value
     if (response !== undefined) {
@@ -36,6 +36,6 @@ this.addEventListener('fetch', function(event) {
         return response;
       })
     }
-  }));*/
+  }));
 });
 
