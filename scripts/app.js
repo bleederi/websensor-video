@@ -224,11 +224,11 @@ customElements.define("video-view", class extends HTMLElement {
 
         //Set up two video elements, one forward and one backward, switching between them when the user changes walking direction
         videoF = document.createElement("video");
-        videoF.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/resources/forward2.mp4";
+        videoF.src = "resources/forward2.mp4";
         videoF.crossOrigin = "anonymous";
 
         videoB = document.createElement("video");
-        videoB.src    = "https://raw.githubusercontent.com/jessenie-intel/websensor-video/master/resources/backward2.mp4";
+        videoB.src = "resources/backward2.mp4";
         videoB.crossOrigin = "anonymous";
 
         //THREE.js scene setup
