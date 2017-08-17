@@ -244,6 +244,9 @@ customElements.define("video-view", class extends HTMLElement {
         sphere = new THREE.SphereGeometry(100, 100, 40);
         sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
 
+        //Load both the videos
+        video = videoB;
+        video.load();
         video = videoF; //Start with the forward video
         video.load();
         videoTexture = new THREE.Texture(video);
