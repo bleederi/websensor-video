@@ -69,6 +69,7 @@ var camera = null;
 var cameraConstant = 200;
 var renderer = null;
 
+/*
 //Service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -80,7 +81,7 @@ if ('serviceWorker' in navigator) {
       console.log('ServiceWorker registration failed: ', err);
     });
   });
-}
+}*/
 
 //Sensor classes and low-pass filter
 
