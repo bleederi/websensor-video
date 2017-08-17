@@ -73,10 +73,9 @@ var renderer = null;
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
   navigator.serviceWorker.register('sw.js').then(function(registration) {
-      // Registration was successful
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      //Registration was successful
     }, function(err) {
-      // registration failed :(
+      //Registration failed
       console.log('ServiceWorker registration failed: ', err);
     });
   });
@@ -228,10 +227,12 @@ customElements.define("video-view", class extends HTMLElement {
         videoF = document.createElement("video");
         videoF.src = "resources/forward2.mp4";
         videoF.crossOrigin = "anonymous";
+        videoF.load();
 
         videoB = document.createElement("video");
         videoB.src = "resources/backward2.mp4";
         videoB.crossOrigin = "anonymous";
+        videoB.load();
 
         //THREE.js scene setup
         renderer = new THREE.WebGLRenderer();
@@ -244,9 +245,6 @@ customElements.define("video-view", class extends HTMLElement {
         sphere = new THREE.SphereGeometry(100, 100, 40);
         sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
 
-        //Load both the videos
-        video = videoB;
-        video.load();
         video = videoF; //Start with the forward video
         video.load();
         videoTexture = new THREE.Texture(video);
@@ -274,7 +272,7 @@ customElements.define("video-view", class extends HTMLElement {
                 //Initialize sensors
                 accel_sensor = new Pedometer();
                 accel_sensor.onreading = () => {
-                        accel = accel_sensor.accel;
+                        accel = accel_sensor.accel;     //Save to external variable probably unnecessary
                 };
                 accel_sensor.start();
                 orientation_sensor = new OriSensor();
@@ -321,7 +319,6 @@ customElements.define("video-view", class extends HTMLElement {
                 renderer.render(scene, camera);
                 requestAnimationFrame(() => this.render());
         }
-
 });
 
 /* The video playback control */
@@ -350,7 +347,7 @@ var CONTROL = (function () {
         };
 
         ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
-                //TODO: fix up this function
+                //TODO: fix up this function (optimize as well as possible)
                if(!rewinding)   //Forward
                 {
                         let time = videoF.currentTime;
