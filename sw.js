@@ -28,7 +28,12 @@ this.addEventListener('fetch', function(event) {
                 //Response may be used only once so need to save clone to put one copy in cache and serve second one
                 let responseClone = response.clone();
                 caches.open(CACHE_VERSION.toString()).then(function (cache) {
-                        cache.put(event.request, responseClone);
+                        if(cache) {
+                                cache.put(event.request, responseClone);
+                        }
+                        else {
+                        //suppress
+                        }
                 });
                 return response;
                 })
