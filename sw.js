@@ -24,7 +24,7 @@ self.addEventListener("activate", function(event) {
   );
 });
 
-this.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function(event) {
 //Retrieval from cache
     event.respondWith(caches.open(CACHE_NAME + CACHE_VERSION.toString()).then(function(cache) {
         return cache.match(event.request).then(function(response) {
