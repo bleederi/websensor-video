@@ -30,8 +30,8 @@ this.addEventListener('fetch', function(event) {
                 if (response !== undefined) {
                         return response;
                 } else {
-                        return fetch(event.request).then(function (response) {
-                /*//Response may be used only once so need to save clone to put one copy in cache and serve second one
+                        return fetch(event.request);/*.then(function (response) {
+                //Response may be used only once so need to save clone to put one copy in cache and serve second one
                 let responseClone = response.clone();
                 caches.open(CACHE_NAME + CACHE_VERSION.toString()).then(function (cache) {
                                 cache.put(event.request, responseClone).catch(
@@ -39,7 +39,7 @@ this.addEventListener('fetch', function(event) {
                                 );
                 });
                 return response;
-                */})
+                })*/
                 }
         }));
 });
