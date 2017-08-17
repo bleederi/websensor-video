@@ -209,32 +209,10 @@ function updateText()   //For updating debug text
 }
 
 function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
-        let playPromiseF = videoF.play();
-  if (playPromiseF !== undefined) {
-    playPromiseF.then(_ => {
-      // Automatic playback started!
-      // Show playing UI.
-      // We can now safely pause video...
-      videoF.pause();
-    })
-    .catch(error => {
-      // Auto-play was prevented
-      // Show paused UI.
-    });
-  }
-  let playPromiseB = videoB.play();
-  if (playPromiseB !== undefined) {
-    playPromiseB.then(_ => {
-      // Automatic playback started!
-      // Show playing UI.
-      // We can now safely pause video...
-      videoB.pause();
-    })
-    .catch(error => {
-      // Auto-play was prevented
-      // Show paused UI.
-    });
-  }
+        videoF.play();
+        videoB.play();
+        videoF.pause();
+        videoB.pause();
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
 }
@@ -353,7 +331,7 @@ var CONTROL = (function () {
 
 	ctrl.playPause = function () //redundancy?
         {
-                if(stepvar)
+                if(stepvar && video.paused)
                 {
                         play();
                 }
