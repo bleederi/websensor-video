@@ -31,7 +31,9 @@ self.addEventListener('fetch', function(event) {
             var fetchPromise = fetch(event.request).then(function(networkResponse) {
                 //If there's a response from the network, update the cache
                 if (networkResponse) {
-                    cache.put(event.request, networkResponse.clone()).catch(function(err) {}));
+                    cache.put(event.request, networkResponse.clone()).catch(
+                                TypeError, function(e) {}       //Suppress TypeError
+                        );
                 }
                 return networkResponse;
             }, function (e) {
