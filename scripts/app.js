@@ -20,7 +20,7 @@ var slider_stepamt = document.getElementById("slider_stepamt");
 var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
 slider_stepamt.onchange = () => {
         ALGORITHM.stepamt = slider_stepamt.value;
-        amtStepValues = ALGORITHM.stepamt*sensorfreq;     //recalculate
+        ALGORITHM.amtStepValues = ALGORITHM.stepamt*sensorfreq;     //recalculate
         slider_stepamt_div.innerHTML = ALGORITHM.stepamt;
         console.log("Step amount:", ALGORITHM.stepamt);
 };
