@@ -32,7 +32,7 @@ self.addEventListener('fetch', function(event) {
                 //If there's a response from the network, update the cache
                 if (networkResponse) {
                     cache.put(event.request, networkResponse.clone()).catch(
-                                TypeError, function(e) {}       //Suppress TypeError
+                                TypeError, function(e) {return e;}       //Suppress TypeError
                         );
                 }
                 return networkResponse;
