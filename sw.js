@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 const CACHE_NAME = "websensor-video";
-=======
->>>>>>> parent of b435536... Suppress error
 const CACHE_VERSION = 1;
 
 self.addEventListener('install', function(event) {
