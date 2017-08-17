@@ -326,7 +326,36 @@ var CONTROL = (function () {
         //Functions related to controlling video playback - uses promises so might not work in all browsers
         function play() //redundant to put a one-liner in its own function?
         {
-                rewinding ? videoB.play() : videoF.play();    
+                if(rewinding)
+                {
+                    fetch(videoB.src)
+                    .then(response => response.blob())
+                    .then(blob => {
+                      video.srcObject = blob;
+                      return video.play();
+                    })
+                    .then(_ => {
+                      // Video playback started ;)
+                    })
+                    .catch(e => {
+                      // Video playback failed ;(
+                    })
+                }
+                else
+                {
+                    fetch(videoF.src)
+                    .then(response => response.blob())
+                    .then(blob => {
+                      video.srcObject = blob;
+                      return video.play();
+                    })
+                    .then(_ => {
+                      // Video playback started ;)
+                    })
+                    .catch(e => {
+                      // Video playback failed ;(
+                    })
+                }        
         }
 
 	ctrl.playPause = function () //redundancy?
