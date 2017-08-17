@@ -37,9 +37,9 @@ this.addEventListener('fetch', function(event) {
                                 cache.put(event.request, responseClone).catch(
                                 TypeError, function(e) {}       //Suppress TypeError
                                 );
-                }*/);
+                });
                 return response;
-                })
+                */})
                 }
         }));
 });
