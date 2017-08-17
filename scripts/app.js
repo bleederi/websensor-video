@@ -215,6 +215,7 @@ function startDemo() {  //Need user input to play video, so here both the forwar
         videoB.pause();
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
+        ut = setInterval(updateText, 100);     //Start saving data from sensors in loop
 }
 
 //The custom element where the video will be rendered
