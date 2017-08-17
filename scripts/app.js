@@ -353,7 +353,7 @@ var CONTROL = (function () {
 
 	ctrl.playPause = function () //redundancy?
         {
-                if(stepvar && video.paused)
+                if(stepvar)
                 {
                         play();
                 }
