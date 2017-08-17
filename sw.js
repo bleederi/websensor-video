@@ -1,4 +1,4 @@
-const CACHE_NAME = "websensor-video"
+const CACHE_NAME = "websensor-video";
 const CACHE_VERSION = 1;
 
 self.addEventListener('install', function(event) {
