@@ -17,6 +17,12 @@ self.addEventListener('install', function(event) {
   );
 });
 
+self.addEventListener("activate", function(event) {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))))
+  );
+});
+
 this.addEventListener('fetch', function(event) {
 //Retrieval from cache
         event.respondWith(caches.match(event.request).then(function(response) {
