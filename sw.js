@@ -1,20 +1,6 @@
-const CACHE_VERSION = 1;
+let version = 9;
 
 self.addEventListener('install', function(event) {
-//Caching
-  event.waitUntil(
-    caches.open(CACHE_VERSION.toString()).then(function(cache) {
-      return cache.addAll([
-        'index.html',
-        'sw.js',
-        'scripts/app.js',
-        'scripts/three.min.js',
-        'scripts/fft.js',
-        'resources/forward2.mp4',
-        'resources/backward2.mp4'
-      ]);
-    })
-  );
 });
 
 self.addEventListener("activate", function(event) {
@@ -23,23 +9,25 @@ self.addEventListener("activate", function(event) {
   );
 });
 
-this.addEventListener('fetch', function(event) {
-//Retrieval from cache
-        event.respondWith(caches.match(event.request).then(function(response) {
-                if (response !== undefined) {
-                        return response;
-                } else {
-                        return fetch(event.request).then(function (response) {
-                //Response may be used only once so need to save clone to put one copy in cache and serve second one
-                let responseClone = response.clone();
-                caches.open(CACHE_VERSION.toString()).then(function (cache) {
-                                cache.put(event.request, responseClone).catch(
-                                TypeError, function(e) {}       //Suppress TypeError
-                                );
-                });
-                return response;
-                })
-                }
-        }));
-});
+self.addEventListener('fetch', function(event) {
+  if (event.request.url.includes('localhost')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
+  if (event.request.url.includes('manifest.json')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  event.respondWith(
+    caches.open('mysite-dynamic').then(function(cache) {
+      return cache.match(event.request).then(function (response) {
+        return response || fetch(event.request).then(function(response) {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      });
+    })
+  );
+});
