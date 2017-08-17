@@ -69,7 +69,6 @@ var camera = null;
 var cameraConstant = 200;
 var renderer = null;
 
-/*
 //Service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
@@ -81,7 +80,7 @@ if ('serviceWorker' in navigator) {
       console.log('ServiceWorker registration failed: ', err);
     });
   });
-}*/
+}
 
 //Sensor classes and low-pass filter
 
@@ -216,7 +215,6 @@ function startDemo() {  //Need user input to play video, so here both the forwar
         videoB.pause();
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
-        ut = setInterval(updateText, 100);     //Start saving data from sensors in loop
 }
 
 //The custom element where the video will be rendered
@@ -328,7 +326,7 @@ var CONTROL = (function () {
         //Functions related to controlling video playback - uses promises so might not work in all browsers
         function play() //redundant to put a one-liner in its own function?
         {
-                rewinding ? videoB.play() : videoF.play();
+                rewinding ? videoB.play() : videoF.play();    
         }
 
 	ctrl.playPause = function () //redundancy?
@@ -773,3 +771,4 @@ var ALGORITHM = (function () {
                 saveSensorReading: saveSensorReading
         };
 }());
+
