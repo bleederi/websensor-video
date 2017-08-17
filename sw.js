@@ -26,6 +26,36 @@ self.addEventListener("activate", function(event) {
 
 this.addEventListener('fetch', function(event) {
 //Retrieval from cache
+  if (event.request.headers.get('range')) {     //Video request
+    var pos =
+    Number(/^bytes\=(\d+)\-$/g.exec(event.request.headers.get('range'))[1]);
+    console.log('Range request for', event.request.url,
+      ', starting position:', pos);
+    event.respondWith(
+      caches.open(CURRENT_CACHES.prefetch)
+      .then(function(cache) {
+        return cache.match(event.request.url);
+      }).then(function(res) {
+        if (!res) {
+          return fetch(event.request)
+          .then(res => {
+            return res.arrayBuffer();
+          });
+        }
+        return res.arrayBuffer();
+      }).then(function(ab) {
+        return new Response(
+          ab.slice(pos),
+          {
+            status: 206,
+            statusText: 'Partial Content',
+            headers: [
+              // ['Content-Type', 'video/webm'],
+              ['Content-Range', 'bytes ' + pos + '-' +
+                (ab.byteLength - 1) + '/' + ab.byteLength]]
+          });
+      }));
+  } else {
         event.respondWith(caches.match(event.request).then(function(response) {
                 if (response !== undefined) {
                         return response;
@@ -42,5 +72,6 @@ this.addEventListener('fetch', function(event) {
                 })
                 }
         }));
+        }
 });
 
