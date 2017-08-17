@@ -209,10 +209,8 @@ function updateText()   //For updating debug text
 }
 
 function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
-        videoF.play();
-        videoB.play();
-        videoF.pause();
-        videoB.pause();
+        videoF.play().then(videoF.pause(););
+        videoB.play().then(videoB.pause(););
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
 }
