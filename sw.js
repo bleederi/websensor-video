@@ -19,8 +19,7 @@ self.addEventListener('install', function(event) {
 
 this.addEventListener('fetch', function(event) {
 //Retrieval from cache
-        try {
-                event.respondWith(caches.match(event.request).then(function(response) {
+        event.respondWith(caches.match(event.request).then(function(response) {
                 if (response !== undefined) {
                         return response;
                 } else {
@@ -38,9 +37,6 @@ this.addEventListener('fetch', function(event) {
                 return response;
                 })
                 }
-                }));
-        } catch(err) {
-                console.log("Error:", err);
-        }
+        }));
 });
 
