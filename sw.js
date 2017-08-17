@@ -26,7 +26,7 @@ self.addEventListener("activate", function(event) {
 
 this.addEventListener('fetch', function(event) {
 //Retrieval from cache
-  if (event.request.headers.get('range')) {     //Video request
+ /* if (event.request.headers.get('range')) {     //Video request
     var pos =
     Number(/^bytes\=(\d+)\-$/g.exec(event.request.headers.get('range'))[1]);
     console.log('Range request for', event.request.url,
@@ -55,7 +55,7 @@ this.addEventListener('fetch', function(event) {
                 (ab.byteLength - 1) + '/' + ab.byteLength]]
           });
       }));
-  } else {
+  } else {*/
         event.respondWith(caches.match(event.request).then(function(response) {
                 if (response !== undefined) {
                         return response;
@@ -72,6 +72,6 @@ this.addEventListener('fetch', function(event) {
                 })
                 }
         }));
-        }
+      //  }
 });
 
