@@ -209,9 +209,9 @@ function updateText()   //For updating debug text
 }
 
 function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
-        let playPromise = videoF.play();
-  if (playPromise !== undefined) {
-    playPromise.then(_ => {
+        let playPromiseF = videoF.play();
+  if (playPromiseF !== undefined) {
+    playPromiseF.then(_ => {
       // Automatic playback started!
       // Show playing UI.
       // We can now safely pause video...
@@ -222,9 +222,9 @@ function startDemo() {  //Need user input to play video, so here both the forwar
       // Show paused UI.
     });
   }
-        let playPromise = videoB.play();
-  if (playPromise !== undefined) {
-    playPromise.then(_ => {
+  let playPromiseB = videoB.play();
+  if (playPromiseB !== undefined) {
+    playPromiseB.then(_ => {
       // Automatic playback started!
       // Show playing UI.
       // We can now safely pause video...
