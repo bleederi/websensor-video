@@ -26,7 +26,6 @@ self.addEventListener("activate", function(event) {
 
 this.addEventListener('fetch', function(event) {
 //Retrieval from cache
-self.addEventListener('fetch', function(event) {
     event.respondWith(caches.open(CACHE_NAME + CACHE_VERSION.toString()).then(function(cache) {
         return cache.match(event.request).then(function(response) {
             //console.log("cache request: " + event.request.url);
