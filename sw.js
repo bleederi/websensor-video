@@ -6,6 +6,7 @@ self.addEventListener('install', function(event) {
     caches.open(CACHE_VERSION.toString()).then(function(cache) {
       return cache.addAll([
         'index.html',
+        'sw.js',
         'scripts/app.js',
         'scripts/three.min.js',
         'scripts/fft.js',
