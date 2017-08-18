@@ -533,14 +533,13 @@ var ALGORITHM = (function () {
           
             return answer;
         }
-        //http://phrogz.net/js/framerate-independent-low-pass-filter.html
-        // values:    an array of numbers that will be modified in place
-        // smoothing: the strength of the smoothing filter; 1=no change, larger values smoothens more
+
+        
         function smoothArray( values, smoothing ){
-          var value = values[0]; // start with the first input
+          var value = values[0]; //First input a special case, no smoothing
           for (let i=1, len=values.length; i<len; ++i){
             var currentValue = values[i];
-            value += (currentValue - value) / smoothing;
+            value += (currentValue - value) / smoothing;        //Substract from previous, divide by smoothing and add to the "running value"
             values[i] = value;
           }
         }
