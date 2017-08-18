@@ -463,11 +463,7 @@ var ALGORITHM = (function () {
         function standardDeviation(values){
         var average = values => values.reduce( ( p, c ) => p + c, 0 ) / values.length;
           
-          var squareDiffs = values.map(function(value){
-            var diff = value - average;
-            var sqrDiff = diff * diff;
-            return sqrDiff;
-          });
+          var squareDiffs = values.map( value => (value - average) ** 2);
           var averageSquareDiff = squareDiffs => squareDiffs.reduce( ( p, c ) => p + c, 0 ) / squareDiffs.length;
           var stdDev = Math.sqrt(averageSquareDiff);
           return stdDev;
