@@ -460,30 +460,18 @@ var ALGORITHM = (function () {
                 }
         }
 
-        /* Source: https://derickbailey.com/2014/09/21/calculating-standard-deviation-with-array-map-and-array-reduce-in-javascript/ */
         function standardDeviation(values){
-          var avg = average(values);
+        var average = values => values.reduce( ( p, c ) => p + c, 0 ) / values.length;
           
           var squareDiffs = values.map(function(value){
-            var diff = value - avg;
+            var diff = value - average;
             var sqrDiff = diff * diff;
             return sqrDiff;
           });
-          
-          var avgSquareDiff = average(squareDiffs);
-
-          var stdDev = Math.sqrt(avgSquareDiff);
+          var averageSquareDiff = squareDiffs => squareDiffs.reduce( ( p, c ) => p + c, 0 ) / squareDiffs.length;
+          var stdDev = Math.sqrt(averageSquareDiff);
           return stdDev;
         }
-
-        function average(data){
-          var sum = data.reduce(function(sum, value){
-            return sum + value;
-          }, 0);
-
-          var avg = sum / data.length;
-          return avg;
-        } 
 
         /*
          *  Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
@@ -566,25 +554,25 @@ var ALGORITHM = (function () {
 
         function updateTimeAverage(index, lasttime, timediff, timethreshold, data)  //Update the running time average (timethreshold) of either peak or valley data
         {
-                                //update time average regardless of valley accepted or not
-                                if(data.length >= 2)
-                                {
-                                        timediff.push(index - lasttime);
-                                        let diff_selected = timediff;    //select recent M valleys
-                                        let sum = diff_selected.reduce((previous, current) => current += previous); //sum over the array
-                                        timethreshold = sum/timediff.length;      //average of valley diffs
-                                }
-                                else
-                                {
-                                        if(lasttime > 0 && index > lasttime)
-                                        {
-                                                timediff.push(index - lasttime);
-                                        }
-                                        else
-                                        {
-                                                timediff.push(index);
-                                        }
-                                }
+                //update time average regardless of valley accepted or not
+                if(data.length >= 2)
+                {
+                        timediff.push(index - lasttime);
+                        let diff_selected = timediff;    //select recent M valleys
+                        let sum = diff_selected.reduce((previous, current) => current += previous); //sum over the array
+                        timethreshold = sum/timediff.length;      //average of valley diffs
+                }
+                else
+                {
+                        if(lasttime > 0 && index > lasttime)
+                        {
+                                timediff.push(index - lasttime);
+                        }
+                        else
+                        {
+                                timediff.push(index);
+                        }
+                }
         }
         function detectPeaksValleys(seq)
         {
