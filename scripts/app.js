@@ -240,7 +240,6 @@ customElements.define("video-view", class extends HTMLElement {
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 document.body.appendChild(renderer.domElement);
                 scene = new THREE.Scene();
-                cameraConstant = 200;
                 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, cameraConstant);
                 camera.target = new THREE.Vector3(0, 0, 0);
                 sphere = new THREE.SphereGeometry(100, 100, 40);
