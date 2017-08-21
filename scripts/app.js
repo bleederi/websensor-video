@@ -2,7 +2,7 @@
 
 /* Global variables below */
 //Debug stuff(sliders, text)
-var walking_status_div = document.getElementById("walking_status");
+/*var walking_status_div = document.getElementById("walking_status");
 var stddev_div = document.getElementById("stddev");
 var stddev_accel_div = document.getElementById("stddev_accel");
 var fftindex_div = document.getElementById("fft_index");
@@ -39,34 +39,35 @@ smoothing_value.onchange = () => {
         smoothing_value_div.innerHTML = ALGORITHM.smoothingvalue;
         console.log("Smoothing value:", ALGORITHM.smoothingvalue);
 };
-
+*/
 var accel = {x:null, y:null, z:null};
 var rewinding = false;
-var reading;    //variable for controlling the data reading loop
-var ut; //debug text update var
+var reading;    //Variable for controlling the data reading loop
+//var ut; //debug text update var
 const GRAVITY = 9.81;
-var orientationMat = new Float64Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);     //device orientation
-var sensorfreq = 60;
+const sensorfreq = 60;  //Frequency at which the sensors read at
 var stepvar = 0;     //0 when not walking, 1 when walking
 
 //Sensors
 var accel_sensor = null;
 var orientation_sensor = null;
 
-var latitude;
-var longitude;
+var latitude = 0;
+var longitude = 0;
+
+//The video elements, these will be referred to control video playback
+var videoF = null;
+var videoB = null;
+var video = null;       //This will always be the currently playing video
 
 //Rendering vars (Three.JS)
 var scene = null;
 var sphere = null;
-var video = null;
-var videoF = null;
-var videoB = null;
 var videoTexture = null;
 var sphereMaterial = null;
 var sphereMesh = null;
 var camera = null;
-var cameraConstant = 200;
+const cameraConstant = 200;
 var renderer = null;
 
 //Service worker registration
@@ -185,7 +186,7 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
 
 //Functions for the debug text and sliders
 
-function updateSlider(slideAmount)
+/*function updateSlider(slideAmount)
 {
 alert("error");
 sliderDiv.innerHTML = slideAmount;
@@ -205,9 +206,9 @@ function updateText()   //For updating debug text
         stddev_div.innerHTML = ALGORITHM.stddevpct;
         stddev_accel_div.innerHTML = ALGORITHM.stddev_accel;
         fftindex_div.innerHTML = ALGORITHM.fft_index;
-}
+}*/
 
-function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused in order to satisfy that requirement
+function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
         videoF.play().then(function(value){
                 videoF.pause();
 });
@@ -262,7 +263,7 @@ customElements.define("video-view", class extends HTMLElement {
                 function onWindowResize() {
                         camera.aspect = window.innerWidth / window.innerHeight;
                         camera.updateProjectionMatrix();
-                        renderer.setSize( window.innerWidth , window.innerHeight);
+                        renderer.setSize(window.innerWidth, window.innerHeight);
                 }
 
         }
