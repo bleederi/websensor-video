@@ -1,45 +1,11 @@
+/*
+*       360 degree video demo
+*/
+
 'use strict';
 
 /* Global variables below */
-//Debug stuff(sliders, text)
-/*var walking_status_div = document.getElementById("walking_status");
-var stddev_div = document.getElementById("stddev");
-var stddev_accel_div = document.getElementById("stddev_accel");
-var fftindex_div = document.getElementById("fft_index");
-var rw_div = document.getElementById("rewind_status");
-var sliderDiv = document.getElementById("sliderAmount");
-//Sliders
-var slider_stddev = document.getElementById("slider_stddev");
-var slider_stddev_div = document.getElementById("slider_stddev_amount");
-slider_stddev.onchange = () => {
-        ALGORITHM.stddevthreshold = slider_stddev.value;
-        slider_stddev_div.innerHTML = ALGORITHM.stddevthreshold;
-        console.log("Std dev threshold:", ALGORITHM.stddevthreshold);
-};
-var slider_stepamt = document.getElementById("slider_stepamt");
-var slider_stepamt_div = document.getElementById("slider_stepamt_amount");
-slider_stepamt.onchange = () => {
-        ALGORITHM.stepamt = slider_stepamt.value;
-        ALGORITHM.amtStepValues = ALGORITHM.stepamt*sensorfreq;     //recalculate
-        slider_stepamt_div.innerHTML = ALGORITHM.stepamt;
-        console.log("Step amount:", ALGORITHM.stepamt);
-};
-var slider_bias = document.getElementById("slider_bias");
-var slider_bias_div = document.getElementById("slider_bias_amount");
-slider_bias.onchange = () => {
-        ALGORITHM.bias = slider_bias.value;
-        slider_bias_div.innerHTML = ALGORITHM.bias;
-        console.log("Filter bias:", ALGORITHM.bias);
-};
 
-var smoothing_value = document.getElementById("smoothing_value");
-var smoothing_value_div = document.getElementById("smoothing_amount");
-smoothing_value.onchange = () => {
-        ALGORITHM.smoothingvalue = smoothing_value.value;
-        smoothing_value_div.innerHTML = ALGORITHM.smoothingvalue;
-        console.log("Smoothing value:", ALGORITHM.smoothingvalue);
-};
-*/
 var accel = {x:null, y:null, z:null};
 var rewinding = false;
 var reading;    //Variable for controlling the data reading loop
@@ -55,7 +21,7 @@ var orientation_sensor = null;
 var latitude = 0;
 var longitude = 0;
 
-//The video elements, these will be referred to control video playback
+//The video elements, these references will be used to control video playback
 var videoF = null;
 var videoB = null;
 var video = null;       //This will always be the currently playing video
@@ -72,14 +38,14 @@ var renderer = null;
 
 //Service worker registration
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-  navigator.serviceWorker.register('sw.js').then(function(registration) {
-      //Registration was successful
-    }, function(err) {
-      //Registration failed
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  });
+        window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                        //Registration was successful
+                }, function(err) {
+                        //Registration failed
+                console.log('ServiceWorker registration failed: ', err);
+                });
+        });
 }
 
 //Sensor classes and low-pass filter
@@ -110,7 +76,7 @@ class Pedometer {
         }
 }
 
-//This is a sensor that uses RelativeOrientationSensor and converts the quaternion to Euler angles
+//This is an inclination sensor that uses RelativeOrientationSensor and converts the quaternion to Euler angles
 class OriSensor {
         constructor() {
         this.sensor_ = new RelativeOrientationSensor({ frequency: sensorfreq });
@@ -123,20 +89,15 @@ class OriSensor {
                 let quat = this.sensor_.quaternion;
                 let quaternion = new THREE.Quaternion();        //Conversion to Euler angles done in THREE.js so we have to create a THREE.js object for holding the quaternion to convert from
                 let euler = new THREE.Euler( 0, 0, 0);  //Will hold the Euler angles corresponding to the quaternion
-                quaternion.set(quat[0], quat[1], quat[2], quat[3]);     //x,y,z,w
-                //Coordinate system must be adapted depending on orientation
-                if(screen.orientation.angle === 0)      //portrait mode
-                {
-                euler.setFromQuaternion(quaternion, 'ZYX');     //ZYX works in portrait, ZXY in landscape
-                }
-                else if(screen.orientation.angle === 90 || screen.orientation.angle === 180 || screen.orientation.angle === 270)        //landscape mode
-                {
-                euler.setFromQuaternion(quaternion, 'ZXY');     //ZYX works in portrait, ZXY in landscape
-                }
+                quaternion.set(quat[0], quat[1], quat[2], quat[3]);     //Order x,y,z,w
+                //Order of rotations must be adapted depending on orientation - for portrait ZYX, for landscape ZXY
+                let angleOrder = null;
+                screen.orientation.angle === 0 ? angleOrder = 'ZYX' : angleOrder = 'ZXY';
+                euler.setFromQuaternion(quaternion, angleOrder);     //ZYX works in portrait, ZXY in landscape
                 this.x_ = euler.x;
                 this.y_ = euler.y;
                 this.z_ = euler.z;
-                if(!this.initialoriobtained_) //obtain initial longitude - needed to make the initial camera orientation the same every time
+                if(!this.initialoriobtained_) //Obtain initial longitude - needed to make the initial camera orientation the same every time
                 {
                         this.longitudeInitial_ = -this.z_;
                         if(screen.orientation.angle === 90)
@@ -183,30 +144,6 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
                 this.z = this.z * this.bias + reading.z * (1 - this.bias);
         }
 }
-
-//Functions for the debug text and sliders
-
-/*function updateSlider(slideAmount)
-{
-alert("error");
-sliderDiv.innerHTML = slideAmount;
-}
-
-function updateText()   //For updating debug text
-{
-        if(stepvar)
-        {
-                walking_status_div.innerHTML = "Walking";
-        }
-        else if (!stepvar)
-        {
-                walking_status_div.innerHTML = "Not walking";
-        }
-        rw_div.innerHTML = rewinding;
-        stddev_div.innerHTML = ALGORITHM.stddevpct;
-        stddev_accel_div.innerHTML = ALGORITHM.stddev_accel;
-        fftindex_div.innerHTML = ALGORITHM.fft_index;
-}*/
 
 function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
         videoF.play().then(function(value){
@@ -257,13 +194,12 @@ customElements.define("video-view", class extends HTMLElement {
                 scene.add(sphereMesh);
                 sphereMesh.rotateY(Math.PI+0.1);        //Rotate the projection sphere to align initial orientation with the path
 
-                window.addEventListener( 'resize', onWindowResize, false );     //On window resize, also resize canvas so it fills the screen
-
-                function onWindowResize() {
+                //On window resize, also resize canvas so it fills the screen
+                window.addEventListener('resize', () => {
                         camera.aspect = window.innerWidth / window.innerHeight;
                         camera.updateProjectionMatrix();
                         renderer.setSize(window.innerWidth, window.innerHeight);
-                }
+                }, false);
 
         }
 
