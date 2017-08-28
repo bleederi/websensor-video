@@ -76,62 +76,69 @@ class Pedometer {
         }
 }
 
-//This is an inclination sensor that uses RelativeOrientationSensor and converts the quaternion to Euler angles
-class OriSensor {
-        constructor() {
-        this.sensor_ = new RelativeOrientationSensor({ frequency: sensorfreq });
-        this.x_ = 0;
-        this.y_ = 0;
-        this.z_ = 0;
+// This is an inclination sensor that uses RelativeOrientationSensor
+// and converts the quaternion to Euler angles
+class RelativeInclinationSensor extends RelativeOrientationSensor{
+    constructor(options) {
+        super(options);
+        this.longitude_ = 0;
+        this.latitude_ = 0;
         this.longitudeInitial_ = 0;
-        this.initialoriobtained_ = false;
-        this.sensor_.onreading = () => {
-                let quat = this.sensor_.quaternion;
-                let quaternion = new THREE.Quaternion();        //Conversion to Euler angles done in THREE.js so we have to create a THREE.js object for holding the quaternion to convert from
-                let euler = new THREE.Euler( 0, 0, 0);  //Will hold the Euler angles corresponding to the quaternion
-                quaternion.set(quat[0], quat[1], quat[2], quat[3]);     //Order x,y,z,w
-                //Order of rotations must be adapted depending on orientation - for portrait ZYX, for landscape ZXY
-                let angleOrder = null;
-                screen.orientation.angle === 0 ? angleOrder = 'ZYX' : angleOrder = 'ZXY';
-                euler.setFromQuaternion(quaternion, angleOrder);     //ZYX works in portrait, ZXY in landscape
-                this.x_ = euler.x;
-                this.y_ = euler.y;
-                this.z_ = euler.z;
-                if(!this.initialoriobtained_) //Obtain initial longitude - needed to make the initial camera orientation the same every time
-                {
-                        this.longitudeInitial_ = -this.z_;
-                        if(screen.orientation.angle === 90)
-                        {
-                                this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;     //offset fix
-                        }
-                        this.initialoriobtained_ = true;
+        this.initialOriObtained_ = false;
+    }
+
+    set onreading(func) {
+        super.onreading = () => {
+            // Conversion to Euler angles done in THREE.js so we have to create a
+            // THREE.js object for holding the quaternion to convert from
+            // Order x,y,z,w
+            let quaternion = new THREE.Quaternion(super.quaternion[0], super.quaternion[1], super.quaternion[2], super.quaternion[3]);
+            // euler will hold the Euler angles corresponding to the quaternion
+            let euler = new THREE.Euler(0, 0, 0);  
+            // Order of rotations must be adapted depending on orientation
+            // for portrait ZYX, for landscape ZXY
+            let angleOrder = null;
+            screen.orientation.angle === 0 ? angleOrder = 'ZYX' : angleOrder = 'ZXY';
+            euler.setFromQuaternion(quaternion, angleOrder);
+            if(!this.initialOriObtained_) {
+                // Initial longitude needed to make the initial camera orientation
+                // the same every time
+                this.longitudeInitial_ = -euler.z;
+                if(screen.orientation.angle === 90) {
+                    this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;
                 }
-                if (this.onreading_) this.onreading_();
-        };
-        }
-        start() { this.sensor_.start(); }
-        stop() { this.sensor_.stop(); }
-        get x() {
-                return this.x_;
-        }
-        get y() {
-                return this.y_;
-        } 
-        get z() {
-                return this.z_;
-        }
-        get longitudeInitial() {
-                return this.longitudeInitial_;
-        }
-        set onactivate(func) {
-                this.sensor_.onactivate_ = func;
-        }
-        set onerror(err) {
-                this.sensor_.onerror_ = err;
-        }
-        set onreading (func) {
-                this.onreading_ = func;  
-        }
+                this.initialOriObtained_ = true;
+            }
+
+            // Device orientation changes need to be taken into account
+            // when reading the sensor values by adding offsets
+            // Also the axis of rotation might change
+            switch(screen.orientation.angle) {
+                default:
+                case 0:
+                    this.longitude_ = -euler.z - this.longitudeInitial_;
+                    this.latitude_ = euler.x - Math.PI/2;
+                    break; 
+                case 90:
+                    this.longitude_ = -euler.z - this.longitudeInitial_ + Math.PI/2;
+                    this.latitude_ = -euler.y - Math.PI/2;                 
+                    break;     
+                case 270:
+                    this.longitude_ = -euler.z - this.longitudeInitial_ - Math.PI/2;
+                    this.latitude_ = euler.y - Math.PI/2;
+                    break;
+            }
+            func();
+        };      
+    }
+
+    get longitude() {
+        return this.longitude_;
+    }
+
+    get latitude() {
+        return this.latitude_;
+    }
 }
 class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
   constructor(reading, bias) {
@@ -228,7 +235,7 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ) {
                         videoTexture.needsUpdate = true;
                 }
-                //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
+    /*            //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
                 switch(screen.orientation.angle) {
                         default:
                         case 0:
@@ -247,10 +254,10 @@ customElements.define("video-view", class extends HTMLElement {
                 if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
                 {
                         longitude = longitude + 2*Math.PI;
-                }
-                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
-                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+                }*/
+                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
+                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
+                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
                 camera.lookAt(camera.target);
 
                 renderer.render(scene, camera);
