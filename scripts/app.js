@@ -213,6 +213,7 @@ customElements.define("video-view", class extends HTMLElement {
         connectedCallback() {
                 try {
                         //Initialize sensors
+                        // Pedometer used in the walking detection algorithm
                         accel_sensor = new Pedometer();
                         accel_sensor.onreading = () => {
                                 accel = accel_sensor.accel;     //Save to external variable probably unnecessary
@@ -234,29 +235,13 @@ customElements.define("video-view", class extends HTMLElement {
                 if( video.readyState === video.HAVE_ENOUGH_DATA ) {
                         videoTexture.needsUpdate = true;
                 }
-                //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
-                switch(screen.orientation.angle) {
-                        default:
-                        case 0:
-                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
-                                latitude = orientation_sensor.x - Math.PI/2;
-                                break;
-                        case 90:
-                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
-                                latitude = -orientation_sensor.y - Math.PI/2;
-                                break;
-                        case 270:
-                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
-                                latitude = orientation_sensor.y - Math.PI/2;
-                                break;
-                }
-                if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
+                if(orientation_sensor.longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
                 {
-                        longitude = longitude + 2*Math.PI;
+                        orientation_sensor.longitude = orientation_sensor.longitude + 2*Math.PI;
                 }
-                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
-                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
+                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
+                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
                 camera.lookAt(camera.target);
 
                 renderer.render(scene, camera);
