@@ -4,20 +4,13 @@
                 <link rel="manifest" href="manifest.json" />
                 <meta charset="utf-8">
                 <meta name="viewport" content="user-scalable=no, initial-scale=1">
-                <title>Websensor 360 degree video demo</title>
+                <title>360 degree video</title>
 		<style>
 			body{
 				margin: 0;
 			}
                    #startbutton {
                         background-color: red;
-                        color: #FFFFFF;
-                        padding: 15px 32px;
-                        border-radius: 10px;
-                        margin:10px
-                    }
-                   #rewindbutton {
-                        background-color: blue;
                         color: #FFFFFF;
                         padding: 15px 32px;
                         border-radius: 10px;
@@ -38,36 +31,6 @@
         </template>
 	<body>
                 <button id="startbutton" onclick="startDemo()">Start demo</button>
-<div hidden id="debug">
-                <button id="rewindbutton" onclick="rewind()">Rewind</button>
-                <button id="play2" hidden>Play</button>
-
-                <input id="slider_stddev" type="range" min="0.1" max="4" step="0.2" value="3.8">
-
-                Standard deviation threshold: <div id="slider_stddev_amount"></div>
-
-                <input id="slider_stepamt" type="range" min="1" max="5" step="0.5" value="2.5">
-
-                Seconds to capture(delay): <div id="slider_stepamt_amount"></div>
-
-                <input id="slider_bias" type="range" min="0.1" max="1" step="0.1" value="0.9">
-
-                Filter bias: <div id="slider_bias_amount"></div>
-
-                <input id="smoothing_value" type="range" min="0" max="10" step="1" value="5">
-
-                Smoothing value: <div id="smoothing_amount"></div>
-
-                Walking status: <div id="walking_status"></div>
-
-                Rewind status: <div id="rewind_status"></div>
-
-                Standard deviation pct: <div id="stddev"></div>
-
-                Standard deviation of acceleration (no gravity): <div id="stddev_accel"></div>
-
-                Largest FFT index: <div id="fft_index"></div>
-</div>
                 <video-view id="videoview">
                 </video-view>
                 <script type="text/javascript" src="scripts/app.js"></script>
