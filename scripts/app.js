@@ -16,10 +16,8 @@ var stepvar = 0;     //0 when not walking, 1 when walking
 
 //Sensors
 var accel_sensor = null;
-var orientation_sensor = null;
-
-var latitude = 0;
-var longitude = 0;
+var orientation_sensor = new OriSensor({frequency: 60});
+orientation_sensor.onreading = render;
 
 //The video elements, these references will be used to control video playback
 var videoF = null;
@@ -140,6 +138,7 @@ class OriSensor extends RelativeOrientationSensor{
         return this.latitude_;
     }
 }
+
 class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
   constructor(reading, bias) {
     Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
@@ -219,7 +218,6 @@ customElements.define("video-view", class extends HTMLElement {
                                 accel = accel_sensor.accel;     //Save to external variable probably unnecessary
                         };
                         accel_sensor.start();
-                        orientation_sensor = new OriSensor();
                         orientation_sensor.start();
                         }
                 catch(err) {
