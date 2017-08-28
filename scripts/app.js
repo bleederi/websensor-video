@@ -4,48 +4,6 @@
 
 'use strict';
 
-/* Global variables below */
-
-var accel = {x:null, y:null, z:null};
-var rewinding = false;
-var reading;    //Variable for controlling the data reading loop
-//var ut; //debug text update var
-const GRAVITY = 9.81;
-const sensorfreq = 60;  //Frequency at which the sensors read at
-var stepvar = 0;     //0 when not walking, 1 when walking
-
-//Sensors
-var accel_sensor = null;
-var orientation_sensor = new OriSensor({frequency: 60});
-orientation_sensor.onreading = render;
-
-//The video elements, these references will be used to control video playback
-var videoF = null;
-var videoB = null;
-var video = null;       //This will always be the currently playing video
-
-//Rendering vars (Three.JS)
-var scene = null;
-var sphere = null;
-var videoTexture = null;
-var sphereMaterial = null;
-var sphereMesh = null;
-var camera = null;
-const cameraConstant = 200;
-var renderer = null;
-
-//Service worker registration
-if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js').then(function(registration) {
-                        //Registration was successful
-                }, function(err) {
-                        //Registration failed
-                console.log('ServiceWorker registration failed: ', err);
-                });
-        });
-}
-
 //Sensor classes and low-pass filter
 
 //This is a sensor that uses Accelerometer and returns the acceleration along the three axes
@@ -149,6 +107,48 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
                 this.y = this.y * this.bias + reading.y * (1 - this.bias);
                 this.z = this.z * this.bias + reading.z * (1 - this.bias);
         }
+}
+
+/* Global variables below */
+
+var accel = {x:null, y:null, z:null};
+var rewinding = false;
+var reading;    //Variable for controlling the data reading loop
+//var ut; //debug text update var
+const GRAVITY = 9.81;
+const sensorfreq = 60;  //Frequency at which the sensors read at
+var stepvar = 0;     //0 when not walking, 1 when walking
+
+//Sensors
+var accel_sensor = null;
+var orientation_sensor = new OriSensor({frequency: 60});
+orientation_sensor.onreading = render;
+
+//The video elements, these references will be used to control video playback
+var videoF = null;
+var videoB = null;
+var video = null;       //This will always be the currently playing video
+
+//Rendering vars (Three.JS)
+var scene = null;
+var sphere = null;
+var videoTexture = null;
+var sphereMaterial = null;
+var sphereMesh = null;
+var camera = null;
+const cameraConstant = 200;
+var renderer = null;
+
+//Service worker registration
+if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(function(registration) {
+                        //Registration was successful
+                }, function(err) {
+                        //Registration failed
+                console.log('ServiceWorker registration failed: ', err);
+                });
+        });
 }
 
 function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
