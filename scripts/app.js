@@ -78,7 +78,7 @@ class Pedometer {
 
 // This is an inclination sensor that uses RelativeOrientationSensor
 // and converts the quaternion to Euler angles
-class RelativeInclinationSensor extends RelativeOrientationSensor{
+class OriSensor extends RelativeOrientationSensor{
     constructor(options) {
         super(options);
         this.longitude_ = 0;
