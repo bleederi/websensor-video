@@ -266,6 +266,7 @@ var ALGORITHM = (function () {
 
         function needToChangeDir(longitude)      // Tells if the walking direction has changed
         {
+                //longitude = longitude + 2*Math.PI;  // Always make sure longitude 
                 return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
         }
 
@@ -307,9 +308,9 @@ var ALGORITHM = (function () {
                 }
                 let minDiff = Math.min( ...stepdiff );
                 let stddev = standardDeviation(stepdiff);
-                var magseqnog = magseq.map( function(value) {        //substract gravity (approx.9.81m/s^2) - probably could use filtering instead to do this
+                var magseqnog = magseq.map( function(value) {        // Substract gravity (approx.9.81m/s^2) - probably could use filtering instead to do this
                     return value - GRAVITY;
-                } );
+                });
                 stddev_accel = standardDeviation(magseqnog);
                 average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a; },0)/(magseqnog.length||1);     //Calculate average acceleration
                 stddevpct = stddev / minDiff;
@@ -320,20 +321,18 @@ var ALGORITHM = (function () {
                 {
                         return true;
                 }
-                if(stepdiff.length >= Math.floor(stepamt))
-                {
-                        if(stddevpct < stddevthreshold && !isNaN(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2] && stddev_accel < 1.5)     //What characterises a step...?
+                if(stepdiff.length >= Math.floor(stepamt)) {
+                        if(stddevpct < stddevthreshold && !isNaN(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2] && stddev_accel < 1.5)     // What characterises a step...?
                         {
                                 return true;
                         }
                 }
-                else
-                {
+                else {
                         return false;
                 }
         };
 
-        var saveSensorReading = function()    //Function to save the sensor readings, check if we need to switch video playback direction and send the sensor readings to be analyzed for whether the user is walking or not
+        var saveSensorReading = function()    // Function to save the sensor readings, check if we need to switch video playback direction and send the sensor readings to be analyzed for whether the user is walking or not
         {
                 accel = accel_sensor.accel;
                 accelFiltered = new LowPassFilterData(accel, bias);

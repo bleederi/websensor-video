@@ -102,7 +102,6 @@ class OriSensor extends RelativeOrientationSensor{
 var accel = {x:null, y:null, z:null};
 var rewinding = false;
 var reading;    //Variable for controlling the data reading loop
-//var ut; //debug text update var
 const GRAVITY = 9.81;
 const sensorfreq = 60;  //Frequency at which the sensors read at
 var stepvar = 0;     //0 when not walking, 1 when walking
@@ -117,15 +116,13 @@ var videoF = null;
 var videoB = null;
 var video = null;       //This will always be the currently playing video
 
-//Rendering vars (Three.JS)
-var scene = null;
+// Required for a THREE.js scene
+var camera, scene, renderer;
 var sphere = null;
 var videoTexture = null;
 var sphereMaterial = null;
 var sphereMesh = null;
-var camera = null;
 const cameraConstant = 200;
-var renderer = null;
 
 var longitude = 0;
 var latitude = 0;
@@ -153,9 +150,9 @@ function startDemo() {  //Need user input to play video, so here both the forwar
 
 //Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
 function render() {
-        if( video.readyState === video.HAVE_ENOUGH_DATA ) {
-                videoTexture.needsUpdate = true;
-        }
+    if(video.readyState === video.HAVE_ENOUGH_DATA) {
+            videoTexture.needsUpdate = true;
+    }
 /*            //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
         switch(screen.orientation.angle) {
                 default:
@@ -172,18 +169,18 @@ function render() {
                         latitude = orientation_sensor.y - Math.PI/2;
                         break;
         }*/
-        longitude = orientation_sensor.longitude;
-        latitude = orientation_sensor.latitude;
-        if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
-        {
-                longitude = longitude + 2*Math.PI;
-        }
-        camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-        camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
-        camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
-        camera.lookAt(camera.target);
+    longitude = orientation_sensor.longitude;
+    latitude = orientation_sensor.latitude;
+    if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude always above 0, maybe could also rotate the video sphere?
+    {
+            longitude = longitude + 2*Math.PI;
+    }
+    camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
+    camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
+    camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+    camera.lookAt(camera.target);
 
-        renderer.render(scene, camera);
+    renderer.render(scene, camera);
         //requestAnimationFrame(() => this.render());
 }
 
@@ -195,7 +192,7 @@ customElements.define("video-view", class extends HTMLElement {
         constructor() {
                 super();
 
-                //Set up two video elements, one forward and one backward, switching between them when the user changes walking direction
+                // Set up two video elements, one forward and one backward, switching between them when the user changes walking direction
                 videoF = document.createElement("video");
                 videoF.src = "resources/forward2.mp4";
                 videoF.crossOrigin = "anonymous";
