@@ -168,11 +168,11 @@ function render() {
                         longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
                         latitude = orientation_sensor.y - Math.PI/2;
                         break;
-        }
-        if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
+        }*/
+        if(orientation_sensor.longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
         {
                 longitude = longitude + 2*Math.PI;
-        }*/
+        }
         camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
         camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
         camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);

@@ -352,15 +352,15 @@ var ALGORITHM = (function () {
                 {
                         CONTROL.changeDirection();
                 }
-                if(accelerationData.length >= amtStepValues)    //when we have enough data, decide whether the user is walking or not
+                if(accelerationData.length >= amtStepValues)    // When we have enough data, decide whether the user is walking or not
                 {
                         accelSeq = toCoordSeq(accelerationData);
-                        var as = Object.assign({}, accelSeq);   //copy by value
+                        var as = Object.assign({}, accelSeq);   // Copy by value
                         stepvar = stepDetection(as);
                         CONTROL.playPause();
                         clearVars();
                 }
-                if(discardedsamples >= amtStepValues/8)     //Enough small acceleration changes have accumulated, so the device is most likely stationary
+                if(discardedsamples >= amtStepValues/8)     // If enough small acceleration changes have accumulated, the device is most likely stationary
                 {
                         stepvar = 0;
                         CONTROL.playPause();
