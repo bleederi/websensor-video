@@ -132,7 +132,6 @@ var stepvar = 0;     //0 when not walking, 1 when walking
 var accel_sensor = new Accelerometer({ frequency: sensorfreq });
 var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
 orientation_sensor.onreading = render;  // When the sensor sends new values, render again using those
-accel_sensor.onreading = ALGORITHM.saveSensorReading;
 
 //The video elements, these references will be used to control video playback
 var videoF = null;
@@ -166,6 +165,7 @@ function startDemo() {  // Need user input to play video, so here both the forwa
 });
         document.getElementById("startbutton").remove();     // Hide button
         //reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
+        accel_sensor.onreading = saveSensorReading;
 }
 
 // Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
