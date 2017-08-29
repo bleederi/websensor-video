@@ -130,7 +130,7 @@ var stepvar = 0;     //0 when not walking, 1 when walking
 
 // Sensors
 // Pedometer used in walking detection algorithm
-var accel_sensor = new Pedometer({ frequency: sensorfreq });
+var accel_sensor = new Accelerometer({ frequency: sensorfreq });
 var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
 orientation_sensor.onreading = render;
 //accel_sensor.onreading = saveSensorReading;

@@ -337,7 +337,8 @@ var ALGORITHM = (function () {
 
         var saveSensorReading = function()    // Function to save the sensor readings, check if we need to switch video playback direction and send the sensor readings to be analyzed for whether the user is walking or not
         {
-                accel = accel_sensor.accel;
+                //accel = accel_sensor.accel;
+                accel = {"x": accel_sensor.x, "y": accel_sensor.y, "z": accel_sensor.z};
                 accelFiltered = new LowPassFilterData(accel, bias);
                 if(validAccel(prevaccel, accel, accelFiltered))
                 {
