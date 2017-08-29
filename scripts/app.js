@@ -127,24 +127,17 @@ const GRAVITY = 9.81;
 const sensorfreq = 60;  //Frequency at which the sensors read at
 var stepvar = 0;     //0 when not walking, 1 when walking
 
-// Sensors
-// Pedometer used in walking detection algorithm
-var accel_sensor = new Accelerometer({ frequency: sensorfreq });
-var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
-orientation_sensor.onreading = render;  // When the sensor sends new values, render again using those
-
 //The video elements, these references will be used to control video playback
 var videoF = null;
 var videoB = null;
 var video = null;       // This will always be the currently playing video
 
+// Camera constants
+const farPlane = 200, fov = 75;
+
 // Required for a THREE.js scene
-var camera, scene, renderer;
-var sphere = null;
-var videoTexture = null;
-var sphereMaterial = null;
-var sphereMesh = null;
-const cameraConstant = 200;
+var camera, scene, renderer, orientation_sensor, accel_sensor;
+var sphere, videoTexture, sphereMaterial, sphereMesh;
 
 // Service worker registration
 if ('serviceWorker' in navigator) {
@@ -156,16 +149,22 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-function startDemo() {  // Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
-        videoF.play().then(function(value) {
-                videoF.pause();
+function startDemo() {
+// Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
+    videoF.play().then(function(value) {
+        videoF.pause();
 });
-        videoB.play().then(function(value) {
-                videoB.pause();
+    videoB.play().then(function(value) {
+        videoB.pause();
 });
-        document.getElementById("startbutton").remove();     // Hide button
-        //reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
-        accel_sensor.onreading = ALGORITHM.saveSensorReading;
+    document.getElementById("startbutton").remove();     // Hide button
+    // Pedometer used in walking detection algorithm
+    var accel_sensor = new Accelerometer({ frequency: sensorfreq });
+    // Start saving acceleration data in order to determine if the user is walking
+    accel_sensor.onreading = ALGORITHM.saveSensorReading;
+    var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
+    // When the sensor sends new values, render again using those
+    orientation_sensor.onreading = render;
 }
 
 // Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
@@ -174,9 +173,9 @@ function render() {
         videoTexture.needsUpdate = true;
     }
 
-    camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
-    camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
-    camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
+    camera.target.x = (farPlane/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
+    camera.target.y = (farPlane/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
+    camera.target.z = (farPlane/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
     camera.lookAt(camera.target);
 
     renderer.render(scene, camera);
@@ -206,7 +205,7 @@ customElements.define("video-view", class extends HTMLElement {
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, cameraConstant);
+            camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 1, farPlane);
             camera.target = new THREE.Vector3(0, 0, 0);
             sphere = new THREE.SphereGeometry(100, 100, 40);
             sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
