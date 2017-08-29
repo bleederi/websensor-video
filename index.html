@@ -30,11 +30,12 @@
                 </style>
         </template>
 	<body>
-                <button id="startbutton" onclick="startDemo()">Start demo</button>
-                <video-view id="videoview">
-                </video-view>
-                <script type="text/javascript" src="scripts/app.js"></script>
-                <script type="text/javascript" src="scripts/wdalgorithm.js"></script>        <!-- Contains the step detection algorithm -->
+        <button id="startbutton" onclick="startDemo()">Start demo</button>
+        <video-view id="videoview">
+        </video-view>
+        <div id="no-sensors">Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable the Generic Sensor API in about:flags to run this demo.</div>
+        <script type="text/javascript" src="scripts/app.js"></script>
+        <script type="text/javascript" src="scripts/wdalgorithm.js"></script>        <!-- Contains the step detection algorithm -->
 	</body>
 </html>
 
