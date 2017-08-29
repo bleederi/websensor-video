@@ -142,8 +142,7 @@ var ALGORITHM = (function () {
           
             return answer;
         }
-
-        
+       
         function smoothArray( values, smoothing ){
           var value = values[0]; //First input a special case, no smoothing
           for (let i=1, len=values.length; i<len; ++i){
@@ -349,7 +348,7 @@ var ALGORITHM = (function () {
                         discardedsamples = discardedsamples + 1;
                 }
                 //When the user turns around, video direction needs to be changed
-                if(needToChangeDir(oriSensor.longitude))
+                if(needToChangeDir(orientation_sensor.longitude))
                 {
                         CONTROL.changeDirection();
                 }
