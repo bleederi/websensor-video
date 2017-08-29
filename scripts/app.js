@@ -6,30 +6,24 @@
 
 //Sensor classes and low-pass filter
 
-//This is a sensor that uses Accelerometer and returns the acceleration along the three axes
-class Pedometer {
-        constructor(options) {
+//This is a step detection sensor that uses Accelerometer and returns the acceleration along the three axes
+class Pedometer extends Accelerometer{
+    constructor(options) {
+        super(options);
         this.sensor_ = new Accelerometer(options);
         this.accel_ = 0;
-        this.sensor_.onreading = () => {
-                this.accel_ = {'x':this.sensor_.x, 'y':this.sensor_.y, 'z':this.sensor_.z};
-                if (this.onreading_) this.onreading_();
+    }
+
+    set onreading(func) {
+        super.onreading = () => {
+            this.accel_ = {'x':super.x, 'y':super.y, 'z':super.z};
+            func();
         };
-        }
-        start() { this.sensor_.start(); }
-        stop() { this.sensor_.stop(); }
-        get accel() {
-                return this.accel_;
-        }
-        set onactivate(func) {
-                this.sensor_.onactivate_ = func;
-        }
-        set onerror(err) {
-                this.sensor_.onerror_ = err;
-        }
-        set onreading (func) {
-                this.onreading_ = func;  
-        }
+    }
+
+    get accel() {
+        return this.accel_;
+    }
 }
 
 // This is an inclination sensor that uses RelativeOrientationSensor

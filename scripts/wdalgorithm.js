@@ -264,7 +264,7 @@ var ALGORITHM = (function () {
                 return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
         }
 
-        function needToChangeDir(longitude)      // Tells if the walking direction has changed
+        function needToChangeDir(longitude)      // Tells if the walking direction has changed TODO: Make work with negative longitude also (remove the longitude conversion to positive)
         {
             if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude above 0, maybe could also rotate the video sphere?
             {
