@@ -15,8 +15,7 @@ class Pedometer extends Accelerometer{
 
     set onreading(func) {
         super.onreading = () => {
-            this.accel_.x = super.x;
-            // = {'x': super.x, 'y': super.y, 'z': super.z};
+            this.accel_ = Object.assign({}, {'x': super.x, 'y': super.y, 'z': super.z});
             func();
         };
     }
@@ -134,6 +133,7 @@ var stepvar = 0;     //0 when not walking, 1 when walking
 var accel_sensor = new Pedometer({ frequency: sensorfreq });
 var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
 orientation_sensor.onreading = render;
+//accel_sensor.onreading = saveSensorReading;
 
 //The video elements, these references will be used to control video playback
 var videoF = null;
