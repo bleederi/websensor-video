@@ -10,7 +10,6 @@
 class Pedometer extends Accelerometer{
     constructor(options) {
         super(options);
-        this.sensor_ = new Accelerometer(options);
         this.accel_ = {'x': 0, 'y': 0, 'z': 0};
     }
 
