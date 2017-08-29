@@ -132,12 +132,12 @@ var stepvar = 0;     //0 when not walking, 1 when walking
 var accel_sensor = new Accelerometer({ frequency: sensorfreq });
 var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
 orientation_sensor.onreading = render;  // When the sensor sends new values, render again using those
-accel_sensor.onreading = saveSensorReading;
+accel_sensor.onreading = ALGORITHM.saveSensorReading;
 
 //The video elements, these references will be used to control video playback
 var videoF = null;
 var videoB = null;
-var video = null;       //This will always be the currently playing video
+var video = null;       // This will always be the currently playing video
 
 // Required for a THREE.js scene
 var camera, scene, renderer;
@@ -157,18 +157,18 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
+function startDemo() {  // Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
         videoF.play().then(function(value) {
                 videoF.pause();
 });
         videoB.play().then(function(value) {
                 videoB.pause();
 });
-        document.getElementById("startbutton").remove();     //Hide button
+        document.getElementById("startbutton").remove();     // Hide button
         //reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
 }
 
-//Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
+// Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
 function render() {
     if(video.readyState === video.HAVE_ENOUGH_DATA) {
         videoTexture.needsUpdate = true;
@@ -201,7 +201,7 @@ customElements.define("video-view", class extends HTMLElement {
             videoB.crossOrigin = "anonymous";
             videoB.load();
 
-            //THREE.js scene setup
+            // THREE.js scene setup
             renderer = new THREE.WebGLRenderer();
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
