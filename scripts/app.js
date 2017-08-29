@@ -151,37 +151,14 @@ function startDemo() {  //Need user input to play video, so here both the forwar
 //Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
 function render() {
     if(video.readyState === video.HAVE_ENOUGH_DATA) {
-            videoTexture.needsUpdate = true;
+        videoTexture.needsUpdate = true;
     }
-/*            //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
-        switch(screen.orientation.angle) {
-                default:
-                case 0:
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
-                        latitude = orientation_sensor.x - Math.PI/2;
-                        break;
-                case 90:
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
-                        latitude = -orientation_sensor.y - Math.PI/2;
-                        break;
-                case 270:
-                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
-                        latitude = orientation_sensor.y - Math.PI/2;
-                        break;
-        }*/
-    longitude = orientation_sensor.longitude;
-    latitude = orientation_sensor.latitude;
-    /*if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude above 0, maybe could also rotate the video sphere?
-    {
-            longitude = longitude + 2*Math.PI;
-    }*/
-    camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
-    camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
-    camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
+    camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
+    camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
+    camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
     camera.lookAt(camera.target);
 
     renderer.render(scene, camera);
-        //requestAnimationFrame(() => this.render());
 }
 
 // The main loop, ran each time the sensor gets a new reading
