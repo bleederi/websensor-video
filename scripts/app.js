@@ -165,7 +165,7 @@ function startDemo() {  // Need user input to play video, so here both the forwa
 });
         document.getElementById("startbutton").remove();     // Hide button
         //reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
-        accel_sensor.onreading = saveSensorReading;
+        accel_sensor.onreading = ALGORITHM.saveSensorReading;
 }
 
 // Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
