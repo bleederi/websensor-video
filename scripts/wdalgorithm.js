@@ -265,7 +265,7 @@ var ALGORITHM = (function () {
                 return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
         }
 
-        function needToChangeDir()      //Tells if the walking direction has changed
+        function needToChangeDir(longitude)      //Tells if the walking direction has changed
         {
                 return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
         }
@@ -349,7 +349,7 @@ var ALGORITHM = (function () {
                         discardedsamples = discardedsamples + 1;
                 }
                 //When the user turns around, video direction needs to be changed
-                if(needToChangeDir())
+                if(needToChangeDir(oriSensor.longitude))
                 {
                         CONTROL.changeDirection();
                 }

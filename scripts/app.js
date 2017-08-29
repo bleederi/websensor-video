@@ -182,6 +182,9 @@ function render() {
         //requestAnimationFrame(() => this.render());
 }
 
+// The main loop, ran each time the sensor gets a new reading
+function loop() {
+
 //The custom element where the video will be rendered
 customElements.define("video-view", class extends HTMLElement {
         constructor() {
