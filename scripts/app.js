@@ -11,12 +11,12 @@ class Pedometer extends Accelerometer{
     constructor(options) {
         super(options);
         this.sensor_ = new Accelerometer(options);
-        this.accel_ = 0;
+        this.accel_ = {'x': 0, 'y': 0, 'z': 0};
     }
 
     set onreading(func) {
         super.onreading = () => {
-            this.accel_ = {'x':super.x, 'y':super.y, 'z':super.z};
+            this.accel_ = {'x': super.x, 'y': super.y, 'z': super.z};
             func();
         };
     }
