@@ -4,8 +4,7 @@
 
 'use strict';
 
-//Sensor classes and low-pass filter
-
+/*
 //This is a step detection sensor that uses Accelerometer and returns the acceleration along the three axes
 class Pedometer extends Accelerometer{
     constructor(options) {
@@ -23,7 +22,7 @@ class Pedometer extends Accelerometer{
     get accel() {
         return this.accel_;
     }
-}
+}*/
 
 // If generic sensors are enabled and RelativeOrientationSensor is defined, create class normally
 // Otherwise create a fake class
@@ -121,7 +120,7 @@ if('RelativeOrientationSensor' in window) {
 
 /* Global variables below */
 
-var accel = {x:null, y:null, z:null};
+//var accel = {x:null, y:null, z:null};
 var rewinding = false;
 var reading;    //Variable for controlling the data reading loop
 const GRAVITY = 9.81;
@@ -132,7 +131,7 @@ var stepvar = 0;     //0 when not walking, 1 when walking
 // Pedometer used in walking detection algorithm
 var accel_sensor = new Accelerometer({ frequency: sensorfreq });
 var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
-orientation_sensor.onreading = render;
+orientation_sensor.onreading = render;  // When the sensor sends new values, render again using those
 //accel_sensor.onreading = saveSensorReading;
 
 //The video elements, these references will be used to control video playback
@@ -147,9 +146,6 @@ var videoTexture = null;
 var sphereMaterial = null;
 var sphereMesh = null;
 const cameraConstant = 200;
-
-var longitude = 0;
-var latitude = 0;
 
 // Service worker registration
 if ('serviceWorker' in navigator) {
@@ -177,6 +173,7 @@ function render() {
     if(video.readyState === video.HAVE_ENOUGH_DATA) {
         videoTexture.needsUpdate = true;
     }
+
     camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
     camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
     camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
@@ -190,56 +187,56 @@ function loop() {
 }
 // The custom element where the video will be rendered
 customElements.define("video-view", class extends HTMLElement {
-        constructor() {
-                super();
+    constructor() {
+            super();
 
-                // Set up two video elements, one forward and one backward, switching between them when the user changes walking direction
-                videoF = document.createElement("video");
-                videoF.src = "resources/forward2.mp4";
-                videoF.crossOrigin = "anonymous";
-                videoF.load();
+            // Set up two video elements, one forward and one backward, switching between them when the user changes walking direction
+            videoF = document.createElement("video");
+            videoF.src = "resources/forward2.mp4";
+            videoF.crossOrigin = "anonymous";
+            videoF.load();
 
-                videoB = document.createElement("video");
-                videoB.src = "resources/backward2.mp4";
-                videoB.crossOrigin = "anonymous";
-                videoB.load();
+            videoB = document.createElement("video");
+            videoB.src = "resources/backward2.mp4";
+            videoB.crossOrigin = "anonymous";
+            videoB.load();
 
-                //THREE.js scene setup
-                renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-                scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, cameraConstant);
-                camera.target = new THREE.Vector3(0, 0, 0);
-                sphere = new THREE.SphereGeometry(100, 100, 40);
-                sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
+            //THREE.js scene setup
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, cameraConstant);
+            camera.target = new THREE.Vector3(0, 0, 0);
+            sphere = new THREE.SphereGeometry(100, 100, 40);
+            sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
 
-                video = videoF; //Start with the forward video
-                video.load();
-                videoTexture = new THREE.Texture(video);
-                videoTexture.minFilter = THREE.LinearFilter;
-                videoTexture.magFilter = THREE.LinearFilter;
-                videoTexture.format = THREE.RGBFormat;
+            video = videoF; //Start with the forward video
+            video.load();
+            videoTexture = new THREE.Texture(video);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.format = THREE.RGBFormat;
 
-                sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
-                sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
-                scene.add(sphereMesh);
-                sphereMesh.rotateY(Math.PI+0.1);        //Rotate the projection sphere to align initial orientation with the path
+            sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
+            sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+            scene.add(sphereMesh);
+            sphereMesh.rotateY(Math.PI+0.1);        //Rotate the projection sphere to align initial orientation with the path
 
-                // On window resize, also resize canvas so it fills the screen
-                window.addEventListener('resize', () => {
-                        camera.aspect = window.innerWidth / window.innerHeight;
-                        camera.updateProjectionMatrix();
-                        renderer.setSize(window.innerWidth, window.innerHeight);
-                }, false);
+            // On window resize, also resize canvas so it fills the screen
+            window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+            }, false);
 
-        }
+    }
 
-        connectedCallback() {
-            accel_sensor.start();
-            orientation_sensor.start();
-            render();
-        }
+    connectedCallback() {
+        accel_sensor.start();
+        orientation_sensor.start();
+        render();
+    }
 });
 
 /* The video playback control */
