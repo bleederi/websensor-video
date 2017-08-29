@@ -231,7 +231,7 @@ customElements.define("video-view", class extends HTMLElement {
 
     connectedCallback() {
     orientation_sensor = new RelativeInclinationSensor({frequency: sensorFreq});
-    orientation_sensor.onreading = render;
+    //orientation_sensor.onreading = render;
     orientation_sensor.start();
     render();
     }
