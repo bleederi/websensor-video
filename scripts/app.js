@@ -159,9 +159,7 @@ function startDemo() {
     accel_sensor = new Accelerometer({ frequency: sensorFreq });
     // Start saving acceleration data in order to determine if the user is walking
     accel_sensor.onreading = ALGORITHM.saveSensorReading;
-    orientation_sensor = new RelativeInclinationSensor({frequency: sensorFreq});
     accel_sensor.start();
-    orientation_sensor.start();
     //render();
 }
 
@@ -232,6 +230,8 @@ customElements.define("video-view", class extends HTMLElement {
     }
 
     connectedCallback() {
+    orientation_sensor = new RelativeInclinationSensor({frequency: sensorFreq});
+    orientation_sensor.start();
     render();
     }
 });
