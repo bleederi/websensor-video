@@ -8,8 +8,8 @@
 
 //This is a sensor that uses Accelerometer and returns the acceleration along the three axes
 class Pedometer {
-        constructor() {
-        this.sensor_ = new Accelerometer({ frequency: sensorfreq });
+        constructor(options) {
+        this.sensor_ = new Accelerometer(options);
         this.accel_ = 0;
         this.sensor_.onreading = () => {
                 this.accel_ = {'x':this.sensor_.x, 'y':this.sensor_.y, 'z':this.sensor_.z};
@@ -184,7 +184,7 @@ function render() {
 
 // The main loop, ran each time the sensor gets a new reading
 function loop() {
-
+}
 //The custom element where the video will be rendered
 customElements.define("video-view", class extends HTMLElement {
         constructor() {
@@ -236,7 +236,7 @@ customElements.define("video-view", class extends HTMLElement {
                 try {
                         //Initialize sensors
                         // Pedometer used in walking detection algorithm
-                        accel_sensor = new Pedometer();
+                        accel_sensor = new Pedometer({ frequency: sensorfreq });
                         accel_sensor.onreading = () => {
                                 accel = accel_sensor.accel;     //Save to external variable probably unnecessary
                         };
