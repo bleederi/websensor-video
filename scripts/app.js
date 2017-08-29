@@ -176,7 +176,7 @@ function render() {
 
     renderer.render(scene, camera);
     
-    requestAnimationFrame(render);
+    //requestAnimationFrame(render);
 }
 
 // The main loop, ran each time the sensor gets a new reading
