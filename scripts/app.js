@@ -127,6 +127,9 @@ var camera = null;
 const cameraConstant = 200;
 var renderer = null;
 
+var longitude = 0;
+var latitude = 0;
+
 // Service worker registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
@@ -169,13 +172,15 @@ function render() {
                         latitude = orientation_sensor.y - Math.PI/2;
                         break;
         }*/
-        if(orientation_sensor.longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
+        longitude = orientation_sensor.longitude;
+        latitude = orientation_sensor.latitude;
+        if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
         {
                 longitude = longitude + 2*Math.PI;
         }
-        camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
-        camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
-        camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
+        camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
+        camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
+        camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);
         camera.lookAt(camera.target);
 
         renderer.render(scene, camera);

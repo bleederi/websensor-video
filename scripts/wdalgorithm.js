@@ -348,7 +348,7 @@ var ALGORITHM = (function () {
                         discardedsamples = discardedsamples + 1;
                 }
                 //When the user turns around, video direction needs to be changed
-                if(needToChangeDir(orientation_sensor.longitude))
+                if(needToChangeDir(longitude))
                 {
                         CONTROL.changeDirection();
                 }
