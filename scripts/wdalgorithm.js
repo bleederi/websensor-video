@@ -40,7 +40,7 @@ var ALGORITHM = (function () {
 
         /* Below are functions for the WD algorithm and functions used in the algorithm */
 
-        //Functions to process data
+        // Functions to process data
 
         function toCoordSeq(buffer)     //Function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
         {
@@ -152,7 +152,7 @@ var ALGORITHM = (function () {
           }
         }
 
-        function clearVars()    //Clear vars every loop iteration
+        function clearVars()    // Clear vars every loop iteration
         {
                 discardedsamples = 0;
                 for (var k in accelSeq) delete accelSeq[k];
@@ -259,35 +259,35 @@ var ALGORITHM = (function () {
                 return fft_index > 4;
         }
 
-        function validAccel(prevaccel, accel, accelFiltered)    //Determines if the acceleration value that was read was a valid one (device movement) instead of noise
+        function validAccel(prevaccel, accel, accelFiltered)    // Determines if the acceleration value that was read was a valid one (device movement) instead of noise
         {
                 return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
         }
 
-        function needToChangeDir(longitude)      //Tells if the walking direction has changed
+        function needToChangeDir(longitude)      // Tells if the walking direction has changed
         {
                 return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
         }
 
-        //The "public interfaces" are the stepDetection and saveSensorReading functions
-        //Algorithm modified from paper http://www.mdpi.com/1424-8220/15/10/27230
-        var stepDetection = function (seq)      //Returns 1 if there was a step in the given acceleration sequence, otherwise 0
+        // The "public interfaces" are the stepDetection and saveSensorReading functions
+        // Algorithm modified version of the algorithm from paper http://www.mdpi.com/1424-8220/15/10/27230
+        var stepDetection = function (seq)      // Returns 1 if there was a step in the given acceleration sequence, otherwise 0
         {
-                let magseq = magnitude(seq, "seq");     //calculate the combined magnitude sequence from the 3 distinct xyz sequences
-                //Smoothen (filter noise)
-                smoothArray(magseq, smoothingvalue);        //smoothens "in-place" - 8 seems to be a good value
+                let magseq = magnitude(seq, "seq");     // Calculate the combined magnitude sequence from the 3 distinct xyz sequences
+                // Smoothen (filter noise)
+                smoothArray(magseq, smoothingvalue);        // Smoothens "in-place" - 8 seems to be a good value
 
                 let peaksvalleys = null;
                 let peakdiff = [];
                 let valleydiff = [];
-                for (var i = 0; i < magseq.length+1; i++)       //analyze sequence sample by sample - mimics real-time behavior
-                {
+                // Analyze sequence sample by sample - mimics real-time behavior
+                for (var i = 0; i < magseq.length+1; i++) {
                         peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
                 }
                 let peaks = peaksvalleys.peaks;
                 let valleys = peaksvalleys.valleys;
-                //Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
-                //filter the non-valid peaks and valleys out
+                // Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
+                // Filter the non-valid peaks and valleys out
                 peaks = peaks.filter(function(n){ return n > peaktimethreshold;});
                 valleys = valleys.filter(function(n){ return n > valleytimethreshold;});
                 let stepdiff = [];

@@ -176,7 +176,7 @@ function render() {
         latitude = orientation_sensor.latitude;
         if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
         {
-                longitude = longitude + 2*Math.PI;
+                //longitude = longitude + 2*Math.PI;
         }
         camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
         camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
@@ -190,7 +190,7 @@ function render() {
 // The main loop, ran each time the sensor gets a new reading
 function loop() {
 }
-//The custom element where the video will be rendered
+// The custom element where the video will be rendered
 customElements.define("video-view", class extends HTMLElement {
         constructor() {
                 super();
@@ -228,7 +228,7 @@ customElements.define("video-view", class extends HTMLElement {
                 scene.add(sphereMesh);
                 sphereMesh.rotateY(Math.PI+0.1);        //Rotate the projection sphere to align initial orientation with the path
 
-                //On window resize, also resize canvas so it fills the screen
+                // On window resize, also resize canvas so it fills the screen
                 window.addEventListener('resize', () => {
                         camera.aspect = window.innerWidth / window.innerHeight;
                         camera.updateProjectionMatrix();
@@ -284,6 +284,7 @@ var CONTROL = (function () {
 
         ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
                 //TODO: fix up this function (optimize as well as possible)
+                sphereMesh.rotateY(Math.PI);
                if(!rewinding)   //Forward
                 {
                         let time = videoF.currentTime;
