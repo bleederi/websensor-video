@@ -176,7 +176,7 @@ function render() {
         latitude = orientation_sensor.latitude;
         if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
         {
-                //longitude = longitude + 2*Math.PI;
+                longitude = longitude + 2*Math.PI;
         }
         camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
         camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
@@ -284,7 +284,7 @@ var CONTROL = (function () {
 
         ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
                 //TODO: fix up this function (optimize as well as possible)
-                sphereMesh.rotateY(Math.PI);
+                //sphereMesh.rotateY(2*Math.PI);
                if(!rewinding)   //Forward
                 {
                         let time = videoF.currentTime;
