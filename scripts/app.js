@@ -162,7 +162,7 @@ function startDemo() {
     orientation_sensor = new RelativeInclinationSensor({frequency: sensorFreq});
     accel_sensor.start();
     orientation_sensor.start();
-    render();
+    //render();
 }
 
 // Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
@@ -232,6 +232,7 @@ customElements.define("video-view", class extends HTMLElement {
     }
 
     connectedCallback() {
+    render();
     }
 });
 
