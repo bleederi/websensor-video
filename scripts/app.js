@@ -236,17 +236,9 @@ customElements.define("video-view", class extends HTMLElement {
         }
 
         connectedCallback() {
-                try {
-                    // Start sensors
-                    accel_sensor.start();
-                    orientation_sensor.start();
-                    }
-                    catch(err) {
-                        console.log(err.message);
-                        console.log("Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable it in about:flags.");
-                        this.innerHTML = "Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable it in about:flags";
-                    }
-                render();
+            accel_sensor.start();
+            orientation_sensor.start();
+            render();
         }
 });
 
