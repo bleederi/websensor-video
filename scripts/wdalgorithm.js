@@ -174,13 +174,13 @@ var ALGORITHM = (function () {
 
         function updateTimeAverage(index, lasttime, timediff, timethreshold, data)  //Update the running time average (timethreshold) of either peak or valley data
         {
-                //update time average regardless of valley accepted or not
+                // Update time average regardless of valley accepted or not
                 if(data.length >= 2)
                 {
                         timediff.push(index - lasttime);
-                        let diff_selected = timediff;    //select recent M valleys
-                        let sum = diff_selected.reduce((previous, current) => current += previous); //sum over the array
-                        timethreshold = sum/timediff.length;      //average of valley diffs
+                        let diff_selected = timediff;    // Select recent M valleys
+                        let sum = diff_selected.reduce((previous, current) => current += previous); // Sum over the array
+                        timethreshold = sum/diff_selected.length;      // Average of valley diffs
                 }
                 else
                 {
