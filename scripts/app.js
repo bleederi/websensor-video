@@ -16,7 +16,8 @@ class Pedometer extends Accelerometer{
 
     set onreading(func) {
         super.onreading = () => {
-            this.accel_ = {'x': super.x, 'y': super.y, 'z': super.z};
+            this.accel_.x = super.x;
+            // = {'x': super.x, 'y': super.y, 'z': super.z};
             func();
         };
     }
