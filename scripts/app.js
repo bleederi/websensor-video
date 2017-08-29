@@ -171,10 +171,10 @@ function render() {
         }*/
     longitude = orientation_sensor.longitude;
     latitude = orientation_sensor.latitude;
-    if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude always above 0, maybe could also rotate the video sphere?
+    /*if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude above 0, maybe could also rotate the video sphere?
     {
             longitude = longitude + 2*Math.PI;
-    }
+    }*/
     camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.cos(longitude);
     camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - latitude);
     camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - latitude) * Math.sin(longitude);

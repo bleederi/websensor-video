@@ -266,8 +266,11 @@ var ALGORITHM = (function () {
 
         function needToChangeDir(longitude)      // Tells if the walking direction has changed
         {
-                //longitude = longitude + 2*Math.PI;  // Always make sure longitude 
-                return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
+            if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude above 0, maybe could also rotate the video sphere?
+            {
+                longitude = longitude + 2*Math.PI;
+            }
+            return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
         }
 
         // The "public interfaces" are the stepDetection and saveSensorReading functions
