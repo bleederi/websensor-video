@@ -120,17 +120,14 @@ if('RelativeOrientationSensor' in window) {
 
 /* Global variables below */
 
-//var accel = {x:null, y:null, z:null};
 var rewinding = false;
-var reading;    //Variable for controlling the data reading loop
 const GRAVITY = 9.81;
-const sensorfreq = 60;  //Frequency at which the sensors read at
+const sensorFreq = 60;  //
 var stepvar = 0;     //0 when not walking, 1 when walking
 
-//The video elements, these references will be used to control video playback
-var videoF = null;
-var videoB = null;
-var video = null;       // This will always be the currently playing video
+// The video elements, these references will be used to control video playback
+// video will always refer to the currently playing video
+var videoF, videoB, video;
 
 // Camera constants
 const farPlane = 200, fov = 75;
@@ -159,12 +156,13 @@ function startDemo() {
 });
     document.getElementById("startbutton").remove();     // Hide button
     // Pedometer used in walking detection algorithm
-    var accel_sensor = new Accelerometer({ frequency: sensorfreq });
+    accel_sensor = new Accelerometer({ frequency: sensorFreq });
     // Start saving acceleration data in order to determine if the user is walking
     accel_sensor.onreading = ALGORITHM.saveSensorReading;
-    var orientation_sensor = new RelativeInclinationSensor({frequency: 60});
-    // When the sensor sends new values, render again using those
-    orientation_sensor.onreading = render;
+    orientation_sensor = new RelativeInclinationSensor({frequency: sensorFreq});
+    accel_sensor.start();
+    orientation_sensor.start();
+    render();
 }
 
 // Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
@@ -232,9 +230,6 @@ customElements.define("video-view", class extends HTMLElement {
     }
 
     connectedCallback() {
-        accel_sensor.start();
-        orientation_sensor.start();
-        render();
     }
 });
 

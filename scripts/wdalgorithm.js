@@ -21,7 +21,7 @@ var ALGORITHM = (function () {
         var diff = {x:null, y:null, z:null};
         //Thresholds and other values for the algorithm
         var stepamt = 2;      //2.5 seems to work well for walking in place, 2 with tablet, 3.5 for normal walking (Pixel)
-        var amtStepValues = stepamt*sensorfreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
+        var amtStepValues = stepamt*sensorFreq; //setting buffer size for step analysis (how many values will be inspected) - should be about how long 2 steps will take (here stepamt seconds)
         var stepaverage = null;
         var peaktimethreshold = null;
         var valleytimethreshold = null;
