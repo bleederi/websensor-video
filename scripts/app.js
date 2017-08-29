@@ -97,18 +97,6 @@ class OriSensor extends RelativeOrientationSensor{
     }
 }
 
-class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
-  constructor(reading, bias) {
-    Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
-    this.bias = bias;
-  }
-        update(reading) {
-                this.x = this.x * this.bias + reading.x * (1 - this.bias);
-                this.y = this.y * this.bias + reading.y * (1 - this.bias);
-                this.z = this.z * this.bias + reading.z * (1 - this.bias);
-        }
-}
-
 /* Global variables below */
 
 var accel = {x:null, y:null, z:null};
@@ -139,27 +127,59 @@ var camera = null;
 const cameraConstant = 200;
 var renderer = null;
 
-//Service worker registration
+// Service worker registration
 if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js').then(function(registration) {
-                        //Registration was successful
-                }, function(err) {
-                        //Registration failed
-                console.log('ServiceWorker registration failed: ', err);
-                });
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').then(function(registration) {
+        }, function(err) {
+        console.log('ServiceWorker registration failed: ', err);
         });
+    });
 }
 
 function startDemo() {  //Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
-        videoF.play().then(function(value){
+        videoF.play().then(function(value) {
                 videoF.pause();
 });
-        videoB.play().then(function(value){
+        videoB.play().then(function(value) {
                 videoB.pause();
 });
         document.getElementById("startbutton").remove();     //Hide button
         reading = setInterval(ALGORITHM.saveSensorReading, 1000/sensorfreq);     //Start saving data from sensors in loop
+}
+
+//Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
+function render() {
+        if( video.readyState === video.HAVE_ENOUGH_DATA ) {
+                videoTexture.needsUpdate = true;
+        }
+/*            //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
+        switch(screen.orientation.angle) {
+                default:
+                case 0:
+                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
+                        latitude = orientation_sensor.x - Math.PI/2;
+                        break;
+                case 90:
+                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
+                        latitude = -orientation_sensor.y - Math.PI/2;
+                        break;
+                case 270:
+                        longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
+                        latitude = orientation_sensor.y - Math.PI/2;
+                        break;
+        }
+        if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
+        {
+                longitude = longitude + 2*Math.PI;
+        }*/
+        camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
+        camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
+        camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
+        camera.lookAt(camera.target);
+
+        renderer.render(scene, camera);
+        //requestAnimationFrame(() => this.render());
 }
 
 //The custom element where the video will be rendered
@@ -225,41 +245,7 @@ customElements.define("video-view", class extends HTMLElement {
                         console.log("Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable it in about:flags.");
                         this.innerHTML = "Your browser doesn't seem to support generic sensors. If you are running Chrome, please enable it in about:flags";
                 }
-                this.render();
-        }
-
-        //Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
-        render() {
-                if( video.readyState === video.HAVE_ENOUGH_DATA ) {
-                        videoTexture.needsUpdate = true;
-                }
-    /*            //When the device orientation changes, that needs to be taken into account when reading the sensor values by adding offsets, also the axis of rotation might change
-                switch(screen.orientation.angle) {
-                        default:
-                        case 0:
-                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial;
-                                latitude = orientation_sensor.x - Math.PI/2;
-                                break;
-                        case 90:
-                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial + Math.PI/2;
-                                latitude = -orientation_sensor.y - Math.PI/2;
-                                break;
-                        case 270:
-                                longitude = -orientation_sensor.z - orientation_sensor.longitudeInitial - Math.PI/2;
-                                latitude = orientation_sensor.y - Math.PI/2;
-                                break;
-                }
-                if(longitude < 0)       //When the user changes direction and the video changes, the heading is inverted - this is easier than rendering the video differently on the sphere, could also rotate sphere by pi?
-                {
-                        longitude = longitude + 2*Math.PI;
-                }*/
-                camera.target.x = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.cos(orientation_sensor.longitude);
-                camera.target.y = (cameraConstant/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
-                camera.target.z = (cameraConstant/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
-                camera.lookAt(camera.target);
-
-                renderer.render(scene, camera);
-                requestAnimationFrame(() => this.render());
+                render();
         }
 });
 
