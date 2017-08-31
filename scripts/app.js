@@ -30,12 +30,12 @@ if('RelativeOrientationSensor' in window) {
                 // for portrait ZYX, for landscape ZXY
                 let angleOrder = null;
                 screen.orientation.angle === 0 ? angleOrder = 'ZYX' : angleOrder = 'ZXY';
-                this.euler_.setFromQuaternion(quaternion, angleOrder);
+                this.euler_.setFromQuaternion(this.quat_, angleOrder);
                 if (!this.initialOriObtained_) {
 
                     // Initial longitude needed to make the initial camera orientation
                     // the same every time
-                    this.longitudeInitial_ = -euler.z;
+                    this.longitudeInitial_ = -this.euler_.z;
                     if (screen.orientation.angle === 90) {
                         this.longitudeInitial_ = this.longitudeInitial_ + Math.PI/2;
                     }
@@ -51,16 +51,16 @@ if('RelativeOrientationSensor' in window) {
                     // for example 180 degrees (not implemented in Chrome), default is used
                     default:    
                     case 0:
-                        this.longitude_ = -euler.z - this.longitudeInitial_;
-                        this.latitude_ = euler.x - Math.PI/2;
+                        this.longitude_ = -this.euler_.z - this.longitudeInitial_;
+                        this.latitude_ = this.euler_.x - Math.PI/2;
                         break; 
                     case 90:
-                        this.longitude_ = -euler.z - this.longitudeInitial_ + Math.PI/2;
-                        this.latitude_ = -euler.y - Math.PI/2;                 
+                        this.longitude_ = -this.euler_.z - this.longitudeInitial_ + Math.PI/2;
+                        this.latitude_ = -this.euler_.y - Math.PI/2;                 
                         break;     
                     case 270:
-                        this.longitude_ = -euler.z - this.longitudeInitial_ - Math.PI/2;
-                        this.latitude_ = euler.y - Math.PI/2;
+                        this.longitude_ = -this.euler_.z - this.longitudeInitial_ - Math.PI/2;
+                        this.latitude_ = this.euler_.y - Math.PI/2;
                         break;
                 }
 
