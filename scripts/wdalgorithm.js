@@ -21,7 +21,7 @@ var ALGORITHM = (function () {
     // For storing acceleration data
     var accelerationData = [];
     var accelSeq = {x:null, y:null, z:null};
-    var accelFiltered = new LowPassFilterData({"x": null, "y": null, "z": null}, bias);
+    var accelFiltered = new LowPassFilterData({"x": null, "y": null, "z": null}, 0);
     var prevaccel = {x:null, y:null, z:null};
     var diff = {x:null, y:null, z:null};
 
