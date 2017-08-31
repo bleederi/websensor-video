@@ -165,7 +165,7 @@ function render() {
     camera.lookAt(camera.target);
 
     renderer.render(scene, camera);
-    
+
     //requestAnimationFrame(render);
 }
 
@@ -236,7 +236,7 @@ var CONTROL = (function () {
         //Functions related to controlling video playback - uses promises so might not work in all browsers
         function play() //redundant to put a one-liner in its own function?
         {
-            rewinding ? videoB.play() : videoF.play();    
+            rewinding ? videoB.play() : videoF.play();
         }
 
     ctrl.playPause = function () //redundancy?
@@ -290,6 +290,6 @@ var CONTROL = (function () {
                 rewinding = false;
             }
         };
-	return ctrl;
+    return ctrl;
 }());
 

@@ -1,3 +1,5 @@
+// This algorithm is adapted to and tested on a Nexus smartphone
+
 class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
   constructor(reading, bias) {
     Object.assign(this, { x: reading.x, y: reading.y, z: reading.z });
@@ -105,36 +107,34 @@ var ALGORITHM = (function () {
         return stdDev;
     }
 
-    // Source: http://stevegardner.net/2012/06/11/javascript-code-to-calculate-the-pearson-correlation-coefficient/
     function pcorr(x, y) {
-        var shortestArrayLength = 0;
+        let shortestArrayLength = 0;
          
         if(x.length == y.length) {
             shortestArrayLength = x.length;
+        // Will ignore the extra elements of the arrays
         } else if(x.length > y.length) {
             shortestArrayLength = y.length;
-            console.error('x has more items in it, the last ' + (x.length - shortestArrayLength) + ' item(s) will be ignored');
         } else {
             shortestArrayLength = x.length;
-            console.error('y has more items in it, the last ' + (y.length - shortestArrayLength) + ' item(s) will be ignored');
         }
-      
-        var xy = [];
-        var x2 = [];
-        var y2 = [];
-      
+
+        let xy = [];
+        let x2 = [];
+        let y2 = [];
+
         for(let i=0; i<shortestArrayLength; i++) {
             xy.push(x[i] * y[i]);
             x2.push(x[i] * x[i]);
             y2.push(y[i] * y[i]);
         }
-      
-        var sum_x = 0;
-        var sum_y = 0;
-        var sum_xy = 0;
-        var sum_x2 = 0;
-        var sum_y2 = 0;
-      
+
+        let sum_x = 0;
+        let sum_y = 0;
+        let sum_xy = 0;
+        let sum_x2 = 0;
+        let sum_y2 = 0;
+
         for(let i=0; i< shortestArrayLength; i++) {
             sum_x += x[i];
             sum_y += y[i];
@@ -142,21 +142,23 @@ var ALGORITHM = (function () {
             sum_x2 += x2[i];
             sum_y2 += y2[i];
         }
-      
-        var step1 = (shortestArrayLength * sum_xy) - (sum_x * sum_y);
-        var step2 = (shortestArrayLength * sum_x2) - (sum_x * sum_x);
-        var step3 = (shortestArrayLength * sum_y2) - (sum_y * sum_y);
-        var step4 = Math.sqrt(step2 * step3);
-        var answer = step1 / step4;
-      
-        return answer;
+
+        let v1 = (shortestArrayLength * sum_xy) - (sum_x * sum_y);
+        let v2 = (shortestArrayLength * sum_x2) - (sum_x * sum_x);
+        let v3 = (shortestArrayLength * sum_y2) - (sum_y * sum_y);
+        let v4 = Math.sqrt(v2 * v3);
+        let corrcoeff = v1 / v4;
+
+        return corrcoeff;
     }
    
     function smoothArray( values, smoothing ){
-        var value = values[0]; //First input a special case, no smoothing
+        var value = values[0]; // First input a special case, no smoothing
         for (let i=1, len=values.length; i<len; ++i) {
             let currentValue = values[i];
-            value += (currentValue - value) / smoothing;        //Substract from previous, divide by smoothing and add to the "running value"
+
+            // Substract from previous, divide by smoothing and add to the "running value"
+            value += (currentValue - value) / smoothing;
             values[i] = value;
         }
     }
@@ -180,14 +182,16 @@ var ALGORITHM = (function () {
             return curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance);
     }
 
-    function updateTimeAverage(index, lasttime, timediff, timethreshold, data)  //Update the running time average (timethreshold) of either peak or valley data
+    // Update the running time average (timethreshold) of either peak or valley data
+    function updateTimeAverage(index, lasttime, timediff, timethreshold, data)
     {
+
             // Update time average regardless of valley accepted or not
             if(data.length >= 2)
             {
                     timediff.push(index - lasttime);
                     let diff_selected = timediff;    // Select recent M valleys
-                    let sum = diff_selected.reduce((previous, current) => current += previous); // Sum over the array
+                    let sum = diff_selected.reduce((previous, current) => current += previous);
                     timethreshold = sum/diff_selected.length;      // Average of valley diffs
             }
             else
@@ -205,11 +209,8 @@ var ALGORITHM = (function () {
     function detectPeaksValleys(seq)
     {
             let result = {"peaks":null, "valleys":null};
-            let peakdiff = [];
-            let valleydiff = [];
-            let peaks = [];
-            let valleys = [];
-            let variance = 0.5 + standardDeviation(seq)/alpha;      //TODO: try to get rid of the constant 0,5 and make fully adaptive
+            let peakdiff = [], valleydiff = [], peaks = [], valleys = [];
+            let variance = 0.5 + standardDeviation(seq)/alpha;
             let avg = seq.reduce(function(sum, a) { return sum + a; },0)/(seq.length||1);
             for (let i in seq)
             {
