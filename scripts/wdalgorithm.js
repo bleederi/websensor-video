@@ -1,4 +1,4 @@
-// This algorithm is adapted to and tested on a Nexus smartphone
+// This algorithm is adapted to and tested on a Pixel smartphone
 
 class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-filters
   constructor(reading, bias) {
@@ -69,6 +69,7 @@ var ALGORITHM = (function () {
             var seq = {'x':seq_x, 'y':seq_y, 'z':seq_z};
             return seq;
     }
+
     function slice(obj, start, end) {
         var sliced = {};
         for (var k in obj) {
@@ -101,10 +102,10 @@ var ALGORITHM = (function () {
     }
 
     function standardDeviation(values) {
-        var average = values => values.reduce( ( p, c ) => p + c, 0 ) / values.length;    
-        var squareDiffs = values.map( value => (value - average) ** 2);
-        var averageSquareDiff = squareDiffs => squareDiffs.reduce( ( p, c ) => p + c, 0 ) / squareDiffs.length;
-        var stdDev = Math.sqrt(averageSquareDiff);
+        let average = values => values.reduce( ( p, c ) => p + c, 0 ) / values.length;    
+        let squareDiffs = values.map( value => (value - average) ** 2);
+        let averageSquareDiff = squareDiffs => squareDiffs.reduce( ( p, c ) => p + c, 0 ) / squareDiffs.length;
+        let stdDev = Math.sqrt(averageSquareDiff);
         return stdDev;
     }
 
@@ -113,6 +114,7 @@ var ALGORITHM = (function () {
          
         if(x.length == y.length) {
             shortestArrayLength = x.length;
+
         // Will ignore the extra elements of the arrays
         } else if(x.length > y.length) {
             shortestArrayLength = y.length;
@@ -154,7 +156,7 @@ var ALGORITHM = (function () {
     }
    
     function smoothArray( values, smoothing ){
-        var value = values[0]; // First input a special case, no smoothing
+        var value = values[0];  // First input a special case, no smoothing
         for (let i=1, len=values.length; i<len; ++i) {
             let currentValue = values[i];
 
@@ -193,7 +195,7 @@ var ALGORITHM = (function () {
         if(data.length >= 2)
         {
             timediff.push(index - lasttime);
-            let diff_selected = timediff;    // Select recent M valleys
+            let diff_selected = timediff;
             let sum = diff_selected.reduce((previous, current) => current += previous);
             timethreshold = sum/diff_selected.length;      // Average of valley diffs
         }
@@ -276,7 +278,7 @@ var ALGORITHM = (function () {
 
     function highFreq(fft)
     {
-        return fft_index > 4;
+        return fft.indexOf(Math.max(...fft)) > 4;
     }
 
     // Determines if the acceleration value that was read was a valid one (device movement) instead of noise
@@ -308,17 +310,20 @@ var ALGORITHM = (function () {
 
         // Calculate the combined magnitude sequence from the 3 distinct xyz sequences
         let magseq = magnitude(seq, "seq");
+
         // Smoothen (filter noise)
         smoothArray(magseq, smoothingvalue);        // Smoothens "in-place"
         let peaksvalleys = null;
         let peakdiff = [];
         let valleydiff = [];
+
         // Analyze sequence sample by sample - mimics real-time behavior
         for (var i = 0; i < magseq.length+1; i++) {
             peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
         }
         let peaks = peaksvalleys.peaks;
         let valleys = peaksvalleys.valleys;
+
         // Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
         // Filter the non-valid peaks and valleys out
         peaks = peaks.filter(function(n){ return n > peaktimethreshold;});
@@ -331,7 +336,7 @@ var ALGORITHM = (function () {
                 if(ipeak == ivalley)
                 {
                     let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
-                    if(stepdiffamt >= 10)     //at least 10 samples between peak and valley
+                    if(stepdiffamt >= 10)     // At least 10 samples between peak and valley
                     {
                         stepdiff.push(stepdiffamt);
                     }
@@ -350,9 +355,6 @@ var ALGORITHM = (function () {
         stddevpct = stddev / minDiff;
 
         let fft = calculateFFT(magseqnog);
-
-        // Indes of the largest FFT component
-        fft_index = fft.indexOf(Math.max(...fft));
 
         // If the index of the largest FFT component is high enough,
         // then the user is definitely walking
@@ -429,7 +431,6 @@ var ALGORITHM = (function () {
         smoothingvalue: smoothingvalue,
         stddevpct: stddevpct,
         stddev_accel: stddev_accel,
-        fft_index: fft_index,
         stepDetection: stepDetection,
         saveSensorReading: saveSensorReading
         };

@@ -263,6 +263,8 @@ var CONTROL = (function () {
                 let time = videoF.currentTime;
                 videoF.pause();
                 video = videoB;
+
+                // We need to start from the opposite end of the video when 
                 videoB.currentTime = videoB.duration - time;
                 videoTexture = new THREE.Texture(videoB);
                 videoTexture.minFilter = THREE.LinearFilter;
