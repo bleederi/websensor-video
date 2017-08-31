@@ -239,8 +239,7 @@ var CONTROL = (function () {
         // Called when the video direction needs to be changed (F to B or B to F)
         ctrl.changeDirection = function () {
 
-            // Forward
-            if(!rewinding) {
+            if(!rewinding) {    // Forward
                 let time = videoF.currentTime;
                 videoF.pause();
                 video = videoB;
@@ -256,10 +255,7 @@ var CONTROL = (function () {
                 sphereMesh.material = sphereMaterial;
                 sphereMaterial.needsUpdate = true;
                 rewinding = true;
-            }
-
-            // Backward
-            else {
+            } else {    // Backward
                 let time = videoB.currentTime;
                 videoB.pause();
                 video = videoF;
