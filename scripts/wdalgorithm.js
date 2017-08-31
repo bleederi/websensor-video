@@ -382,13 +382,9 @@ var ALGORITHM = (function () {
     var saveSensorReading = function()
     {
         accel = {"x": accel_sensor.x, "y": accel_sensor.y, "z": accel_sensor.z};
-        if (accelFiltered == null) {
-           accelFiltered = new LowPassFilterData(accel, bias);
-        }
-        accelFiltered.update(accel, bias);
-        if(validAccel(prevaccel, accel, accelFiltered))
+        if(validAccel(prevaccel, accel, accel))
         {
-            accelerationData.push(accelFiltered);
+            accelerationData.push(accel);
             prevaccel = accel;
             discardedsamples = discardedsamples - 3;
         }
