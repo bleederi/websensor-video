@@ -16,41 +16,38 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
 var ALGORITHM = (function () {
 	var algo = {};
 
-    var accelerationData = [];        //sequence to store xyz accelerometer readings
-    var accelSeq = {x:null, y:null, z:null};      //dict to store accelerometer reading sequences
+    // For storing acceleration data
+    var accelerationData = [];
+    var accelSeq = {x:null, y:null, z:null};
     var accelFiltered = {x:null, y:null, z:null};
     var prevaccel = {x:null, y:null, z:null};
     var diff = {x:null, y:null, z:null};
 
-    // Thresholds and other values for the algorithm
-    var stepamt = 2;
+    // Thresholds and other constant values for the algorithm
+
+    const stepamt = 2;
 
     // Buffer size for step analysis
     // Should be about how long 2 steps will take (here stepamt seconds)
     var amtStepValues = stepamt*sensorFreq;
 
-    var stepaverage = null;
-    var peaktimethreshold = null;
-    var valleytimethreshold = null;
-    var discardedsamples = 0;
-
     // If acceleration changes less than this, ignore it(for removing noise)
-    var accdiffthreshold = 0.15;
-
-    // In below arrays, first values for Windows tablet, second values for Nexus tablet
+    const accdiffthreshold = 0.15;
 
     // 0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
-    var stddevthreshold = 2.8;
+    // A lower value means more sensitive to walking and also more false positives
+    const stddevthreshold = 2.8;
 
+    // In below arrays, first values for Windows tablet, second values for Nexus tablet
     // 12 for Pixel.. need to filter better
-    var peakvalleyamtthreshold = [2, 6, 12];
-    var bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
-    var smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
-    var average_accel_nog = null;
-    var stddevpct = null;
-    var stddev_accel = null;
-    var fft_index = null;
-    var alpha = 4;
+    const peakvalleyamtthreshold = [2, 6, 12];
+    const bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
+    const smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
+    const alpha = 4;
+
+    // These values will be set by the algorithm
+    var stepaverage, peaktimethreshold, valleytimethreshold, discardedsamples, average_accel_nog,
+        stddevpct, stddev_accel, fft_index;
 
     // Below are functions for the WD algorithm and functions used in the algorithm
 
