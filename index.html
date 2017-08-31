@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html>
 	<head>
-                <link rel="manifest" href="manifest.json" />
-                <meta charset="utf-8">
-                <meta name="viewport" content="user-scalable=no, initial-scale=1">
-                <title>360 degree video</title>
+        <link rel="manifest" href="manifest.json" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1">
+        <title>360 degree video</title>
 		<style>
-			body{
+			body {
 				margin: 0;
-			}
-           #startbutton {
+            }
+            #startbutton {
                 background-color: red;
                 color: #FFFFFF;
                 padding: 15px 32px;
@@ -19,24 +19,23 @@
             #no-sensors {
                 color: white;
                 position: absolute;
-                top: 10vh;
-                left: 10vw;
+                top: 0vh;
+                left: 0vw;
                 display: none;  /* Hidden by default */
                 z-index: 2;
             }
 		</style>
                 <script src="scripts/three.min.js"></script>
-                <script type="text/javascript" src="scripts/fft.js"></script>        <!-- Contains FFT -->
-		
+                <script type="text/javascript" src="scripts/fft.js"></script>        <!-- Contains FFT -->	
 	</head>
-        <template id="video-view">
-                <style>
+    <template id="video-view">
+            <style>
                 :host {
-                width: 100vh;
-                height: 100vh;
+                    width: 100vh;
+                    height: 100vh;
                 }
-                </style>
-        </template>
+            </style>
+    </template>
 	<body>
         <button id="startbutton" onclick="startDemo()">Start demo</button>
         <video-view id="videoview">
