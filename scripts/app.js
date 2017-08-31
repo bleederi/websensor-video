@@ -17,18 +17,14 @@ if('RelativeOrientationSensor' in window) {
             this.latitude_ = 0;
             this.longitudeInitial_ = 0;
             this.initialOriObtained_ = false;
+            this.quat_ = new THREE.Quaternion();
+            this.euler_ = new THREE.Euler(0, 0, 0);
             this.func_ = null;
 
             super.onreading = () => {
 
-                // Conversion to Euler angles done in THREE.js so we have to create a
-                // THREE.js object for holding the quaternion to convert from
-                // Order x,y,z,w
-                let quaternion = new THREE.Quaternion(super.quaternion[0], super.quaternion[1],
-                                                      super.quaternion[2], super.quaternion[3]);
-
-                // euler will hold the Euler angles corresponding to the quaternion
-                let euler = new THREE.Euler(0, 0, 0);
+                // Read the quaternion provided by the sensor
+                this.quat_.fromArray(super.quaternion);
 
                 // Order of rotations must be adapted depending on orientation
                 // for portrait ZYX, for landscape ZXY
@@ -137,18 +133,15 @@ if ('serviceWorker' in navigator) {
 function startDemo() {
 
     // Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
-    videoF.play().then(function(value) {
-        videoF.pause();
-});
-    videoB.play().then(function(value) {
-        videoB.pause();
+    videoF.play().then(videoF.pause);
+    videoB.play().then(videoB.pause);
 });
     document.getElementById("startbutton").remove();     // Hide button
 
     accel_sensor = new Accelerometer({ frequency: sensorFreq });
 
     // Start saving acceleration data in order to determine if the user is walking
-    accel_sensor.onreading = loop;
+    accel_sensor.onreading = ALGORITHM.saveSensorReading;
     accel_sensor.start();
 }
 
@@ -163,12 +156,6 @@ function render() {
     camera.target.z = (farPlane/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
     camera.lookAt(camera.target);
     renderer.render(scene, camera);
-}
-
-// The main loop, ran each time the accelerometer gets a new reading
-function loop() {
-    ALGORITHM.saveSensorReading();
-    render();
 }
 
 // The custom element where the video will be rendered
@@ -236,21 +223,15 @@ var CONTROL = (function () {
 
     // Functions related to controlling video playback
     // Uses promises so might not work in all browsers
-    function play()
-    {
+    function play() {
         rewinding ? videoB.play() : videoF.play();
     }
 
-    ctrl.playPause = function ()
-        {
-            if(stepvar)
-            {
+    ctrl.playPause = function () {
+            if(stepvar) {
                 play();
-            }
-            else
-            {
-                if(!video.paused)
-                {
+            } else {
+                if(!video.paused) {
                     video.pause();
                 }
             }
@@ -258,8 +239,9 @@ var CONTROL = (function () {
 
         // Called when the video direction needs to be changed (F to B or B to F)
         ctrl.changeDirection = function () {
-            if(!rewinding)   // Forward
-            {
+
+            // Forward
+            if(!rewinding) {
                 let time = videoF.currentTime;
                 videoF.pause();
                 video = videoB;
@@ -276,8 +258,9 @@ var CONTROL = (function () {
                 sphereMaterial.needsUpdate = true;
                 rewinding = true;
             }
-            else    // Backward
-            {
+
+            // Backward
+            else {
                 let time = videoB.currentTime;
                 videoB.pause();
                 video = videoF;
