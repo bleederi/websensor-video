@@ -244,9 +244,8 @@ var ALGORITHM = (function () {
     }
 
     // Determines if the acceleration value that was read was a valid one (device movement) instead of noise
-    function validAccel(prevaccel, accel, accelFiltered) {
-            return magnitude(prevaccel) != magnitude(accel) &&
-                   Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;
+    function validAccel(prevaccel, accel) {
+            return Math.abs(magnitude(accel) - magnitude(prevaccel)) > accdiffthreshold;
     }
 
     // Tells if the walking direction has changed
@@ -334,7 +333,7 @@ var ALGORITHM = (function () {
     // and send the sensor readings to be analyzed for whether the user is walking or not
     var saveSensorReading = function() {
         accel = {"x": accel_sensor.x, "y": accel_sensor.y, "z": accel_sensor.z};
-        if(validAccel(prevaccel, accel, accel)) {
+        if(validAccel(prevaccel, accel)) {
             accelerationData.push(accel);
             prevaccel = accel;
             discardedsamples = discardedsamples - 3;
