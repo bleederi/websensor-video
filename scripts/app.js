@@ -30,7 +30,7 @@ if('RelativeOrientationSensor' in window) {
                 // for portrait ZYX, for landscape ZXY
                 let angleOrder = null;
                 screen.orientation.angle === 0 ? angleOrder = 'ZYX' : angleOrder = 'ZXY';
-                euler.setFromQuaternion(quaternion, angleOrder);
+                this.euler_.setFromQuaternion(quaternion, angleOrder);
                 if (!this.initialOriObtained_) {
 
                     // Initial longitude needed to make the initial camera orientation
