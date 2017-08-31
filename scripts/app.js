@@ -145,7 +145,6 @@ function startDemo() {
 });
     document.getElementById("startbutton").remove();     // Hide button
 
-    // Pedometer used in walking detection algorithm
     accel_sensor = new Accelerometer({ frequency: sensorFreq });
 
     // Start saving acceleration data in order to determine if the user is walking
