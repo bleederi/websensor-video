@@ -21,7 +21,7 @@ var ALGORITHM = (function () {
     // For storing acceleration data
     var accelerationData = [];
     var accelSeq = {x:null, y:null, z:null};
-    var accelFiltered = {x:null, y:null, z:null};
+    var accelFiltered = null;
     var prevaccel = {x:null, y:null, z:null};
     var diff = {x:null, y:null, z:null};
 
@@ -382,7 +382,10 @@ var ALGORITHM = (function () {
     var saveSensorReading = function()
     {
         accel = {"x": accel_sensor.x, "y": accel_sensor.y, "z": accel_sensor.z};
-        accelFiltered = new LowPassFilterData(accel, bias);
+        if (accelFiltered == null) {
+           accelFiltered = new LowPassFilterData(accel, bias);
+        }
+        accelFiltered.update(accel, bias);
         if(validAccel(prevaccel, accel, accelFiltered))
         {
             accelerationData.push(accelFiltered);
