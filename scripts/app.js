@@ -109,9 +109,7 @@ if('RelativeOrientationSensor' in window) {
     document.getElementById("startbutton").remove();     // Hide button
 }
 
-/* Global variables below */
-
-var rewinding = false, stepvar = 0; // 0 when not walking, 1 when walking
+var rewinding = false, stepvar = 0; // stepvar 0 when not walking, 1 when walking
 const GRAVITY = 9.81;
 const sensorFreq = 60;
 
@@ -137,7 +135,8 @@ if ('serviceWorker' in navigator) {
 }
 
 function startDemo() {
-// Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
+
+    // Need user input to play video, so here both the forward and the backward video are played and paused once in order to satisfy that requirement
     videoF.play().then(function(value) {
         videoF.pause();
 });
@@ -145,12 +144,13 @@ function startDemo() {
         videoB.pause();
 });
     document.getElementById("startbutton").remove();     // Hide button
+
     // Pedometer used in walking detection algorithm
     accel_sensor = new Accelerometer({ frequency: sensorFreq });
+
     // Start saving acceleration data in order to determine if the user is walking
     accel_sensor.onreading = loop;
     accel_sensor.start();
-    //render();
 }
 
 // Calculates the direction the user is viewing in terms of longitude and latitude and renders the scene
@@ -163,10 +163,7 @@ function render() {
     camera.target.y = (farPlane/2) * Math.cos(Math.PI/2 - orientation_sensor.latitude);
     camera.target.z = (farPlane/2) * Math.sin(Math.PI/2 - orientation_sensor.latitude) * Math.sin(orientation_sensor.longitude);
     camera.lookAt(camera.target);
-
     renderer.render(scene, camera);
-
-    //requestAnimationFrame(render);
 }
 
 // The main loop, ran each time the accelerometer gets a new reading
@@ -174,6 +171,7 @@ function loop() {
     ALGORITHM.saveSensorReading();
     render();
 }
+
 // The custom element where the video will be rendered
 customElements.define("video-view", class extends HTMLElement {
     constructor() {
@@ -198,9 +196,11 @@ customElements.define("video-view", class extends HTMLElement {
         camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 1, farPlane);
         camera.target = new THREE.Vector3(0, 0, 0);
         sphere = new THREE.SphereGeometry(100, 100, 40);
-        sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));    //The sphere is transformed because the the video will be rendered on the inside surface
 
-        video = videoF; //Start with the forward video
+        // The sphere is transformed because the video will be rendered on the inside surface
+        sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+
+        video = videoF; // Start with the forward video
         video.load();
         videoTexture = new THREE.Texture(video);
         videoTexture.minFilter = THREE.LinearFilter;
@@ -210,7 +210,9 @@ customElements.define("video-view", class extends HTMLElement {
         sphereMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: 0.5 } );
         sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
         scene.add(sphereMesh);
-        sphereMesh.rotateY(Math.PI+0.1);        //Rotate the projection sphere to align initial orientation with the path
+
+        // Rotate the projection sphere to align initial orientation with the path
+        sphereMesh.rotateY(Math.PI+0.1);
 
         // On window resize, also resize canvas so it fills the screen
         window.addEventListener('resize', () => {
@@ -229,17 +231,18 @@ customElements.define("video-view", class extends HTMLElement {
     }
 });
 
-/* The video playback control */
+// The video playback control
 var CONTROL = (function () {
     var ctrl = {};
 
-        //Functions related to controlling video playback - uses promises so might not work in all browsers
-        function play() //redundant to put a one-liner in its own function?
-        {
-            rewinding ? videoB.play() : videoF.play();
-        }
+    // Functions related to controlling video playback
+    // Uses promises so might not work in all browsers
+    function play()
+    {
+        rewinding ? videoB.play() : videoF.play();
+    }
 
-    ctrl.playPause = function () //redundancy?
+    ctrl.playPause = function ()
         {
             if(stepvar)
             {
@@ -254,10 +257,9 @@ var CONTROL = (function () {
             }
         };
 
-        ctrl.changeDirection = function () {     //Called when the video direction needs to be changed (F to B or B to F)
-            //TODO: fix up this function (optimize as well as possible)
-            //sphereMesh.rotateY(2*Math.PI);
-            if(!rewinding)   //Forward
+        // Called when the video direction needs to be changed (F to B or B to F)
+        ctrl.changeDirection = function () {
+            if(!rewinding)   // Forward
             {
                 let time = videoF.currentTime;
                 videoF.pause();
@@ -273,7 +275,7 @@ var CONTROL = (function () {
                 sphereMaterial.needsUpdate = true;
                 rewinding = true;
             }
-            else    //Backward
+            else    // Backward
             {
                 let time = videoB.currentTime;
                 videoB.pause();
