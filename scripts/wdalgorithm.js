@@ -16,7 +16,7 @@ class LowPassFilterData {       //https://w3c.github.io/motion-sensors/#pass-fil
 // The walking detection algorithm
 // Device dependent, tested on a Pixel smartphone
 var ALGORITHM = (function () {
-	var algo = {};
+    var algo = {};
 
     // For storing acceleration data
     var accelerationData = [];
@@ -33,21 +33,19 @@ var ALGORITHM = (function () {
     // Should be about how long 2 steps will take (here stepamt seconds)
     var amtStepValues = stepamt*sensorFreq;
 
+    // Thresholds
+
     // If acceleration changes less than this, ignore it(for removing noise)
     const accdiffthreshold = 0.15;
 
-    // 0.4 good for walking in place, 2.9 with tablet, 0.3 for Pixel
-    // A lower value means more sensitive to walking and also more false positives
-    const stddevthreshold = 2.8;
+    // Lower values mean the algorithm is more sensitive to walking
+    // and also more false positives will occur
+    const stddevthreshold = 2.8, peakvalleyamtthreshold = 12;
 
-    // In below arrays, first values for Windows tablet, second values for Nexus tablet
-    // 12 for Pixel.. need to filter better
-    const peakvalleyamtthreshold = [2, 6, 12];
-    const bias = 1; //bias for low-pass filtering the data, 1 seems to work good with the tablet
-    const smoothingvalue = 8; //for smoothing out noise (extra peaks and valleys) - 8 seems to work well (6 also)
-    const alpha = 4;
+    // Other constants for the algorithm
+    const bias = 1, smoothingvalue = 8, alpha = 4;
 
-    // These values will be set by the algorithm
+    // These values will be set by the algorithm at runtime
     var stepaverage, peaktimethreshold, valleytimethreshold, discardedsamples, average_accel_nog,
         stddevpct, stddev_accel, fft_index;
 
@@ -55,7 +53,8 @@ var ALGORITHM = (function () {
 
     // Functions to process data
 
-    // Function to convert from sensor readings (one for each reading), to sequences (one for each coordinate)
+    // Function to convert from sensor readings (one for each reading)
+    // to sequences (one for each coordinate)
     function toCoordSeq(buffer)
     {
             let seq_x = [];
@@ -79,9 +78,11 @@ var ALGORITHM = (function () {
         return sliced;
     }
 
-    function magnitude(data, mode = "vector")      //Calculate the magnitude of a vector or alternatively a sequence
+    // Calculates magnitude of a vector
+    // or a sequence of magnitudes from a sequence of vectors
+    function magnitude(data, mode = "vector")
     {
-        if(mode === "seq")      //Calculate the magnitude sequence for 3 acceleration sequences
+        if(mode === "seq")      // Calculate the magnitude sequence for 3 acceleration sequences
         {
             let magseq = [];
             for (let k in data)
@@ -172,224 +173,265 @@ var ALGORITHM = (function () {
         valleytimethreshold = null;
     }
 
-    function isPeak(prev, curr, next, stepaverage, avg, variance)   //Tells if curr is a peak or not
+    // Tells if curr is a peak or not
+    function isPeak(prev, curr, next, stepaverage, avg, variance)
     {
-            return curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance);
+        return curr > prev && curr > next && (curr > stepaverage || !stepaverage) && curr > (avg+variance);
     }
 
-    function isValley(prev, curr, next, stepaverage, avg, variance) //Tells if curr is a valley or not
+    // Tells if curr is a valley or not
+    function isValley(prev, curr, next, stepaverage, avg, variance)
     {
-            return curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance);
+        return curr < prev && curr < next && (curr < stepaverage || !stepaverage) && curr < (avg-variance);
     }
 
     // Update the running time average (timethreshold) of either peak or valley data
     function updateTimeAverage(index, lasttime, timediff, timethreshold, data)
     {
 
-            // Update time average regardless of valley accepted or not
-            if(data.length >= 2)
+        // Update time average regardless of valley accepted or not
+        if(data.length >= 2)
+        {
+            timediff.push(index - lasttime);
+            let diff_selected = timediff;    // Select recent M valleys
+            let sum = diff_selected.reduce((previous, current) => current += previous);
+            timethreshold = sum/diff_selected.length;      // Average of valley diffs
+        }
+        else
+        {
+            if(lasttime > 0 && index > lasttime)
             {
-                    timediff.push(index - lasttime);
-                    let diff_selected = timediff;    // Select recent M valleys
-                    let sum = diff_selected.reduce((previous, current) => current += previous);
-                    timethreshold = sum/diff_selected.length;      // Average of valley diffs
+                timediff.push(index - lasttime);
             }
             else
             {
-                    if(lasttime > 0 && index > lasttime)
-                    {
-                            timediff.push(index - lasttime);
-                    }
-                    else
-                    {
-                            timediff.push(index);
-                    }
+                timediff.push(index);
             }
+        }
     }
+
     function detectPeaksValleys(seq)
     {
-            let result = {"peaks":null, "valleys":null};
-            let peakdiff = [], valleydiff = [], peaks = [], valleys = [];
-            let variance = 0.5 + standardDeviation(seq)/alpha;
-            let avg = seq.reduce(function(sum, a) { return sum + a; },0)/(seq.length||1);
-            for (let i in seq)
-            {
-                    let index = parseInt(i);
-                    let prev = seq[index-1];
-                    let curr = seq[index];
-                    let next = seq[index+1];
-                    let lastpeakmag = null;
-                    let lastvalleymag = null;
-                    let lastpeaktime = null;
-                    let lastvalleytime = null;
+        let result = {"peaks":null, "valleys":null};
+        let peakdiff = [], valleydiff = [], peaks = [], valleys = [];
+        let variance = 0.5 + standardDeviation(seq)/alpha;
+        let avg = seq.reduce(function(sum, a) { return sum + a; },0)/(seq.length||1);
+        for (let i in seq)
+        {
+            let index = parseInt(i);
+            let prev = seq[index-1];
+            let curr = seq[index];
+            let next = seq[index+1];
+            let lastpeakmag = null;
+            let lastvalleymag = null;
+            let lastpeaktime = null;
+            let lastvalleytime = null;
 
-                    if(isPeak(prev, curr, next, stepaverage, avg, variance))  //peak
-                    {
-                            updateTimeAverage(index, lastpeaktime, peakdiff, peaktimethreshold, peaks);
-                            lastpeakmag = curr;
-                            lastpeaktime = index;
-                            peaks.push(index);
-                    }
-                    else if(isValley(prev, curr, next, stepaverage, avg, variance))     //valley
-                    {
-                            updateTimeAverage(index, lastvalleytime, valleydiff, valleytimethreshold, valleys);
-                            lastvalleymag = curr;
-                            lastvalleytime = index;
-                            valleys.push(index);
-                    }
-                    //update step average
-                    if(lastpeakmag && lastvalleymag)
-                    {
-                            stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
-                    }
+            if(isPeak(prev, curr, next, stepaverage, avg, variance))
+            {
+                updateTimeAverage(index, lastpeaktime, peakdiff, peaktimethreshold, peaks);
+                lastpeakmag = curr;
+                lastpeaktime = index;
+                peaks.push(index);
             }
-            result.peaks = peaks;
-            result.valleys = valleys;
-            return result;
+            else if(isValley(prev, curr, next, stepaverage, avg, variance))
+            {
+                updateTimeAverage(index, lastvalleytime, valleydiff, valleytimethreshold, valleys);
+                lastvalleymag = curr;
+                lastvalleytime = index;
+                valleys.push(index);
+            }
+
+            // Update step average
+            if(lastpeakmag && lastvalleymag)
+            {
+                stepaverage = (Math.abs(lastpeakmag) + Math.abs(lastvalleymag))/2.0;
+            }
+        }
+        result.peaks = peaks;
+        result.valleys = valleys;
+        return result;
     }
 
-    function calculateFFT(seq)      //Calculates the FFT of a sequence, uses FFT.js
+    function calculateFFT(seq)      // Calculates the FFT of a sequence, uses FFT.js
     {
-            let real = seq.slice();
-            let imag = Array.apply(null, Array(seq.length)).map(Number.prototype.valueOf,0);     //create imag array for fft computation
-            transform(real, imag);  //not normalized, from FFT.js
-            real = real.map(x => x/real.length);      //normalize
-            imag = imag.map(x => x/imag.length);      //normalize
-            let fft = [];
-            for(let i=0; i< real.length; i++) {
-                    fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    //magnitude of FFT
-            }
-            fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
-            return fft;
+        let real = seq.slice();
+
+        // Create imag array for fft computation
+        let imag = Array.apply(null, Array(seq.length)).map(Number.prototype.valueOf,0);
+
+        transform(real, imag);  // Not normalized, from FFT.js
+
+        // Normalization
+        real = real.map(x => x/real.length);
+        imag = imag.map(x => x/imag.length);
+
+        let fft = [];
+        for(let i=0; i< real.length; i++) {
+            fft[i] = Math.sqrt(real[i]*real[i]+imag[i]*imag[i]);    // Magnitude of FFT
+        }
+        fft = fft.map(x => x/fft.reduce((a, b) => a + b, 0));
+        return fft;
     }
 
     function highFreq(fft)
     {
-            return fft_index > 4;
+        return fft_index > 4;
     }
 
-    function validAccel(prevaccel, accel, accelFiltered)    // Determines if the acceleration value that was read was a valid one (device movement) instead of noise
+    // Determines if the acceleration value that was read was a valid one (device movement) instead of noise
+    function validAccel(prevaccel, accel, accelFiltered)
     {
-            return magnitude(prevaccel) != magnitude(accel) && Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;        
+            return magnitude(prevaccel) != magnitude(accel) &&
+                   Math.abs(magnitude(accelFiltered) - magnitude(prevaccel)) > accdiffthreshold;
     }
 
-    function needToChangeDir(longitude)      // Tells if the walking direction has changed TODO: Make work with negative longitude also (remove the longitude conversion to positive)
+    // Tells if the walking direction has changed
+    function needToChangeDir(longitude)
     {
-        if(longitude < 0)       // When the user is turned backwards, we still want to always keep the longitude above 0, maybe could also rotate the video sphere?
+
+        // When the user is turned backwards, we still want to always keep the longitude above 0
+        if(longitude < 0)
         {
             longitude = longitude + 2*Math.PI;
         }
-        return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
+        return (Math.abs(longitude - Math.PI) < (20 / 180) * Math.PI && rewinding == false) || 
+               ((longitude < (10 / 180) * Math.PI || longitude > (350 / 180) * Math.PI ) && rewinding == true);
     }
 
     // The "public interfaces" are the stepDetection and saveSensorReading functions
     // Algorithm modified version of the algorithm from paper http://www.mdpi.com/1424-8220/15/10/27230
-    var stepDetection = function (seq)      // Returns 1 if there was a step in the given acceleration sequence, otherwise 0
+
+    // Returns 1 if there was a step in the given acceleration sequence, otherwise 0
+    var stepDetection = function (seq)
     {
-            let magseq = magnitude(seq, "seq");     // Calculate the combined magnitude sequence from the 3 distinct xyz sequences
-            // Smoothen (filter noise)
-            smoothArray(magseq, smoothingvalue);        // Smoothens "in-place" - 8 seems to be a good value
 
-            let peaksvalleys = null;
-            let peakdiff = [];
-            let valleydiff = [];
-            // Analyze sequence sample by sample - mimics real-time behavior
-            for (var i = 0; i < magseq.length+1; i++) {
-                    peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
-            }
-            let peaks = peaksvalleys.peaks;
-            let valleys = peaksvalleys.valleys;
-            // Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
-            // Filter the non-valid peaks and valleys out
-            peaks = peaks.filter(function(n){ return n > peaktimethreshold;});
-            valleys = valleys.filter(function(n){ return n > valleytimethreshold;});
-            let stepdiff = [];
-            for (var ipeak in peaks)
+        // Calculate the combined magnitude sequence from the 3 distinct xyz sequences
+        let magseq = magnitude(seq, "seq");
+        // Smoothen (filter noise)
+        smoothArray(magseq, smoothingvalue);        // Smoothens "in-place"
+        let peaksvalleys = null;
+        let peakdiff = [];
+        let valleydiff = [];
+        // Analyze sequence sample by sample - mimics real-time behavior
+        for (var i = 0; i < magseq.length+1; i++) {
+            peaksvalleys = detectPeaksValleys(magseq.slice(0, i));
+        }
+        let peaks = peaksvalleys.peaks;
+        let valleys = peaksvalleys.valleys;
+        // Now remove peak and valley candidates outside a pre-defined time range after each peak occurrence
+        // Filter the non-valid peaks and valleys out
+        peaks = peaks.filter(function(n){ return n > peaktimethreshold;});
+        valleys = valleys.filter(function(n){ return n > valleytimethreshold;});
+        let stepdiff = [];
+        for (var ipeak in peaks)
+        {
+            for (var ivalley in valleys)
             {
-                    for (var ivalley in valleys)
+                if(ipeak == ivalley)
+                {
+                    let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
+                    if(stepdiffamt >= 10)     //at least 10 samples between peak and valley
                     {
-                            if(ipeak == ivalley)
-                            {
-                                    let stepdiffamt = Math.abs(peaks[ipeak] - valleys[ivalley]);
-                                    if(stepdiffamt >= 10)     //at least 10 samples between peak and valley
-                                    {
-                                            stepdiff.push(stepdiffamt);
-                                    }
-                            }
+                        stepdiff.push(stepdiffamt);
                     }
+                }
             }
-            let minDiff = Math.min( ...stepdiff );
-            let stddev = standardDeviation(stepdiff);
-            var magseqnog = magseq.map( function(value) {        // Substract gravity (approx.9.81m/s^2) - probably could use filtering instead to do this
-                return value - GRAVITY;
-            });
-            stddev_accel = standardDeviation(magseqnog);
-            average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a; },0)/(magseqnog.length||1);     //Calculate average acceleration
-            stddevpct = stddev / minDiff;
+        }
+        let minDiff = Math.min( ...stepdiff );
+        let stddev = standardDeviation(stepdiff);
 
-            let fft = calculateFFT(magseqnog);
-            fft_index = fft.indexOf(Math.max(...fft));      //tells where the largest value in the FFT is
-            if(highFreq(fft))    //definitely walking - low-frequency changes in movement most likely mean the user is moving the device to look around and not walking
+        // Substract gravity from acceleration magnitudes
+        var magseqnog = magseq.map( function(value) {
+            return value - GRAVITY;
+        });
+        stddev_accel = standardDeviation(magseqnog);
+        average_accel_nog = magseqnog.reduce(function(sum, a) { return sum + a; },0)/(magseqnog.length||1);
+        stddevpct = stddev / minDiff;
+
+        let fft = calculateFFT(magseqnog);
+
+        // Indes of the largest FFT component
+        fft_index = fft.indexOf(Math.max(...fft));
+
+        // If the index of the largest FFT component is high enough,
+        // then the user is definitely walking
+        // as low-frequency changes in movement most likely mean 
+        // the user is moving the device to look around and not walking
+        if(highFreq(fft))
+        {
+            return true;
+        }
+        if(stepdiff.length >= Math.floor(stepamt)) {
+            if(stddevpct < stddevthreshold && !isNaN(stddevpct) && 
+            Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold && stddev_accel < 1.5)
             {
-                    return true;
+                return true;
             }
-            if(stepdiff.length >= Math.floor(stepamt)) {
-                    if(stddevpct < stddevthreshold && !isNaN(stddevpct) && Math.abs(peaks.length - valleys.length) <= peakvalleyamtthreshold[2] && stddev_accel < 1.5)     // What characterises a step...?
-                    {
-                            return true;
-                    }
-            }
-            else {
-                    return false;
-            }
+        }
+        else {
+            return false;
+        }
     };
 
-    var saveSensorReading = function()    // Function to save the sensor readings, check if we need to switch video playback direction and send the sensor readings to be analyzed for whether the user is walking or not
+    // Function to save the sensor readings,
+    // check if we need to switch video playback direction
+    // and send the sensor readings to be analyzed for whether the user is walking or not
+    var saveSensorReading = function()
     {
-            //accel = accel_sensor.accel;
-            accel = {"x": accel_sensor.x, "y": accel_sensor.y, "z": accel_sensor.z};
-            accelFiltered = new LowPassFilterData(accel, bias);
-            if(validAccel(prevaccel, accel, accelFiltered))
-            {
-                    accelerationData.push(accelFiltered);
-                    prevaccel = accel;
-                    discardedsamples = discardedsamples - 3;
-            }
-            else    //The change in acceleration was too small (possibly noise), so the device might be stationary
-            {
-                    discardedsamples = discardedsamples + 1;
-            }
-            //When the user turns around, video direction needs to be changed
-            if(needToChangeDir(orientation_sensor.longitude))
-            {
-                    CONTROL.changeDirection();
-            }
-            if(accelerationData.length >= amtStepValues)    // When we have enough data, decide whether the user is walking or not
-            {
-                    accelSeq = toCoordSeq(accelerationData);
-                    var as = Object.assign({}, accelSeq);   // Copy by value
-                    stepvar = stepDetection(as);
-                    CONTROL.playPause();
-                    clearVars();
-            }
-            if(discardedsamples >= amtStepValues/8)     // If enough small acceleration changes have accumulated, the device is most likely stationary
-            {
-                    stepvar = 0;
-                    CONTROL.playPause();
-                    clearVars();
-            }
+        accel = {"x": accel_sensor.x, "y": accel_sensor.y, "z": accel_sensor.z};
+        accelFiltered = new LowPassFilterData(accel, bias);
+        if(validAccel(prevaccel, accel, accelFiltered))
+        {
+            accelerationData.push(accelFiltered);
+            prevaccel = accel;
+            discardedsamples = discardedsamples - 3;
+        }
+
+        // The change in acceleration was too small (possibly noise),
+        // so the device might be stationary
+        // If enough of these small changes accumulate,
+        // then assume that the device is stationary
+        else
+        {
+            discardedsamples = discardedsamples + 1;
+        }
+
+        // When the user turns around, video direction needs to be changed
+        if(needToChangeDir(orientation_sensor.longitude))
+        {
+            CONTROL.changeDirection();
+        }
+
+        // When we have enough data, decide whether the user is walking or not
+        if(accelerationData.length >= amtStepValues)
+        {
+            accelSeq = toCoordSeq(accelerationData);
+            var as = Object.assign({}, accelSeq);   // Copy by value
+            stepvar = stepDetection(as);
+            CONTROL.playPause();
+            clearVars();
+        }
+
+        // If enough small acceleration changes have accumulated, the device is most likely stationary
+        if(discardedsamples >= amtStepValues/8)
+        {
+            stepvar = 0;
+            CONTROL.playPause();
+            clearVars();
+        }
     };
 
     return {
-                stepamt: stepamt,
-                stddevthreshold: stddevthreshold,
-                bias: bias,
-                smoothingvalue: smoothingvalue,
-                stddevpct: stddevpct,
-                stddev_accel: stddev_accel,
-                fft_index: fft_index,
-                stepDetection: stepDetection,
-                saveSensorReading: saveSensorReading
+        stepamt: stepamt,
+        stddevthreshold: stddevthreshold,
+        bias: bias,
+        smoothingvalue: smoothingvalue,
+        stddevpct: stddevpct,
+        stddev_accel: stddev_accel,
+        fft_index: fft_index,
+        stepDetection: stepDetection,
+        saveSensorReading: saveSensorReading
         };
 }());
 
